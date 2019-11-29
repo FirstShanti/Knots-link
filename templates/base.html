@@ -25,7 +25,7 @@
               <a class="nav-link" href=" {{ url_for('posts.index') }}">Blog <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-              <a class="nav-link" href=" {{ url_for('posts.index') }}">Contacts <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href=" {{ url_for('about.contacts') }}">Contacts <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
               <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
@@ -38,29 +38,18 @@
         </div>
     </nav>
     <div class="container">
-      
       <div class="row">
-
         <h1>
-
           {% block content_title %}
 
           {% endblock %}
-
         </h1>
-        
       </div>
-
       <div>
-        
         {% block content %}
 
         {% endblock %}
-    
       </div>
-
-    </div>
-
-    
+    </div>  
 </body>
 </html>

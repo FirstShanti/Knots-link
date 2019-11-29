@@ -1,7 +1,9 @@
 from flask import Flask 
 from config import Configuration
-
 from flask_sqlalchemy import SQLAlchemy
+
+from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager
 
 #, render_template, redirect, url_for, request
 #from flask_sqlalchemy import SQLAlchemy
@@ -13,19 +15,12 @@ app.config.from_object(Configuration)
 db = SQLAlchemy(app)
 
 
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
 
-'''POSTGRES = {
-    'user': 'postgres',
-    'pw': '00000',
-    'db': 'py_tutorial',
-    'host': 'localhost',
-    'port': '5432',
-}
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
-app.config['DEBUG'] = True
-db = SQLAlchemy(app)
-
+'''
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(1024), nullable=False)
