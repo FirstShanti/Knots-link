@@ -12,7 +12,7 @@
 
     {% for post in posts %}
         <div class="post">
-            <a href="{{ url_for('posts.tag_detail', slug=post.slug)}}">{{ post.title }}</a>
+            <a href="{{ url_for('posts.post_content', slug=post.slug)}}">{{ post.title }}</a>
         </div>
     {% endfor %}
 
