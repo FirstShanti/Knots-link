@@ -14,7 +14,7 @@
         {% for tag in tags %}
             <a href="{{ url_for('posts.tag_detail', slug=tag.slug)}}"><span class="badge badge-primary">{{ tag.name }}</span></a>
         {% endfor %}
-        <span> <em style="font-size: 11px; color: gray;">{{ time }}</em> </span> 
+        <span> <em style="font-size: 11px; color: gray; ">{{ time }}</em> </span> 
     </div>
 
     <div class="main-content">
