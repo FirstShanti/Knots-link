@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block content_title %}
-    Posts
+    Posts<div class="btn-group">
+			<a href="{{ url_for('posts.create_post') }}" class="btn btn-outline-dark btn-sm">+</a>
+		</div>
 {% endblock %}
 
 {% block content %}
