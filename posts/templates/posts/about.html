@@ -5,10 +5,14 @@
 {% endblock %}
 
 {% block content_title %}
-    <p>Telegram: +380-111-222-333</p>
-    <p>Message: ivan.ivanov@gmail.com</p>
+	User info:
+	<hr>
 {% endblock %}
 
 {% block content %}
-    Kharkiv, Ukraine
+    <div>
+		<h3>{{ first_name }} {{ second_name }}</h3>
+		<h3>{{ username }}</h3>
+		<h3>{{ number }}</h3>
+	</div>
 {% endblock %}

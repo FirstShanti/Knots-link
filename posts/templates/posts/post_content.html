@@ -5,19 +5,34 @@
 {% endblock %}
 
 {% block content_title %}
-    {{ post.title }}
+    <div>
+        <span>{{ post.title }}</span>
+        {% if session['username'] == post.author %}
+            <a class="far fa-edit" style="font-size: 20px; color: #d5d1ca; text-decoration: none;" href="{{ url_for('posts.edit_post', slug=post.slug) }}" title="Edit post"></a>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block content %}
 
     <div class="tags">
+        <div>
+            <em style="font-size: 15px; color: blue; margin-right: 7px;">
+                <a href="{{ url_for('about.contacts')}}" >@{{ author }}</a>
+            </em>
+            <em style="font-size: 11px; color: gray;">
+                {{ time }}
+            </em>
+        </div>
+        <div>
         {% for tag in tags %}
-            <a href="{{ url_for('posts.tag_detail', slug=tag.slug)}}"><span class="badge badge-primary">{{ tag.name }}</span></a>
+            <a href="{{ url_for('posts.tag_detail', slug=tag.slug)}}"><span class="badge badge-pill badge-secondary tag">{{ tag.name }}</span></a>
         {% endfor %}
-        <span> <em style="font-size: 11px; color: gray; ">{{ time }}</em> </span> 
+        </div>
     </div>
+    <hr>
 
-    <div class="main-content">
+    <div calss="main-content" style="padding-top: 8px; font-size: 20px; position: block; word-wrap: break-word;">
         {{ post.body }}
     </div>
 

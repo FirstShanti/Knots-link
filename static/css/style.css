@@ -1,0 +1,100 @@
+/* анимация текста на главной */
+
+.logo_on_index {
+}
+
+@keyframes show_all {
+	0% { opacity: 0; }
+	100% { opacity: 100; }
+}
+@-webkit-keyframes show_all {
+	0% { opacity: 0; }
+	100% { opacity: 100; }
+}
+.logo_on_index:hover .show_all {
+	animation-name: show_all;
+	animation-duration: 10s;
+	animation-fill-mode: forwards;
+	-webkit-animation-name: show_all;
+	-webkit-animation-duration: 10s;
+}
+
+/* анимация отображения блока logout */
+
+.logout .submenu {
+	background: #FFD7A7;
+}
+
+.logout .submenu {
+	-webkit-transform: scaleY(0);
+	-ms-transform: scaleY(0);
+	transform: scaleY(0);
+	-webkit-transform-origin: 0 0;
+	-ms-transform-origin: 0 0;
+	transform-origin: 0 0;
+	background: #FFD7A7;
+}
+
+.logout div a:hover .submenu {
+	-webkit-transform: scaleY(1);
+	-ms-transform: scaleY(1);
+	transform: scaley(1);
+}
+
+.logout div a {
+	color: #9B4222;
+}
+
+/* анимация ссылок(изменение цвета при наведении) */
+.posts {
+	font-size: 20px;
+	color: black;
+}
+
+.posts:hover {
+	color: #138496;
+}
+
+.dropdown-menu {
+    position: relative;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    float: left;
+    min-width: 10rem;
+    padding: .5rem 0;
+    margin: .125rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+}
+
+.dropdown-menu.show {
+    display: block;
+
+}
+
+.form-value {
+	color: red;
+}
+
+.main-content {
+	position: block;
+	white-space: normal
+	background-color: red;
+}
+
+.tag:hover {
+	background-color: white;
+	color: black;
+}
+
+.tag:active {
+	color: white;
+}

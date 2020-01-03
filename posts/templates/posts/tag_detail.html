@@ -5,15 +5,16 @@
 {% endblock %}
 
 {% block content_title %}
-    Posts for #{{ tag.name }}:
+    #{{ tag.name }}:
+    <hr>
 {% endblock %}
 
 {% block content %}
 
     {% for post in posts %}
-        <div class="post">
-            <a href="{{ url_for('posts.post_content', slug=post.slug)}}">{{ post.title }}</a>
-        </div>
+        <p class="post_paragraph">
+            <a class='posts' style='text-decoration-line: none;' href="{{ url_for('posts.post_content', slug=post.slug)}}">{{ post.title }}</a>
+        </p>
     {% endfor %}
 
 {% endblock %}

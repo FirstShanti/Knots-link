@@ -1,41 +1,41 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Create new post
+	Edit post
 {% endblock %}
 
 {% block content_title %}
-    <div class='col-md-8' style="text-align: center; margin-left: auto;
-    margin-right: auto;">New post</div>
+	<div class='col-md-8' style="text-align: center; margin-left: auto;
+    margin-right: auto;">Edit post</div>
 {% endblock %}
 
 {% block content %}
-    
-    <div class='col-md-8'  style="margin-left: auto;
-    margin-right: auto; padding-top: 8px;">
+	
+	<div class='col-md-8' style="margin-left: auto;
+    margin-right: auto;">
 
-        <form action="" method="POST">
-            {% for field in form %}
+		<form action="" method="POST">
+
+			{% for field in form %}
                 <div class="form-group">
                     
-                    {{ field(class='form-control', placeholder=field.id) }}
+                    {{ field(class='form-control form-value', placeholder=field.id) }}
                     {% for error in field.errors %}
                         <span style="color: red;">{{ error }}</span>
                     {% endfor %}
                 </div>
             {% endfor %}
-
+				
                 <div class="" style="text-align: center; margin-left: auto;
         margin-right: auto;">
-                    <button type="submit" class="btn btn-info">Create</button>
+                    <button type="submit" class="btn btn-info">Save</button>
                 </div>
 
             
         </form>
         {{ ckeditor.load() }}
-        {{ ckeditor.config(name='body', placeholder='text') }}
+        {{ ckeditor.config(name='body') }}
 
-
-    </div>
+	</div>
 
 {% endblock %}
