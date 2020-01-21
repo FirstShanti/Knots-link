@@ -18,6 +18,8 @@ from flask_ckeditor import CKEditorField
 from models import Knot
 from login.hash import encrypt_string
 import re
+from models import slugify, Post
+from app import db
 
 
 class RegistrationForm(FlaskForm):
@@ -79,6 +81,15 @@ class PostForm(FlaskForm):
 		validators=[DataRequired(), Length(3, 100)])
 	
 	def validate_tags(form, tags):
-		invalid_tags = re.findall(r"[!@#$%^&*()~`\-+=\/?\|:\;'\"{}\\,.\[\]]", str(tags._value()))
+		invalid_tags = re.findall(r"[!@#$%^&*()~`\-+=\/?\|:\;'\"{}\\.\[\]]", str(tags._value()))
 		if invalid_tags:
 			raise ValidationError(f'Invalid char in tag: {", ".join(i for i in invalid_tags)}')
+
+	#def validate_title(form, title):
+	#	if Post.query.filter(Post.slug==slugify(str(title._value()))).first():
+	#		raise ValidationError(f'Non uniq title')
+
+
+class CommentForm(FlaskForm):
+	text = StringField('Text',
+		validators=[DataRequired(), Length(1, 2000)])
