@@ -22,7 +22,6 @@ login = Blueprint('login', __name__, template_folder='templates')
 def sign_up():
 
 	form = RegistrationForm(request.form)
-	print('test session', session)
 
 	if 'username' in session:
 		#точка выхода из сессии
@@ -39,12 +38,11 @@ def sign_up():
 				# включить шифрование для номеров телефона
 				password=encrypt_string(form.password.data)
 			)
-			session['username'] = form.username.data
 			db.session.add(knot)
 			db.session.commit()
 		except:
 			print('something wrong')
-		return redirect(url_for('posts.index'))
+		return redirect(url_for('login.log_in'))
 		return jsonify({'status': 'success'})
 	
 	return render_template('login/registration.html',
@@ -70,6 +68,7 @@ def log_in():
 		):
 			session['username'] = user.username
 			return redirect(url_for('posts.index'))
+
 			
 	return render_template('login/login.html',
 		title='Log in',
