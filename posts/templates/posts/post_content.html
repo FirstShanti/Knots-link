@@ -18,7 +18,7 @@
     <div class="tags">
         <div>
             <em style="font-size: 15px; color: blue; margin-right: 7px;">
-                <a href="{{ url_for('about.contacts')}}" >@{{ author }}</a>
+                <a href="{{ url_for('about.contacts', slug=user.slug or 'anonymous')}}" >@{{ author }}</a>
             </em>
             <em style="font-size: 11px; color: gray;">
                 {{ time }}
@@ -30,10 +30,71 @@
         {% endfor %}
         </div>
     </div>
-    <hr>
+    <hr style="size: 50px;">
 
-    <div calss="main-content" style="padding-top: 8px; font-size: 20px; position: block; word-wrap: break-word;">
-        {{ post.body }}
+    <div class="main-content post-body" style="padding-top: 8px; font-size: 20px; position: block; word-wrap: break-word;">
+        {{ post.body|safe }}
     </div>
 
+    <hr>
+
+    <div class="comments">
+
+        <div>
+            <h4>Comments <span style="color: #17a2b8;">{{ comments|length }}</span>:</h4>
+        </div>
+
+        <div>
+            {% if comments %}
+                {% for comment in comments %}
+                    <div class="main-content" style="padding-top: 8px; font-size: 20px; position: block; word-wrap: break-word;">
+                        <em style="font-size: 13px; color: blue; margin-right: 7px;">
+                            <a href="{{ url_for('about.contacts', slug=user.slug or 'anonymous')}}" >@{{ comment.author }}</a>
+                        </em>
+                        <em style="font-size: 11px; color: gray;">
+                            {{ comment.created }}
+                        </em>
+                        <p style="font-size: 1.1rem;">{{ comment.text }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                ...
+                
+            {% endif %}
+        </div>
+
+        <br>
+
+        <div>
+            <form action="" method="POST">
+                {% if session.get('username') %}
+                    <h4>Write comment</h4>
+                    {% for field in form %}
+                    <div class="form-group">
+
+                        {{ field(class='form-control form-value', placeholder=field.id) }}
+                        {% for error in field.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                
+                    <div class="" style="text-align: left; margin-left: auto;
+                    margin-right: auto;">
+                        <button type="submit" class="btn btn-info">Add comment</button>
+                    </div>
+
+                {% endif %}
+            </form>
+
+            {% if not session.get('username') %}
+                <h4>Login for commenting</h4>
+                <div class="" style="text-align: left; margin-left: auto;
+                margin-right: auto;">
+                    <a href="{{ url_for('login.log_in') }}"><button class="btn btn-info">login</button></a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
 {% endblock %}

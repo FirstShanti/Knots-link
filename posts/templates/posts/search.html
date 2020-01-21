@@ -1,17 +1,16 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {{ tag.name }} posts
+    Search result
 {% endblock %}
 
 {% block content_title %}
-    #{{ tag.name }}:
+    Result for <span style="color: #007bff;">{{ q }}</span>:
     <hr>
 {% endblock %}
 
 {% block content %}
-
-	{% if pages.items|length > 0 %}
+    {% if pages.items|length > 0 %}
         {% for post in pages.items %} 
             <p class='post_paragraph'>
                 <a class='posts' style='text-decoration-line: none;' href="{{ url_for('posts.post_content', slug=post.slug) }}"> {{ post.title }} </a>
@@ -34,7 +33,7 @@
         			{% if page %}
                         <li {% if page == pages.page %} class="page-item active" {% endif %}>
 
-            				<a class="page-link" href="./?page={{ page }}">{{ page }}<span class="sr-only">(current)</span></a>
+            				<a class="page-link" href="./?page={{ page }}&q={{ q }}">{{ page }}<span class="sr-only">(current)</span></a>
             				
             			</li>
                     {%else %}
@@ -64,7 +63,5 @@
             Not found
         </i>
     {% endif %}
-
-
 
 {% endblock %}
