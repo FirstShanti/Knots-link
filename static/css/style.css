@@ -45,24 +45,24 @@
 	color: #9B4222;
 }
 
-/* анимация ссылок(изменение цвета при наведении) */
+/* анимация ссылок на посты (изменение цвета при наведении) */
 .posts {
 	font-size: 20px;
-	color: black;
+	color: #34495E;
 }
 
 .posts:hover {
 	color: #138496;
 }
 
-.dropdown-menu {
+.drop-menu {
     position: relative;
     top: 100%;
     left: 0;
     z-index: 1000;
     display: block;
     float: left;
-    min-width: 10rem;
+    min-width: 5rem;
     padding: .5rem 0;
     margin: .125rem 0 0;
     font-size: 1rem;
@@ -84,10 +84,11 @@
 	color: red;
 }
 
-.main-content {
+.post-body {
 	position: block;
 	white-space: normal
-	background-color: red;
+	margin-top: 0.1em;
+    margin-bottom: 0.1em;
 }
 
 .tag:hover {
