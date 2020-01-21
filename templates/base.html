@@ -43,7 +43,7 @@
             </li>
 
             <li class="nav-item active">
-              <a class="nav-link" href=" {{ url_for('about.contacts') }}">Contacts <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href=" {{ url_for('about.contacts', slug=session['username'] or 'anonymous') }}">Contacts <span class="sr-only">(current)</span></a>
             </li>
 
             <li >
@@ -57,10 +57,11 @@
             
             <li>
 
-              <form action="{{ url_for('posts.index') }}" class="form-inline my-2 my-lg-0" method="GET">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" name="q" value="{{ request.args.get('q', '') }}">
-                <button class="btn btn-outline-success my-2 my-sm-0" href="{{ url_for('posts.index') }}" type="submit">Search</button>
+              <form action="{{ url_for('posts.search', slug=request.args.get('q', '')) }}" class="form-inline my-2 my-lg-0" method="GET">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" name="q">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
               </form>
+
             </li>
             
             <li>
@@ -69,8 +70,16 @@
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left: 4px; background-color: #d5d1ca;">
                   {{ session['username'] }}
                 </button>
-                <div class="dropdown-menu" style="    margin: 0 -1.30rem 0; top: 110%; min-width: 5rem;" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="{{ url_for('about.contacts') }}">Profile</a>
+
+
+                <script type="text/javascript">
+                  var width = $("div#dropdownMenuButton").css('width')
+                  $("div#dropdown-menu-items").css('min-width':width)
+                </script>
+
+
+                <div class="drop-menu dropdown-menu" id="dropdown-menu-items" style="margin: 0 -20% 0; top: 130%; min-width: 50%;" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="{{ url_for('about.contacts', slug=session['username'] or 'anonymous') }}">Profile</a>
                   <a class="dropdown-item" href="{{ url_for('login.log_out') }}">Log out</a>
                 </div>
               {% endif %}
@@ -78,7 +87,7 @@
               {% if not session['username'] %}
                 <button class="btn btn-dark my-2 my-sm-0" style="margin: 4px;"><a style="text-decoration: none; color: white;" title="{{ title }}" href="{{ url_for('login.sign_up') }}">Sign up</a></button>
 
-                <button class="btn btn-dark my-2 my-sm-0" ><a style="text-decoration: none; color: white;" title="{{ title }}" href="{{ url_for('login.log_in') }}">Log in</a></button>
+                <button class="btn btn-dark my-2 my-sm-0" ><a style="text-decoration: none; color: white;" title="{{ title }}" href="{{ url_for('login.log_in') }}">Login</a></button>
               {% endif %}
 
             </li>
@@ -88,18 +97,23 @@
         </div>
     </nav>
     <div class="container" style="font-family: 'Slabo 27px', serif;">
-      <div calss='row' style="padding-top: 30.95px;">
+      <div calss='row' style="padding-top: 30.95px; margin-left: 5%; margin-right: 5%; ">
         <h1>
           {% block content_title %}
 
           {% endblock %}
         </h1>
       </div>
-      <div>
+      <div style="margin-left: 5%; margin-right: 5%; ">
         {% block content %}
 
         {% endblock %}
       </div>
+
+      <br>
+      <br>
+      <br>
+      
     </div>  
 </body>
 </html>
