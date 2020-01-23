@@ -21,7 +21,7 @@
                     
                     {{ field(class='form-control form-value', placeholder=field.id) }}
                     {% for error in field.errors %}
-                        <span style="color: red;">{{ error }}</span>
+                    {{ error|safe }}
                     {% endfor %}
                 </div>
             {% endfor %}

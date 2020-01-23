@@ -9,6 +9,7 @@
         <span>{{ post.title }}</span>
         {% if session['username'] == post.author %}
             <a class="far fa-edit" style="font-size: 20px; color: #d5d1ca; text-decoration: none;" href="{{ url_for('posts.edit_post', slug=post.slug) }}" title="Edit post"></a>
+            <a class="fas fa-trash-alt" style="font-size: 20px; color: #d5d1ca; text-decoration: none;" href="{{ url_for('posts.delete_post', slug=post.slug) }}" title="Delete post"></a>
         {% endif %}
     </div>
 {% endblock %}

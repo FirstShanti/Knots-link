@@ -14,6 +14,7 @@ from models import (
     Comment,
     slugify
 )
+from sqlalchemy.exc import IntegrityError
 import locale
 from forms import PostForm, CommentForm
 from app import db
@@ -53,7 +54,7 @@ def create_post():
                     body=form.body.data,
                     author = session['username']
                 )
-                tag_list = re.split(r'[\s, .]', form.tags.data)
+                tag_list = re.sub(r'[\s, .]', ' ', form.tags.data).split()
                 for i in set(tag_list):
                     if Tag.query.filter_by(name=i).first():
                         tag = Tag.query.filter_by(name=i).first()
@@ -78,7 +79,7 @@ def create_post():
 
 @posts.route('/<slug>/edit/', methods=['POST', 'GET'])
 def edit_post(slug):
-    post = Post.query.filter(Post.slug==slug).first()
+    post = Post.query.filter(Post.slug==slug).filter(Post.visible==True).first()
     form = PostForm(
         title=post.title,
         body=post.body,
@@ -89,8 +90,7 @@ def edit_post(slug):
     if request.method == 'POST' and session['username'] == post.author and form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
-        tag_list = re.split(r'[\s\[\], .]', form.tags.data)
-        print(tag_list)
+        tag_list = re.sub(r'[\s, .]', ' ', form.tags.data).split()
         # найти все теги поста и добавить те, которые не входят в список
         post.tags.clear()
         db.session.commit()      
@@ -103,12 +103,10 @@ def edit_post(slug):
 
         try:
             db.session.commit()
-            flash('Post save')
+            print('Post save')
         except:
             print('not save')
-        return redirect(url_for('posts.post_content',
-            slug=post.slug)
-        )
+        return redirect(url_for('posts.post_content', slug=post.slug))
     elif not session:
         return redirect(url_for('login.log_in'))
 
@@ -116,6 +114,19 @@ def edit_post(slug):
         post=post,
         form=form,
     )
+
+@posts.route('/<slug>/delete/', methods=['POST', 'GET'])
+def delete_post(slug):
+    post = Post.query.filter(Post.slug==slug).filter(Post.visible==True).first()
+    post_title = post.title
+
+    if 'username' in session and session.get('username') == post.author:
+        try:
+            post.invisible()
+            db.session.commit()
+        except Exception as e:
+            print(f'Something wrong\n{e.__class__}')
+    return redirect('/blog/')
 
 
 @posts.route('/', methods=['GET'])
@@ -127,8 +138,8 @@ def index():
         page = int(page)
     else:
         page = 1
-
-    posts = Post.query.order_by(db.desc(Post.created)) # сортировка от последнего до первого
+    # сортировка видимых от последнего до первого 
+    posts = Post.query.order_by(db.desc(Post.created)).filter(Post.visible==True)
 
     for post in posts:
         post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>', '', ''.join(i for i in post.body.split("\n")[:3]))
@@ -144,12 +155,15 @@ def index():
 @posts.route('/<slug>', methods=['POST', 'GET'])
 def post_content(slug):
 
-    post = Post.query.filter(Post.slug==slug).first()
-    tags = post.tags
-    time = post.created.strftime("%d %B %Y (%A) %H:%M")
-    author = post.author
-    user = Knot.query.filter(Knot.username==author).first()
-    comments = post.comments
+    try:
+        post = Post.query.filter(Post.slug==slug).filter(Post.visible==True).first()
+        tags = post.tags
+        time = post.created.strftime("%d %B %Y (%A) %H:%M")
+        author = post.author
+        user = Knot.query.filter(Knot.username==author).first()
+        comments = post.comments
+    except AttributeError:
+        return redirect('/blog/')
 
     form = CommentForm(request.form)
 
@@ -216,7 +230,7 @@ def contacts(slug):
 @posts.route('/tag/<slug>/')
 def tag_detail(slug):
     tag = Tag.query.filter(Tag.slug == slug).first()
-    posts = Post.query.filter(Post.tags.contains(tag))
+    posts = Post.query.filter(Post.tags.contains(tag)).filter(Post.visible==True)
     page = request.args.get('page')
 
     if page and page.isdigit():
@@ -246,7 +260,8 @@ def search():
         posts = Post.query.filter(
             Post.title.contains(q) | # поиск по заголовку
             Post.body.contains(q) | #поиск по телу поста
-            Post.tags.any(name=q) # поиск по тегам
+            Post.tags.any(name=q) | # поиск по тегам
+            Post.visible==True
             )  
 
     else:

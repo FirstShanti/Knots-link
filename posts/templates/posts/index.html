@@ -14,7 +14,7 @@
         {% for post in pages.items %} 
             <p class='post_paragraph'>
                 <a class='posts' style='text-decoration-line: none; font-size: 1.6rem;' href="{{ url_for('posts.post_content', slug=post.slug) }}"> {{ post.title }} </a>
-                <p style="font-size: 1rem; color: #ABB2B9;">
+                <p class="posts_body">
                     {{ post.body|safe }}
                 </p>
             </p>       
