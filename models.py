@@ -8,6 +8,10 @@ def slugify(s):
     return re.sub(pattern, '-', s)
 
 def post_uuid():
+    try: ### if post exist ###
+        Post.query.order_by(db.desc(Post.created)).first().id
+    except AttributeError:
+        return '1'
     return str(Post.query.order_by(db.desc(Post.created)).first().id + 1)
 
 def comment_uuid():
@@ -17,24 +21,13 @@ def comment_uuid():
         return '1'
     return str(Comment.query.order_by(db.desc(Comment.created)).first().id + 1)
 
-######### TAGS FOR POST ##########
+### TAGS FOR POST ###
 post_tags = db.Table(
     'post_tags', 
     db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True),
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
 )
 
-# knot_posts = db.Table('knot_posts',
-#     db.Column('knot_id', db.Integer, db.ForeignKey('knot.id')),
-#     db.Column('post_id', db.Integer, db.ForeignKey('post.id'))
-# )
-
-######### COMMENTS FOR POST ##########
-# post_comments = db.Table(
-#     'post_commets',
-#     db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True),
-#     db.Column('comment_id', db.Integer, db.ForeignKey('comment.id'), primary_key=True)
-# )
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -52,10 +45,9 @@ class Post(db.Model):
         self.generate_slug()
         
 
-    # теги прикрепленные к посту и юзер написавший пост
+    # tags and comments to post
     tags = db.relationship('Tag', passive_deletes=True, secondary=post_tags)
     comments = db.relationship('Comment', backref='owner')
-    #knot = db.relationship('Knot', secondary=post_knot, backref=db.backref('posts', lazy='dynamic'))
 
     def generate_uuid(self):
         self.uuid = post_uuid()
@@ -64,7 +56,6 @@ class Post(db.Model):
         if self.title:
             self.slug = f'post{self.uuid}_{slugify(self.title)}'
 
-
     def __repr__(self):
         return f'''
             Post id: {self.id},
@@ -72,7 +63,7 @@ class Post(db.Model):
             slug: {self.slug}
         ''' 
         
-
+# class Tag (class of tag for Post)
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(46), unique=True)
@@ -106,9 +97,6 @@ class Knot(db.Model):
         super(Knot, self).__init__(*args, **kwargs)
         self.slug = slugify(self.username)
 
-    # посты созданные юзером
-    #posts = db.relationship('Post', secondary=knot_posts) #, backref=db.backref('posts', lazy='dynamic'))
-
     def __repr__(self):
         return f'''
             Knot id: {self.id},
@@ -117,7 +105,7 @@ class Knot(db.Model):
             slug: {self.slug}
         ''' 
 
-
+# class Comment - (class of cpmments for Post)
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uuid = db.Column(db.String(140))
@@ -134,15 +122,12 @@ class Comment(db.Model):
         self.generate_uuid()
         self.generate_slug()
 
-    #posts = db.relationship('Post', passive_deletes=True, secondary=post_comments)
-
     def generate_uuid(self):
         self.uuid = comment_uuid()
 
     def generate_slug(self):
         if self.text:
             self.slug = f'comment_{self.uuid}'
-
 
     def __repr__(self):
         return f'''

@@ -22,7 +22,10 @@ from datetime import datetime, timedelta
 
 
 locale.setlocale(locale.LC_ALL, "")
-
+local = locale.getdefaultlocale()[0]
+lang = {'ru_RU':{'comment':['вчера в ', 'сегодня в ']},
+        'en_US':{'comment':['yesterday at ', 'today at ']}
+    }
 
 posts = Blueprint('posts',
     __name__,
@@ -33,11 +36,9 @@ about = Blueprint('about',
     template_folder='templates'
 )
 
-
-### Create post page ###
-
+### Create post ###
 '''Page with form for write Title Body and Tag. 
-   Than its information put in class Post and add in db.'''  
+   Than its information put in class Post and add in db.''' 
 
 @posts.route('/create', methods=['POST', 'GET'])
 def create_post():
@@ -69,7 +70,6 @@ def create_post():
             return redirect(url_for('posts.index'))
         elif not form.validate_on_submit():
             print('validate: ', form.validate_on_submit())
-
     else:
         return redirect('/log_in')
 
@@ -112,8 +112,6 @@ def edit_post(slug):
     elif not session:
         return redirect(url_for('login.log_in'))
 
-    
-
     return render_template('posts/edit_post.html',
         post=post,
         form=form,
@@ -133,16 +131,9 @@ def index():
     posts = Post.query.order_by(db.desc(Post.created)) # сортировка от последнего до первого
 
     for post in posts:
-        #print(post.body.split("\n")[:3])
-        #post.body = ''.join(i for i in re.sub(r'\\r|\\n|\\t', '', post.body)) split("<\\p>")[:3]
         post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>', '', ''.join(i for i in post.body.split("\n")[:3]))
 
-        #print(post.body)
-        #print(re.sub(r'\\r|\\n|\\t', '', post.body))
-
-
     pages = posts.paginate(page=page, per_page=5, max_per_page=5)
- 
 
     return render_template('posts/index.html',
         posts=posts,
@@ -159,7 +150,6 @@ def post_content(slug):
     author = post.author
     user = Knot.query.filter(Knot.username==author).first()
     comments = post.comments
-    #body_preview = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>', '', post.body)
 
     form = CommentForm(request.form)
 
@@ -181,13 +171,13 @@ def post_content(slug):
         else:
             return redirect(url_for('login.log_in'))
 
-    #### change comment time format to '19 Январь 2020 (воскресенье) 20:23' ####
+    #### change comment time format to '19 <Month> 2020 (<Week day>) 20:23' ####
     for comment in comments:
         timedelta = int(datetime.now().strftime("%d")) - int(comment.created.strftime("%d"))
         if timedelta == 1:
-            comment.created = comment.created.strftime("вчера в %H:%M")
+            comment.created = comment.created.strftime("{}%H:%M").format(f'{lang[local]["comment"][0]}')
         elif timedelta < 1:
-            comment.created = comment.created.strftime("сегодня в %H:%M")
+            comment.created = comment.created.strftime("{}%H:%M").format(f'{lang[local]["comment"][1]}')
         else:
             comment.created = comment.created.strftime("%d %B %Y (%A) %H:%M")
 
@@ -207,17 +197,7 @@ def post_content(slug):
 def contacts(slug):
     print(f'slug: {slug}')
     print(f'session: {session}')
-    '''
-    if not session.get('username'):
-        return redirect('/log_in')
-    elif slug == session['username']:
-        user = Knot.query.filter(Knot.username==session['username']).first()
-    else:
-        if session.get('username'):
-            user = Knot.query.filter(Knot.slug==slug).first()
-        else:
-            return redirect('/log_in')
-    '''
+
     if slug == 'anonymous':
         return redirect('/log_in')
     elif 'username' in session:
@@ -237,7 +217,6 @@ def contacts(slug):
 def tag_detail(slug):
     tag = Tag.query.filter(Tag.slug == slug).first()
     posts = Post.query.filter(Post.tags.contains(tag))
-    #print(posts, f'\ntype of posts: {type(posts)}')
     page = request.args.get('page')
 
     if page and page.isdigit():
@@ -252,9 +231,6 @@ def tag_detail(slug):
         pages=pages
     )
 
-## 
-#   dont work pagination!!!
-##
 
 @posts.route('/search/')
 def search():
@@ -269,17 +245,14 @@ def search():
     if q:
         posts = Post.query.filter(
             Post.title.contains(q) | # поиск по заголовку
-            Post.body.contains(q) |
-            Post.tags.any(name=q)
-            )   #Post.tags.any(name=q)    # поиск по тегам
+            Post.body.contains(q) | #поиск по телу поста
+            Post.tags.any(name=q) # поиск по тегам
+            )  
 
     else:
         posts = Post.query.order_by(db.desc(Post.created))
 
     pages = posts.paginate(page=page, per_page=5, max_per_page=5)
-    
-    # print(pages.__dict__)
-
 
     return render_template('posts/search.html',
         pages=pages,
