@@ -17,16 +17,16 @@
 
     <div class="tags">
         <div>
-            <em style="font-size: 15px; color: blue; margin-right: 7px;">
+            <em style="font-size: 1.314Rem; color: blue; margin-right: 7px;">
                 <a href="{{ url_for('about.contacts', slug=user.slug or 'anonymous')}}" >@{{ author }}</a>
             </em>
-            <em style="font-size: 11px; color: gray;">
+            <em style="font-size: 1rem; color: gray;">
                 {{ time }}
             </em>
         </div>
         <div>
         {% for tag in tags %}
-            <a href="{{ url_for('posts.tag_detail', slug=tag.slug)}}"><span class="badge badge-pill badge-secondary tag">{{ tag.name }}</span></a>
+            <a href="{{ url_for('posts.tag_detail', slug=tag.slug)}}"><span class=" tag badge-pill badge-secondary">{{ tag.name }}</span></a>
         {% endfor %}
         </div>
     </div>
@@ -48,10 +48,10 @@
             {% if comments %}
                 {% for comment in comments %}
                     <div class="main-content" style="padding-top: 8px; font-size: 20px; position: block; word-wrap: break-word;">
-                        <em style="font-size: 13px; color: blue; margin-right: 7px;">
+                        <em style="font-size: 1.1rem; color: blue; margin-right: 7px;">
                             <a href="{{ url_for('about.contacts', slug=user.slug or 'anonymous')}}" >@{{ comment.author }}</a>
                         </em>
-                        <em style="font-size: 11px; color: gray;">
+                        <em style="font-size: 0.85rem; color: gray;">
                             {{ comment.created }}
                         </em>
                         <p style="font-size: 1.1rem;">{{ comment.text }}</p>
