@@ -37,14 +37,16 @@ class Post(db.Model):
     body = db.Column(db.Text)
     created = db.Column(db.DateTime, default=datetime.now())
     author = db.Column(db.String(32))
+    visible = db.Column(db.Boolean, default=True)
     
+    def invisible(self):
+        self.visible = False
 
     def __init__(self, *args, **kwargs):
         super(Post, self).__init__(*args, **kwargs)
         self.generate_uuid()
         self.generate_slug()
         
-
     # tags and comments to post
     tags = db.relationship('Tag', passive_deletes=True, secondary=post_tags)
     comments = db.relationship('Comment', backref='owner')
