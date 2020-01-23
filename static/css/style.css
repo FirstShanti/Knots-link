@@ -55,6 +55,11 @@
 	color: #138496;
 }
 
+.posts_body {
+	font-size: 1rem;
+	color: #cde1df;
+}
+
 .drop-menu {
 	position: relative;
 	top: 100%;
