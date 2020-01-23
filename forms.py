@@ -39,13 +39,11 @@ class RegistrationForm(FlaskForm):
 	#accept_tos = BooleanField('I accept the TOS',
 	#	validators=[DataRequired()])
 
-
 	def validate_number(form, number):
 		if Knot.query.filter_by(number=number.data).first() is not None:
 			raise ValidationError('''This phone number is reserved.\n
 									Please use another number.''') 
 			
-
 	def validate_username(form, username):
 		if Knot.query.filter_by(username=username.data).first() is not None:
 			raise ValidationError('Please use a different username.')
@@ -71,7 +69,6 @@ class LoginForm(FlaskForm):
 			raise ValidationError('Invalid password')
 	
 
-
 class PostForm(FlaskForm):
 	title = StringField('Title',
 		validators=[DataRequired(), Length(4, 78)])
@@ -81,13 +78,18 @@ class PostForm(FlaskForm):
 		validators=[DataRequired(), Length(3, 100)])
 	
 	def validate_tags(form, tags):
-		invalid_tags = re.findall(r"[!@#$%^&*()~`\-+=\/?\|:\;'\"{}\\.\[\]]", str(tags._value()))
-		if invalid_tags:
-			raise ValidationError(f'Invalid char in tag: {", ".join(i for i in invalid_tags)}')
-
-	#def validate_title(form, title):
-	#	if Post.query.filter(Post.slug==slugify(str(title._value()))).first():
-	#		raise ValidationError(f'Non uniq title')
+		invalid_chars = re.findall(r"[!@#$%^&*()~`\-+=\/?\|:\;'\"{}\\.\[\]]", str(tags._value()))
+		invalid_tags = []
+		if invalid_chars:
+			for char in invalid_chars:
+				for tag in str(tags._value()).split():
+					if char in tag:
+						invalid_tags.append(tag)
+			raise ValidationError(f'\
+				<span style="color: red;">Invalid char in {"tags" if len(invalid_tags) > 1 else "tag"}\
+				</span> <span style="color: black;">\
+				{" ".join(tag for tag in invalid_tags)}</span>:\
+				<span style="color: red;">{", ".join(char for char in invalid_chars)}</span>')
 
 
 class CommentForm(FlaskForm):
