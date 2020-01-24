@@ -8,7 +8,7 @@ from flask_script import Manager
 from config import * 
 
 app = Flask(__name__)
-app.config.from_object(eval(os.environ.get('ENV')))
+app.config.from_object(ENV[os.environ.get('ENV')])
 
 db = SQLAlchemy(app)
 ckeditor = CKEditor(app)
