@@ -7,34 +7,38 @@
 {% endblock %}
 
 {% block content_title %}
-<dev class="logo_on_index">
-	<dev style="background-color: yellow; font-size: 131.88px; margin: 8px;">
-	    	<a style="text-decoration: none; color: black;" href='' title="Узлы">Knots</a>
-	</dev>
-	<dev class="show_all" style="opacity: 0; font-size: 65.94px; margin: 7px;">
-    	Knot
-    </dev>
-    <dev class="show_all" style="opacity: 0; font-size: 40.82px; margin: 6px;">
-    	Knot
-    </dev><dev class="show_all" style="opacity: 0; font-size: 25.12px; margin: 5px;">
-    	Knot
-    </dev><dev class="show_all" style="opacity: 0; font-size: 15.7px; margin: 4px;">
-    	Knot
-    </dev><dev class="show_all" style="opacity: 0; font-size: 9.42px; margin: 3px;">
-    	Knot
-    </dev><dev class="show_all" style="opacity: 0; font-size: 6.28px; margin: 2px;">
-    	Knot
-    </dev><dev class="show_all" style="opacity: 0; font-size: 3.14px; margin: 1px;">
-    	Knot
-    </dev>
-    <dev class="show_all" style="opacity: 0; font-size: 1px; margin: 1px;">
-    	Knot
-    </dev>
-</dev>
+    <div class="logo_on_index" >
+        <img class="backgound_img" src="{{ url_for('static', filename='img/background.jpg')}}">
+    	<div class="logo_knots" style="">
+    	    	<a class="knots_title" href='#' title="Узлы">Knots</a>
+                <div class="show_all" style="opacity: 0; font-size: 65.94px; margin: 7px;">
+                    Knot
+                </div>
+                <div class="show_all" style="opacity: 0; font-size: 40.82px; margin: 6px;">
+                    Knot
+                </div><div class="show_all" style="opacity: 0; font-size: 25.12px; margin: 5px;">
+                    Knot
+                </div><div class="show_all" style="opacity: 0; font-size: 15.7px; margin: 4px;">
+                    Knot
+                </div><div class="show_all" style="opacity: 0; font-size: 9.42px; margin: 3px;">
+                    Knot
+                </div><div class="show_all" style="opacity: 0; font-size: 6.28px; margin: 2px;">
+                    Knot
+                </div><div class="show_all" style="opacity: 0; font-size: 3.14px; margin: 1px;">
+                    Knot
+                </div>
+                <div class="show_all" style="opacity: 0; font-size: 1px; margin: 1px;">
+                    Knot
+                </div>
+    	</div>
+    	
+    </div>
+     <div style="margin: 8px; fom">
+        We came for revansh
+    </div>
+    <img class="backgound_img" src="{{ url_for('static', filename='img/background.jpg')}}">
 {% endblock %}
 
 {% block content %}
-    <div style="margin: 8px; fom">
-    	We came for revansh
-    </div>
+   
 {% endblock %}

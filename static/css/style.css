@@ -1,6 +1,7 @@
 /* анимация текста на главной */
 
 .logo_on_index {
+	vertical-align: middle;
 }
 
 @keyframes show_all {
@@ -11,7 +12,7 @@
 	0% { opacity: 0; }
 	100% { opacity: 100; }
 }
-.logo_on_index:hover .show_all {
+.logo_knots:hover .show_all {
 	animation-name: show_all;
 	animation-duration: 10s;
 	animation-fill-mode: forwards;
@@ -49,6 +50,7 @@
 .posts {
 	font-size: 20px;
 	color: #34495E;
+	font-weight: bold;
 }
 
 .posts:hover {
@@ -58,6 +60,8 @@
 .posts_body {
 	font-size: 1rem;
 	color: #cde1df;
+	height: 100px;
+	overflow: hidden;
 }
 
 .drop-menu {
@@ -120,4 +124,46 @@
 
 .tag:active {
 	color: white;
+}
+
+.post-main-container {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.post_container {
+	width: 45%;
+    height: 200px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border-radius: 5px;
+    margin: 20px;
+    padding: 25px;
+}
+
+.logo_img {
+	background-image: url(/static/img/background.jpg);
+	background-repeat: no-repeat;
+  	background-size:100% 100%;
+}
+
+.logo_knots {
+    display: flex;
+    align-items: center;
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.show_all {
+	opacity: 1 !important;
+}
+
+.knots_title {
+	text-decoration: none;
+	color: black;
+	background-color: yellow;
+	font-size: 131.88px; 
+	margin: 8px;
+	padding: 10px;
+    margin-top: -5px;
 }

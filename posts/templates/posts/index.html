@@ -10,16 +10,19 @@
 {% endblock %}
 
 {% block content %}
+<div class='post-main-container'>
     {% if pages.items|length > 0 %}
-        {% for post in pages.items %} 
-            <p class='post_paragraph'>
-                <a class='posts' style='text-decoration-line: none; font-size: 1.6rem;' href="{{ url_for('posts.post_content', slug=post.slug) }}"> {{ post.title }} </a>
-                <p class="posts_body">
-                    {{ post.body|safe }}
+        {% for post in pages.items %}
+            <div class='post_container'>
+                <p class='post_paragraph'>
+                    <a class='posts' style='text-decoration-line: none; font-size: 1.6rem;' href="{{ url_for('posts.post_content', slug=post.slug) }}"> {{ post.title }} </a>
+                    <div class="posts_body">
+                        {{ post.body|safe }}
+                    </div>
                 </p>
-            </p>       
+            </div>   
         {% endfor %}
-    
+    </div>
         <nav>
         	<ul class="pagination">
 
