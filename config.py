@@ -1,5 +1,6 @@
 import os
 
+
 class Configuration(object):
 	DEBUG = True
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -22,3 +23,9 @@ class Work(Configuration):
 		SQLALCHEMY_DATABASE_URI = os.environ.get('DB')
 	except Exception as e:
 		print(e.__class__)
+
+
+ENV = {
+		'Home' : Home,
+		'Work' : Work
+	}

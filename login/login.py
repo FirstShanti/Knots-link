@@ -25,9 +25,7 @@ def sign_up():
 
 	if 'username' in session:
 		#точка выхода из сессии
-		print('test url_for', url_for('posts.index'))
 		return redirect('/blog/')
-
 	elif request.method == 'POST' and form.validate_on_submit(): 
 		try:
 			knot = Knot(
@@ -56,11 +54,10 @@ def sign_up():
 def log_in():
 
 	form = LoginForm(request.form)
-	print('test session', session)
+	print(session)
 	
 	if 'username' in session:
 		return redirect('/blog/')
-
 	elif request.method == "POST" and form.validate_on_submit():
 		user = Knot.query.filter_by(username=form.username.data).first()
 		if user.password == encrypt_string(
@@ -68,13 +65,13 @@ def log_in():
 		):
 			session['username'] = user.username
 			return redirect(url_for('posts.index'))
-
-			
+	
 	return render_template('login/login.html',
 		title='Log in',
 		form=form,
 		session=session
 	)
+	
 	
 @login.route('/log_out', methods=['POST', 'GET'])
 def log_out():
