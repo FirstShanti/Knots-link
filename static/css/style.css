@@ -47,19 +47,30 @@
 }
 
 /* анимация ссылок на посты (изменение цвета при наведении) */
-.posts {
+.post_title {
 	font-size: 20px;
 	color: #34495E;
 	font-weight: bold;
+	text-decoration-line: none !important;
+	font-size: 1.6rem;
 }
 
-.posts:hover {
-	color: #138496;
+.post_title:hover {
+	color: #718F94;
+}
+
+.post_title:hover > .post_container {
+	box-shadow: 0 0 20px rgba(102, 204, 153) !important;
+}
+
+.post_container:hover .posts_body {
+	color: black;
+	/*text-shadow: 0 0 3px rgba(102, 204, 153);*/
 }
 
 .posts_body {
 	font-size: 1rem;
-	color: #cde1df;
+	color: #b5b5b5;
 	height: 100px;
 	overflow: hidden;
 }
@@ -134,36 +145,159 @@
 .post_container {
 	width: 45%;
     height: 200px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    box-shadow: 0 0 3px rgba(102, 204, 153);
     border-radius: 5px;
     margin: 20px;
     padding: 25px;
 }
 
-.logo_img {
-	background-image: url(/static/img/background.jpg);
-	background-repeat: no-repeat;
-  	background-size:100% 100%;
+.post_container:hover {
+	box-shadow: 0 0 10px rgba(102, 204, 153);
+}
+.post_container:active {
+	box-shadow: 0 0 10px rgba(102, 204, 153);
 }
 
 .logo_knots {
     display: flex;
     align-items: center;
     display: flex;
-    align-items: center;
+    text-align: center;
     margin-top: 20px;
 }
 
 .show_all {
-	opacity: 1 !important;
+	
 }
 
-.knots_title {
-	text-decoration: none;
+.logo_knots > .knots_title {
+	text-decoration: none !important;
 	color: black;
+	text-decoration-color: none;
 	background-color: yellow;
 	font-size: 131.88px; 
 	margin: 8px;
 	padding: 10px;
     margin-top: -5px;
+    text-align: center;
 }
+
+.logo_on_index{
+	text-align: center;
+}
+
+.post_container.shadow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 200vh;
+    width: 200vw;
+    transform: translateX(-50%) translateY(-50%);
+    background: radial-gradient(circle at center, transparent 0%, transparent 5%, #302015 70%, #302015 100%);
+}
+
+.backgound_img {
+	background-image: url(/static/img/background_top.jpg), url(/static/img/background_bottom.jpg) repeat-x;
+	background-repeat: repeat-x;
+  	background-size: 100% 100%;
+  	max-width: -webkit-fill-available;
+}
+
+.user_info {
+	display: flex;
+    align-items: baseline;
+    justify-content: center;
+}
+
+.pagination {
+	justify-content: center;
+    padding-top: 18px;
+}
+
+.post-main-container {
+	justify-content: center;
+
+}
+
+#header_inner {
+    position: inherit;
+    margin: auto;
+    /*padding: 10px 10px 8px;*/
+    height: auto;
+    display: grid;
+    justify-content: center;
+}
+
+.search-container{
+	display: flex;
+	float: left;
+	opacity: .75;
+    transition: opacity .3s;
+    display: flex;
+}
+
+.q {
+    font-size: 22px;
+    width: 100%;
+    margin: 0;
+    padding: 18px 0;
+    border: 0;
+    resize: none;
+    height: fit-content;
+    outline:none;
+}
+
+@-webkit-keyframes autofill {
+    0%,100% {
+        color: #666;
+        background: transparent;
+    }
+}
+
+input:-webkit-autofill {
+    -webkit-animation-delay: 1s; /* Safari support - any positive time runs instantly */
+    -webkit-animation-name: autofill;
+    -webkit-animation-fill-mode: both;
+}
+
+
+.your-class input{
+  float:left;
+}
+
+[placeholder] {
+    text-overflow: clip;
+}
+
+.icon_search {
+    width: 23px;
+    height: 23px;
+    float: left;
+    border: 0;
+    background: url(/static/img/search.svg) no-repeat;
+    opacity: .75;
+    transition: opacity .3s;
+    align-self: center;
+    margin-right: 8px;
+}
+
+.icon_menu_loupe {
+    background-position: -200px 0;
+    width: 17px;
+    height: 17px;
+    top: 2px;
+}
+
+.icon_menu_user {
+    background-position: -50px -150px;
+    width: 15px;
+    height: 17px;
+    left: 1px;
+    top: 3px;
+}
+
+.icon_menu_bars {
+    background-position: -100px -100px;
+    width: 20px;
+    height: 17px;
+    top: 3px;
