@@ -32,7 +32,7 @@ posts = Blueprint('posts',
     __name__,
     template_folder='templates'
 )
-about = Blueprint('about',
+user_profile = Blueprint('user_profile',
     __name__,
     template_folder='templates'
 )
@@ -144,7 +144,7 @@ def index():
     for post in posts:
         post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>', '', ''.join(i for i in post.body.split("\n")[:3]))
 
-    pages = posts.paginate(page=page, per_page=5, max_per_page=5)
+    pages = posts.paginate(page=page, per_page=6, max_per_page=6)
 
     return render_template('posts/index.html',
         posts=posts,
@@ -207,23 +207,33 @@ def post_content(slug):
     )
 
 
-@about.route('/<slug>')
-def contacts(slug):
-    print(f'slug: {slug}')
+@user_profile.route('/<slug>/')
+def get_user_data(slug):
     print(f'session: {session}')
-
+    page = request.args.get('page')
     if slug == 'anonymous':
         return redirect('/log_in')
     elif 'username' in session:
         user = Knot.query.filter(Knot.slug==slug).first()
+        posts = Post.query.filter(Post.author==user.username).filter(Post.visible==True)
+
+        if page and page.isdigit():
+            page = int(page)
+        else:
+            page = 1
+
     else:
         return redirect('/log_in')
+
+    pages = posts.paginate(page=page, per_page=6)
 
     return render_template('posts/about.html',
         first_name=user.f_name,
         second_name=user.s_name,
         username=user.username,
-        number=user.number
+        number=user.number,
+        posts=posts,
+        pages=pages
     )
 
 
@@ -238,11 +248,13 @@ def tag_detail(slug):
     else:
         page = 1
 
-    pages = posts.paginate(page=page, per_page=5)
+    pages = posts.paginate(page=page, per_page=6)
 
-    return render_template('posts/tag_detail.html',
+    return render_template('posts/index.html',
         tag=tag,
-        pages=pages
+        pages=pages,
+        title=tag,
+        content_title=f'#{tag}'
     )
 
 
@@ -260,16 +272,16 @@ def search():
         posts = Post.query.filter(
             Post.title.contains(q) | # поиск по заголовку
             Post.body.contains(q) | #поиск по телу поста
-            Post.tags.any(name=q) | # поиск по тегам
-            Post.visible==True
-            )  
-
+            Post.tags.any(name=q) # поиск по тегам
+        ).filter(Post.visible==True)
     else:
         posts = Post.query.order_by(db.desc(Post.created))
 
-    pages = posts.paginate(page=page, per_page=5, max_per_page=5)
+    pages = posts.paginate(page=page, per_page=6, max_per_page=6)
 
-    return render_template('posts/search.html',
+    return render_template('posts/index.html',
         pages=pages,
-        q=q
+        q=q,
+        title=f'{q} results',
+        content_title=f'Result for <span style="color: #718F94">{q}</span>:'
     )
