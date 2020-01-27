@@ -103,9 +103,9 @@ class Knot(db.Model):
         return f'''
             Knot id: {self.id},
             username: {self.username},
-            posts: {self.posts},
             slug: {self.slug}
         ''' 
+            #posts: {self.posts},
 
 # class Comment - (class of cpmments for Post)
 class Comment(db.Model):
