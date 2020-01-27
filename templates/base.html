@@ -43,7 +43,7 @@
             </li>
 
             <li class="nav-item active">
-              <a class="nav-link" href=" {{ url_for('about.contacts', slug=session['username'] or 'anonymous') }}">Contacts <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href=" {{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous') }}">Contacts<span class="sr-only">(current)</span></a>
             </li>
 
             <li >
@@ -79,7 +79,7 @@
 
 
                 <div class="drop-menu dropdown-menu" id="dropdown-menu-items" style="margin: 0 -20% 0; top: 130%; min-width: 50%;" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="{{ url_for('about.contacts', slug=session['username'] or 'anonymous') }}">Profile</a>
+                  <a class="dropdown-item" href="{{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous') }}">Profile</a>
                   <a class="dropdown-item" href="{{ url_for('login.log_out') }}">Log out</a>
                 </div>
               {% endif %}
@@ -96,7 +96,8 @@
 
         </div>
     </nav>
-    <div class="container" style="font-family: 'Slabo 27px', serif;">
+
+
       <div calss='row' style="padding-top: 30.95px; margin-left: 5%; margin-right: 5%; ">
         <h1>
           {% block content_title %}
