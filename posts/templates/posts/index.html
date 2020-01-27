@@ -1,47 +1,61 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Blueprint title
+    {{ title }}
 {% endblock %}
 
 {% block content_title %}
-    Posts
-    <hr>
+
 {% endblock %}
 
 {% block content %}
+<div id="header_inner">
+    <form class="media_search header_search" action="{{ url_for('posts.search', slug=request.args.get('q', '')) }}" method="GET">
+        <div class="search-container">
+            <input type="submit" value=" " class="icon_search">
+            <span>
+                <input class="q" type="text" name="q" value="{{ q }}" placeholder="Search" data-autofocus="" autocomplete="on">
+            </span>
+            
+        </div>
+        
+    </form>
+</div>
+<hr>
+
 <div class='post-main-container'>
+
     {% if pages.items|length > 0 %}
         {% for post in pages.items %}
-            <div class='post_container'>
-                <p class='post_paragraph'>
-                    <a class='posts' style='text-decoration-line: none; font-size: 1.6rem;' href="{{ url_for('posts.post_content', slug=post.slug) }}"> {{ post.title }} </a>
+            <div class='post_container shadown'>
+                <div class='post_paragraph'>
+                    <a class='post_title' href="{{ url_for('posts.post_content', slug=post.slug) }}"> {{ post.title }} </a>
                     <div class="posts_body">
                         {{ post.body|safe }}
                     </div>
-                </p>
+                </div>
             </div>   
         {% endfor %}
-    </div>
+</div>
         <nav>
-        	<ul class="pagination">
+            <ul class="pagination">
 
-        		<li 
-        			{% if not pages.has_prev %}
-        				class="page-item disabled"
-        			{% endif %}
-        		>
-        			<a class="page-link" href="./?page={{ pages.prev_num }}" tabindex="-1">&#171;<span class="sr-only">(current)</span></a>
-        		</li>
+                <li 
+                    {% if not pages.has_prev %}
+                        class="page-item disabled"
+                    {% endif %}
+                >
+                    <a class="page-link" href="./?page={{ pages.prev_num }}" tabindex="-1">&#171;<span class="sr-only">(current)</span></a>
+                </li>
 
-        		{% for page in pages.iter_pages() %}
+                {% for page in pages.iter_pages() %}
 
-        			{% if page %}
+                    {% if page %}
                         <li {% if page == pages.page %} class="page-item active" {% endif %}>
 
-            				<a class="page-link" href="./?page={{ page }}">{{ page }}<span class="sr-only">(current)</span></a>
-            				
-            			</li>
+                            <a class="page-link" href="./?page={{ page }}&q={{ q }}">{{ page }}<span class="sr-only">(current)</span></a>
+                            
+                        </li>
                     {%else %}
                         <li {% if page == pages.page %} class="page-item active" {% endif %}>
 
@@ -50,16 +64,16 @@
                         </li>
                     {% endif %}
 
-        		{% endfor %}
-        		
+                {% endfor %}
+                
 
-        		<li {% if not pages.has_next %}
-        				class="page-item disabled"
-        			{% endif %}
-        		>
-        			<a class="page-link" href="./?page={{ pages.next_num }}">&#187;<span class="sr-only">(current)</span></a>
-        		</li>
-        	</ul>
+                <li {% if not pages.has_next %}
+                        class="page-item disabled"
+                    {% endif %}
+                >
+                    <a class="page-link" href="./?page={{ pages.next_num }}">&#187;<span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
         </nav>
     {% endif %}
 

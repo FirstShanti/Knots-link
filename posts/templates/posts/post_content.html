@@ -8,8 +8,12 @@
     <div>
         <span>{{ post.title }}</span>
         {% if session['username'] == post.author %}
-            <a class="far fa-edit" style="font-size: 20px; color: #d5d1ca; text-decoration: none;" href="{{ url_for('posts.edit_post', slug=post.slug) }}" title="Edit post"></a>
-            <a class="fas fa-trash-alt" style="font-size: 20px; color: #d5d1ca; text-decoration: none;" href="{{ url_for('posts.delete_post', slug=post.slug) }}" title="Delete post"></a>
+            <a class="far fa-edit" style="font-size: 20px; color: #d5d1ca; text-decoration: none;" 
+
+href="{{ url_for('posts.edit_post', slug=post.slug) }}" title="Edit post"></a>
+            <a class="fas fa-trash-alt" style="font-size: 20px; color: #d5d1ca; text-decoration: 
+
+none;" href="{{ url_for('posts.delete_post', slug=post.slug) }}" title="Delete post"></a>
         {% endif %}
     </div>
 {% endblock %}
@@ -19,7 +23,9 @@
     <div class="tags">
         <div>
             <em style="font-size: 1.314Rem; color: blue; margin-right: 7px;">
-                <a href="{{ url_for('about.contacts', slug=user.slug or 'anonymous')}}" >@{{ author }}</a>
+                <a href="{{ url_for('user_profile.get_user_data', slug=user.slug or 'anonymous')}}" 
+
+>@{{ author }}</a>
             </em>
             <em style="font-size: 1rem; color: gray;">
                 {{ time }}
@@ -27,13 +33,17 @@
         </div>
         <div>
         {% for tag in tags %}
-            <a href="{{ url_for('posts.tag_detail', slug=tag.slug)}}"><span class=" tag badge-pill badge-secondary">{{ tag.name }}</span></a>
+            <a href="{{ url_for('posts.tag_detail', slug=tag.slug)}}"><span class=" tag badge-pill 
+
+badge-secondary">{{ tag.name }}</span></a>
         {% endfor %}
         </div>
     </div>
     <hr style="size: 50px;">
 
-    <div class="main-content post-body" id="post-body" style="padding-top: 8px; font-size: 20px; position: block; word-wrap: break-word;">
+    <div class="main-content post-body" id="post-body" style="padding-top: 8px; font-size: 20px; 
+
+position: block; word-wrap: break-word;">
         {{ post.body|safe }}
     </div>
 
@@ -48,9 +58,13 @@
         <div>
             {% if comments %}
                 {% for comment in comments %}
-                    <div class="main-content" style="padding-top: 8px; font-size: 20px; position: block; word-wrap: break-word;">
+                    <div class="main-content" style="padding-top: 8px; font-size: 20px; position: 
+
+block; word-wrap: break-word;">
                         <em style="font-size: 1.1rem; color: blue; margin-right: 7px;">
-                            <a href="{{ url_for('about.contacts', slug=user.slug or 'anonymous')}}" >@{{ comment.author }}</a>
+                            <a href="{{ url_for('user_profile.get_user_data', slug=user.slug or 
+
+'anonymous')}}" >@{{ comment.author }}</a>
                         </em>
                         <em style="font-size: 0.85rem; color: gray;">
                             {{ comment.created }}
@@ -92,7 +106,9 @@
                 <h4>Login for commenting</h4>
                 <div class="" style="text-align: left; margin-left: auto;
                 margin-right: auto;">
-                    <a href="{{ url_for('login.log_in') }}"><button class="btn btn-info">login</button></a>
+                    <a href="{{ url_for('login.log_in') }}"><button class="btn btn-
+
+info">login</button></a>
                 </div>
             {% endif %}
 

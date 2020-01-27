@@ -5,14 +5,67 @@
 {% endblock %}
 
 {% block content_title %}
-	User info:
+	<div class="user_info">
+		{{ first_name }} {{ second_name }}
+	</div>
 	<hr>
 {% endblock %}
 
 {% block content %}
-    <div>
-		BIO: <h3>{{ first_name }} {{ second_name }}</h3>
-		Username: <h3>{{ username }}</h3>
-		Phone number: <h3>{{ number }}</h3>
+    <div class="user_container">
+		<div class="user_posts">
+			<div class='post-main-container'>
+    {% if pages.items|length > 0 %}
+        {% for post in pages.items %}
+            <div class='post_container shadown'>
+                <div class='post_paragraph'>
+                    <a class='post_title' href="{{ url_for('posts.post_content', slug=post.slug) }}"> {{ post.title }} </a>
+                    <div class="posts_body">
+                        {{ post.body|safe }}
+                    </div>
+                </div>
+            </div>   
+        {% endfor %}
+    </div>
+        <nav>
+        	<ul class="pagination">
+
+        		<li 
+        			{% if not pages.has_prev %}
+        				class="page-item disabled"
+        			{% endif %}
+        		>
+        			<a class="page-link" href="./?page={{ pages.prev_num }}" tabindex="-1">&#171;<span class="sr-only">(current)</span></a>
+        		</li>
+
+        		{% for page in pages.iter_pages() %}
+
+        			{% if page %}
+                        <li {% if page == pages.page %} class="page-item active" {% endif %}>
+
+            				<a class="page-link" href="./?page={{ page }}">{{ page }}<span class="sr-only">(current)</span></a>
+            				
+            			</li>
+                    {%else %}
+                        <li {% if page == pages.page %} class="page-item active" {% endif %}>
+
+                            <a class="page-link" href="#">...<span class="sr-only">(current)</span></a>
+                            
+                        </li>
+                    {% endif %}
+
+        		{% endfor %}
+        		
+
+        		<li {% if not pages.has_next %}
+        				class="page-item disabled"
+        			{% endif %}
+        		>
+        			<a class="page-link" name='bottom' href="./?page={{ pages.next_num }}#bottom">&#187;<span class="sr-only">(current)</span></a>
+        		</li>
+        	</ul>
+        </nav>
+    {% endif %}
+		</div>
 	</div>
 {% endblock %}
