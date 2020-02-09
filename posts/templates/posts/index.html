@@ -9,19 +9,6 @@
 {% endblock %}
 
 {% block content %}
-<div id="header_inner">
-    <form class="media_search header_search" action="{{ url_for('posts.search', slug=request.args.get('q', '')) }}" method="GET">
-        <div class="search-container">
-            <input type="submit" value=" " class="icon_search">
-            <span>
-                <input class="q" type="text" name="q" value="{{ q }}" placeholder="Search" data-autofocus="" autocomplete="on">
-            </span>
-            
-        </div>
-        
-    </form>
-</div>
-<hr>
 
 <div class='post-main-container'>
 
