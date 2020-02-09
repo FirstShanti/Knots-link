@@ -9,29 +9,52 @@
 {% endblock %}
 
 {% block content %}
+		
 
 	<div class='col-md-3' style="margin: auto;">
+		{% if alert == "Y" %}
+			<div class="alert alert-success">
+				Your email address has been verified!
+			</div>
+		{% elif alert == "T" %}
+			<div class="alert alert-danger">
+				Time has passed, we are sending a new link
+			</div>
+		{% elif alert == "C" %}
+			<div class="alert alert-warning">
+				Confirm you email
+			</div>
+		{% endif %}
 
-		<form action="" method="POST">
+		<form style="justify-content: center;" action="" method="POST">
 			{% for field in form %}
 				<div class="form-group">
 					{% if field.type != "CSRFTokenField" %}
-						{{ field.label(class='control-label') }}
+						<!-- {{ field.label(class='control-label') }} -->		
 					{% endif %}
-					{{ field(class='form-control') }}
+					{{ field(class='login-form-control', placeholder=field.id) }}
 					{% for error in field.errors %}
-            			<span style="color: red;">{{ error }}</span>
+            			<span style="text-align: center; color: red;">{{ error }}</span>
             		{% endfor %}
 				</div>
 			{% endfor %}
-			<div style="padding-bottom: 10px; font-size: 14px; text-align: center;">
-				New user? <a class="btn-group" href="{{ url_for('login.sign_up') }}"><span>start here</span></a>
-			</div>
-			<div class="btn-group" style="text-align: center;">
-			  	<button type="submit" class="btn btn-info" >Log in</button>
+			{% if alert %}
+				{% if alert|length < 0 %}
+					<div class="new-user-reg">
+						New user?<pre> </pre><a class="btn-group" href="{{ url_for('login.sign_up') }}">start here</a>
+					</div>
+				{% endif %}
+			{% else %}
+				<div class="new-user-reg">
+						New user?<pre> </pre><a class="btn-group" href="{{ url_for('login.sign_up') }}">start here</a>
+					</div>
+			{% endif %}
+
+			<div class="btn-group" style="margin-top: 10px; display: block; text-align: center;"><button type="submit" class="btn btn-info">Log in</button>
 			</div>
 			
 		</form>
+	
 	</div>
 
 {% endblock %}

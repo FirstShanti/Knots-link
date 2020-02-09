@@ -12,29 +12,25 @@
 
 	<div class='col-md-3' style="margin: auto;">
 
-
-		<form action="" method="POST">
+		<form style="justify-content: center;" action="" method="POST">
 			{% for field in form %}
 				<div class="form-group">
 					{% if field.type != "CSRFTokenField" %}
-						{{ field.label(class='control-label') }}
+						<!-- {{ field.label(class='control-label') }} -->
 					{% endif %}
-					{{ field(class='form-control') }}
+					{{ field(class='login-form-control', placeholder=field.id) }}
 					{% for error in field.errors %}
             			<span style="color: red;">{{ error }}</span>
             		{% endfor %}
 				</div>
 			{% endfor %}
 
-			<div class="btn-group" style="display: block !important;">
+			<div class="btn-group" style="padding-top: 15px; display: block; text-align: center;">
 		  		<button type="submit" 
 		  		href="https://t.me/knots_bot?start" target="_blank" class="btn btn-info">Sign up</button>
 			</div>
 			
 		</form>
-
-		
-
 	</div>
 
 {% endblock %}
