@@ -23,27 +23,44 @@ from app import db
 
 
 class RegistrationForm(FlaskForm):
-	f_name = StringField('First name', 
-		validators=[DataRequired()])
-	s_name = StringField('Last name',
-		validators=[DataRequired()])
-	username = StringField('Username',
-		validators=[DataRequired()])
-	number = StringField('Phone number',
-		validators=[DataRequired()])
-	password = PasswordField('New Password',
-		validators=[DataRequired()])
-	confirm = PasswordField('Repeat password',
+	f_name = StringField('First name*', 
+		validators=[DataRequired()], id='first name*')
+	s_name = StringField('Last name*',
+		validators=[DataRequired()], id='last name*')
+	username = StringField('Username*',
+		validators=[DataRequired()], id='username*')
+	email = StringField('Email*',
+		validators=[DataRequired()], id='email*')
+	number = StringField('Phone number', id='phone number')
+	password = PasswordField('New Password*',
+		validators=[DataRequired()], id='password*')
+	confirm = PasswordField('Repeat password*',
 		validators=[DataRequired(),
-					EqualTo('password', message='Passwords do not match')])
+					EqualTo('password', message='Passwords do not match')],
+		id='repeat password*')
 	#accept_tos = BooleanField('I accept the TOS',
 	#	validators=[DataRequired()])
 
+	def validate_email(form, email):
+		try:
+			email = re.match(r"^[a-zA-Z0-9_'+*/^&=?~{}\-](\.?[a-zA-Z0-9_'+*/^&=?~{}\-])*\@((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\:\d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9\-]+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[\.]{1})+([a-zA-Z]{2,6})))$", email.data).string
+			if Knot.query.filter_by(email=email).first() is not None:
+				raise ValidationError('''This email number is reserved.''')
+		except AttributeError:
+			raise ValidationError('''Invalid email''')
+
 	def validate_number(form, number):
-		if Knot.query.filter_by(number=number.data).first() is not None:
-			raise ValidationError('''This phone number is reserved.\n
-									Please use another number.''') 
-			
+		if number.data:
+			try:
+				num = re.match(r"^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$", number.data).string
+				if Knot.query.filter_by(number=num).first() is not None:
+					raise ValidationError('''This phone number is reserved.\n
+						Please use another number.''')
+			except AttributeError:
+				raise ValidationError('''Invalid number''')
+		else:
+			pass
+
 	def validate_username(form, username):
 		if Knot.query.filter_by(username=username.data).first() is not None:
 			raise ValidationError('Please use a different username.')
@@ -93,5 +110,5 @@ class PostForm(FlaskForm):
 
 
 class CommentForm(FlaskForm):
-	text = StringField('Text',
+	text = TextAreaField('Text',
 		validators=[DataRequired(), Length(1, 2000)])

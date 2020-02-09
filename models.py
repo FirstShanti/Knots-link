@@ -1,6 +1,7 @@
 from app import db
 from datetime import datetime
 import re
+from login.hash import encrypt_string
 
 
 def slugify(s):
@@ -37,19 +38,15 @@ class Post(db.Model):
     body = db.Column(db.Text)
     created = db.Column(db.DateTime, default=datetime.now())
     author = db.Column(db.String(32))
-    visible = db.Column(db.Boolean, default=True)
-    
-    def invisible(self):
-        self.visible = False
+    visible = db.Column(db.Boolean, default=1)
 
     def __init__(self, *args, **kwargs):
         super(Post, self).__init__(*args, **kwargs)
         self.generate_uuid()
         self.generate_slug()
         
-    # tags and comments to post
-    tags = db.relationship('Tag', passive_deletes=True, secondary=post_tags)
-    comments = db.relationship('Comment', backref='owner')
+    def invisible(self):
+        self.visible = False
 
     def generate_uuid(self):
         self.uuid = post_uuid()
@@ -64,7 +61,12 @@ class Post(db.Model):
             title: {self.title},
             slug: {self.slug}
         ''' 
-        
+    
+    # tags and comments to post
+    tags = db.relationship('Tag', passive_deletes=True, secondary=post_tags)
+    comments = db.relationship('Comment', backref='owner')
+
+
 # class Tag (class of tag for Post)
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -90,14 +92,33 @@ class Knot(db.Model):
     f_name = db.Column(db.String(32))
     s_name = db.Column(db.String(32))
     username = db.Column(db.String(32))
-    slug = db.Column(db.String(140), unique=True)
+    email = db.Column(db.String(129))
     number = db.Column(db.String(15))  # phone number
     password = db.Column(db.String(256))
+
+    slug = db.Column(db.String(140), unique=True)
+    
     created = db.Column(db.DateTime, default=datetime.now())
+    last_login = db.Column(db.DateTime, default=datetime.now())
+
+    authenticated = db.Column(db.Boolean, default=0)
+    auth_key = db.Column(db.String(256))
+    auth_key_create = db.Column(db.DateTime, default=created)
 
     def __init__(self, *args, **kwargs):
         super(Knot, self).__init__(*args, **kwargs)
         self.slug = slugify(self.username)
+        self.get_auth_key()
+    
+    def get_auth_key(self):
+        self.auth_key = encrypt_string(self.username + str(datetime.now()))
+        if self.auth_key_create is None:
+            self.auth_key_create = datetime.now()
+        return (self.auth_key, self.auth_key_create)
+
+    def check_auth_key(self):
+        delta = datetime.now() - self.auth_key_create
+        return True if delta.seconds < 3600 else False
 
     def __repr__(self):
         return f'''

@@ -1,120 +1,115 @@
 <!DOCTYPE html>
 <html lang='en'>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset='UTF-8'>
+  <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" charset='UTF-8'>
+      <title>
 
-    <title>
+        {% block title %}
 
-      {% block title %}
+        {% endblock %} | Flask app
 
-      {% endblock %} | Flask app
+      </title>
 
-    </title>
-    <link rel="stylesheet" href="/static/css/style.css" type="text/css"> 
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    
-
-    <link href="https://fonts.googleapis.com/css?family=Slabo+27px&display=swap" rel="stylesheet">
-
-    <link rel="shortcut icon" href="/static/img/favicon.ico">
-    
-    <script src="https://kit.fontawesome.com/45fa0ecad3.js" crossorigin="anonymous"></script>
-
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
+      <link rel="stylesheet" href="/static/css/style.css" type="text/css"> 
+      <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
       
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
-            <li class="nav-item active">
-            <a class="nav-link" href=" {{ url_for('index') }} ">&#127968;<span class="sr-only">(current)</span></a></a>
-            </li>
+      <link href="https://fonts.googleapis.com/css?family=Slabo+27px&display=swap" rel="stylesheet">
 
-            <li class="nav-item active">
-              <a class="nav-link" href=" {{ url_for('posts.index') }}">Blog <span class="sr-only">(current)</span></a>
-            </li>
+      <link rel="shortcut icon" href="/static/img/favicon.ico">
+      
+      <script src="https://kit.fontawesome.com/45fa0ecad3.js" crossorigin="anonymous"></script>
+  </head>
+    <body >
+        <div class="post-body">
+          <div id="header_inner">
+            <form class="media_search header_search" action="{{ url_for('posts.search', slug=request.args.get('q', '')) }}" method="GET">
+              <div class="search-container">
+                <input type="submit" value=" " class="icon_search">
+                <span>
+                  <input class="q" type="text" name="q" value="{{ q }}" placeholder="Search" data-autofocus="" autocomplete="on">
+                </span>
 
-            <li class="nav-item active">
-              <a class="nav-link" href=" {{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous') }}">Contacts<span class="sr-only">(current)</span></a>
-            </li>
+              </div>
+              
+            </form>
+            <div>
+              <div class="navbar navbar-light">
+                
+                {% if session['username'] %}
+                  <button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle with_user"></i>
+                  </button>
+                {% else %}
+                  <button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-user"></i>
+                    </button>
+                {% endif %}
 
-            <li >
-              <a style="font-size: 30px;" href="{{ url_for('posts.create_post') }}">&#x270d;</a>
-            </li>
+                <div class="collapse navbar-collapse  drop-menu dropdown-menu" id="navbarTogglerDemo02" aria-labelledby="dropdownMenuButton">
+                  <ul class="navbar-nav " id="dropdown-menu-items">
 
+                    <li class="dropdown-item" id="dropdown-menu-items">
+                      <a class="nav-link" href=" {{ url_for('index') }} ">Knots</a>
+                    </li>
 
-          </ul>
+                    <li class="dropdown-item" id="dropdown-menu-items">
+                      <a class="nav-link" href=" {{ url_for('posts.index') }}">Blog <span class="sr-only">(current)</span></a>
+                    </li>
 
-          <ul class="navbar-nav mr-right mt-2 mt-lg-0">
-            
-            <li>
+                    {% if session['username'] %}
+                      {% if session['auth'] %}
+                        <li class="dropdown-item" id="dropdown-menu-items">
+                          <a class="nav-link" style="font-size: 30px;" href="{{ url_for('posts.create_post') }}">&#x270d;</a>
+                        </li>
+                      {% else %}
+                        <li class="dropdown-item" id="dropdown-menu-items">
+                          <a class="nav-link" style="font-size: 30px;" title="Confirm email"
+ href="">&#x270d;</a>
+                        </li>
+                      {% endif %}
 
-              <form action="{{ url_for('posts.search', slug=request.args.get('q', '')) }}" class="form-inline my-2 my-lg-0" method="GET">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" name="q">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-              </form>
+                      <li class="dropdown-item" id="dropdown-menu-items">
+                        <a class="nav-link" href="{{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous') }}" title="Profile">Profile</a>
+                      </li>
+                      <li class="dropdown-item" id="dropdown-menu-items">
+                        <a class="nav-link" href="{{ url_for('login.log_out') }}">Log out</a>
+                      </li>
+                    {% endif %}
 
-            </li>
-            
-            <li>
-              {% if session['username'] %}
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left: 4px; background-color: #d5d1ca;">
-                  {{ session['username'] }}
-                </button>
-
-
-                <script type="text/javascript">
-                  var width = $("div#dropdownMenuButton").css('width')
-                  $("div#dropdown-menu-items").css('min-width':width)
-                </script>
-
-
-                <div class="drop-menu dropdown-menu" id="dropdown-menu-items" style="margin: 0 -20% 0; top: 130%; min-width: 50%;" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="{{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous') }}">Profile</a>
-                  <a class="dropdown-item" href="{{ url_for('login.log_out') }}">Log out</a>
+                    {% if not session['username'] %}
+                      <li class="dropdown-item" id="dropdown-menu-items">
+                        <a class="nav-link" href="{{ url_for('login.sign_up') }}">Sign up</a>
+                      </li>
+                      <li class="dropdown-item" id="dropdown-menu-items">
+                        <a class="nav-link" href="{{ url_for('login.log_in') }}">Login</a>
+                      </li>
+                    {% endif %}
+                  </ul>
                 </div>
-              {% endif %}
-
-              {% if not session['username'] %}
-                <button class="btn btn-dark my-2 my-sm-0" style="margin: 4px;"><a style="text-decoration: none; color: white;" title="{{ title }}" href="{{ url_for('login.sign_up') }}">Sign up</a></button>
-
-                <button class="btn btn-dark my-2 my-sm-0" ><a style="text-decoration: none; color: white;" title="{{ title }}" href="{{ url_for('login.log_in') }}">Login</a></button>
-              {% endif %}
-
-            </li>
-          </ul>
-          
-
+              </div>
+            </div>
+          </div>
         </div>
-    </nav>
 
 
-      <div calss='row' style="padding-top: 30.95px; margin-left: 5%; margin-right: 5%; ">
-        <h1>
+        <div class="content_title">
           {% block content_title %}
 
           {% endblock %}
-        </h1>
-      </div>
-      <div style="margin-left: 5%; margin-right: 5%; ">
-        {% block content %}
+        </div>
+          
+        <div class="post-body">
+          {% block content %}
 
-        {% endblock %}
-      </div>
+          {% endblock %}
+        </div>
 
-      <br>
-      <br>
-      <br>
-      
-    </div>  
-</body>
+        <br>
+        <br>
+        <br>
+    </body>
 </html>

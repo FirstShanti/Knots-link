@@ -18,7 +18,7 @@ class Home(Configuration):
 	except Exception as e:
 		print(e.__class__)
 
-class Work(Configuration):
+class Phone(Configuration):
 	try:
 		SQLALCHEMY_DATABASE_URI = os.environ.get('DB')
 	except Exception as e:
@@ -27,5 +27,5 @@ class Work(Configuration):
 
 ENV = {
 		'Home' : Home,
-		'Work' : Work
+		'Phone' : Phone
 	}

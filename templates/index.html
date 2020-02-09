@@ -8,9 +8,12 @@
 
 {% block content_title %}
     <div class="logo_on_index" >
-        <img class="backgound_img" src="{{ url_for('static', filename='img/background_top.jpg')}}">
+<!--         <div class='img-block-top'>
+            <img class="backgound_img" src="{{ url_for('static', filename='img/background_top.jpg')}}">
+            <img class="backgound_img" src="{{ url_for('static', filename='img/background_top.jpg')}}">
+        </div> -->
     	<div class="logo_knots">
-    	    	<a class="knots_title" href='#' title="Узлы">Knots</a>
+    	    	<a class="knots_title" href='{{ url_for("posts.index")}}' title="Узлы">Knots</a>
                 <div class="show_all" style="opacity: 0; font-size: 65.94px; margin: 7px;">
                     Knot
                 </div>
@@ -36,10 +39,11 @@
                     Knot
                 </div>
     	</div>
-        <div class="logo_knots" style="margin: 4px;">
-            We came for revansh
+        <div class='img-block-bottom'>
+            <img class="backgound_img" id="img_1" src="{{ url_for('static', filename='img/background_bottom.jpg')}}">
+            <img class="backgound_img" id="img_2" src="{{ url_for('static', filename='img/background_bottom.jpg')}}">
         </div>
-        <img class="backgound_img" src="{{ url_for('static', filename='img/background_bottom.jpg')}}">
+
     </div>
     	
     

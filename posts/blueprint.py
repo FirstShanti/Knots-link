@@ -131,7 +131,7 @@ def delete_post(slug):
 
 @posts.route('/', methods=['GET'])
 def index():
-    print(session.get('username'))
+    print(f"user: {session.get('username')}")
     page = request.args.get('page')
 
     if page and page.isdigit():
@@ -142,13 +142,14 @@ def index():
     posts = Post.query.order_by(db.desc(Post.created)).filter(Post.visible==True)
 
     for post in posts:
-        post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>', '', ''.join(i for i in post.body.split("\n")[:3]))
+        post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>|<table|<tr|<td|</table|</td|</tr', '', ''.join(i for i in post.body.split("\n")[:3]))
 
     pages = posts.paginate(page=page, per_page=6, max_per_page=6)
 
     return render_template('posts/index.html',
         posts=posts,
-        pages=pages
+        pages=pages,
+        title="Blog"
     )
 
 
@@ -190,7 +191,7 @@ def post_content(slug):
         timedelta = int(datetime.now().strftime("%d")) - int(comment.created.strftime("%d"))
         if timedelta == 1:
             comment.created = comment.created.strftime("{}%H:%M").format(f'{lang[local]["comment"][0]}')
-        elif timedelta < 1:
+        elif timedelta >= 0:
             comment.created = comment.created.strftime("{}%H:%M").format(f'{lang[local]["comment"][1]}')
         else:
             comment.created = comment.created.strftime("%d %B %Y (%A) %H:%M")
@@ -211,19 +212,24 @@ def post_content(slug):
 def get_user_data(slug):
     print(f'session: {session}')
     page = request.args.get('page')
-    if slug == 'anonymous':
-        return redirect('/log_in')
-    elif 'username' in session:
-        user = Knot.query.filter(Knot.slug==slug).first()
-        posts = Post.query.filter(Post.author==user.username).filter(Post.visible==True)
+    try:
+        if slug == 'anonymous':
+            return redirect('/log_in')
+        elif 'username' in session:
+            user = Knot.query.filter(Knot.slug==slug).first()
+            print(f'get_user_data: {user.username}')
+            posts = Post.query.filter(Post.author==user.username).filter(Post.visible==True)
 
-        if page and page.isdigit():
-            page = int(page)
+            if page and page.isdigit():
+                page = int(page)
+            else:
+                page = 1
+
         else:
-            page = 1
-
-    else:
-        return redirect('/log_in')
+            return redirect('/log_in')
+    except Exception as e:
+        print(f'get_user_data: \n{e}')
+        return redirect(url_for('login.log_in'))
 
     pages = posts.paginate(page=page, per_page=6)
 
