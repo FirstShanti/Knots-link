@@ -10,10 +10,13 @@ import sys
 import logging
 
 
+
+
 app = Flask(__name__)
 app.config.from_object(Configuration)
 
 db = SQLAlchemy(app)
+db.create_all()
 ckeditor = CKEditor(app)
 
 # migrate data to sql
