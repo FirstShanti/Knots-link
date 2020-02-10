@@ -8,8 +8,7 @@ from flask_script import Manager
 from config import * 
 import sys
 import logging
-
-
+from .commands import create_tables
 
 
 app = Flask(__name__)
