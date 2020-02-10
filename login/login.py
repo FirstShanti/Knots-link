@@ -45,7 +45,7 @@ def send_email(user):
 	email['To'] = toaddr
 
 	url = f'http://localhost:5000/auth/?user={user.slug}&key={user.auth_key}'
-	email.set_content(render_template('login/confirmed.html', url=url), subtype='html')
+	email.set_content(render_template('confirmed.html', url=url), subtype='html')
 	flash('Mail sent to user {}'.format(user.username))
 	# Send the message via local SMTP server.
 	with server as s:
@@ -104,7 +104,7 @@ def sign_up():
 		return redirect(url_for('login.log_in', alert='C'))
 		return jsonify({'status': 'success'})
 	
-	return render_template('login/registration.html',
+	return render_template('registration.html',
 		title='Sign In',
 		form=form,
 		session=session,
@@ -128,7 +128,7 @@ def log_in(alert=None):
 			user.last_login = datetime.now()
 			return redirect(url_for('posts.index'))
 	
-	return render_template('login/login.html',
+	return render_template('login.html',
 		title='Log in',
 		form=form,
 		session=session,

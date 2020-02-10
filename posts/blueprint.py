@@ -74,7 +74,7 @@ def create_post():
     else:
         return redirect('/log_in')
 
-    return render_template('posts/create_post.html', form=form)
+    return render_template('create_post.html', form=form)
 
 
 @posts.route('/<slug>/edit/', methods=['POST', 'GET'])
@@ -110,7 +110,7 @@ def edit_post(slug):
     elif not session:
         return redirect(url_for('login.log_in'))
 
-    return render_template('posts/edit_post.html',
+    return render_template('edit_post.html',
         post=post,
         form=form,
     )
@@ -146,7 +146,7 @@ def index():
 
     pages = posts.paginate(page=page, per_page=6, max_per_page=6)
 
-    return render_template('posts/index.html',
+    return render_template('index_posts.html',
         posts=posts,
         pages=pages,
         title="Blog"
@@ -196,7 +196,7 @@ def post_content(slug):
         else:
             comment.created = comment.created.strftime("%d %B %Y (%A) %H:%M")
 
-    return render_template('posts/post_content.html',
+    return render_template('post_content.html',
         post=post,
         tags=tags,
         time=time,
@@ -233,7 +233,7 @@ def get_user_data(slug):
 
     pages = posts.paginate(page=page, per_page=6)
 
-    return render_template('posts/about.html',
+    return render_template('about.html',
         first_name=user.f_name,
         second_name=user.s_name,
         username=user.username,
@@ -256,7 +256,7 @@ def tag_detail(slug):
 
     pages = posts.paginate(page=page, per_page=6)
 
-    return render_template('posts/index.html',
+    return render_template('index_posts.html',
         tag=tag,
         pages=pages,
         title=tag,
@@ -285,7 +285,7 @@ def search():
 
     pages = posts.paginate(page=page, per_page=6, max_per_page=6)
 
-    return render_template('posts/index.html',
+    return render_template('index_posts.html',
         pages=pages,
         q=q,
         title=f'{q} results',
