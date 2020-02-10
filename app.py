@@ -16,9 +16,8 @@ app = Flask(__name__)
 app.config.from_object(Configuration)
 
 db = SQLAlchemy(app)
-db.create_all()
 ckeditor = CKEditor(app)
-
+app.cli.add_command(create_tables)
 # migrate data to sql
 migrate = Migrate(app, db)
 manager = Manager(app)
