@@ -9,7 +9,7 @@ from config import *
 
 
 app = Flask(__name__)
-app.config.from_object(ENV[os.environ.get('ENV')])
+app.config.from_object(Configuration)
 
 db = SQLAlchemy(app)
 ckeditor = CKEditor(app)
