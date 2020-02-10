@@ -1,1 +1,1 @@
-web: python manager.py db migrate; python manager.py db upgrade; gunicorn main:app
+web: flask db migrate; flask db migrate; gunicorn main:app
