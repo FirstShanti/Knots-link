@@ -12,4 +12,3 @@ app.register_blueprint(user_profile, url_prefix='/contacts')
 
 if __name__ == '__main__':
     app.run()
-    db.create_all()

@@ -40,7 +40,7 @@
               <div class="navbar navbar-light">
                 
                 {% if session['username'] %}
-                  <button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ session['username'] }}">
                     <i class="fas fa-user-circle with_user"></i>
                   </button>
                 {% else %}

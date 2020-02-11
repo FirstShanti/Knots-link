@@ -44,7 +44,7 @@ def send_email(user):
 	email['From'] = fromaddr
 	email['To'] = toaddr
 
-	url = f'http://localhost:5000/auth/?user={user.slug}&key={user.auth_key}'
+	url = f'{request.url_root}auth/?user={user.slug}&key={user.auth_key}'
 	email.set_content(render_template('confirmed.html', url=url), subtype='html')
 	flash('Mail sent to user {}'.format(user.username))
 	# Send the message via local SMTP server.
@@ -113,7 +113,8 @@ def sign_up():
 
 @login.route('/log_in', methods=['POST', 'GET'])
 def log_in(alert=None):
-
+	url = request.url_root
+	print(f'url: {url}')
 	form = LoginForm(request.form)
 	print(session)
 	alert = request.args.get('alert')

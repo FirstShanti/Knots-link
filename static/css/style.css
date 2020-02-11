@@ -22,6 +22,8 @@
 
 .post-info {
 	display: inline-flex;
+    text-align: center;
+    margin: -10px;
 }
 
 .post-body {
@@ -35,16 +37,29 @@
     width: 75%;
 }
 .post-title-author {
-	font-size: 0.95rem;
-    color: blue;
+	color: blue;
     margin-right: 5px;
-    margin-bottom: 1.13px;
+    align-self: center;
 }
 
 .post-title-created {
 	font-size: 0.75rem;
     color: gray;
     align-self: center;
+    margin-left: 5px;
+    margin-top: 2px;
+}
+
+.post-title-sep-dot {
+    color: gray;
+    color: gray;
+    font-size: 2rem;
+    line-height: initial;
+    vertical-align: super;
+}
+
+.tags {
+    text-align: center;
 }
 
 .tag-buttons {
@@ -155,10 +170,6 @@
 	text-align: center;
 	font-size: 26px;
 	justify-content: center;	
-}
-
-.tags {
-	text-align: center;
 }
 
 .drop-menu {
@@ -647,4 +658,8 @@ a.nav-link:active {
 .comments {
 	max-width: 40rem;
     margin: 0 auto;
+}
+
+#cke_1_contents {
+    height: 350px;
 }
