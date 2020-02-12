@@ -51,6 +51,7 @@ def create_post():
             try:
                 post = Post(
                     title=form.title.data,
+                    preview = form.preview.data,
                     body=form.body.data,
                     author = session['username']
                 )
@@ -83,6 +84,7 @@ def edit_post(slug):
     form = PostForm(
         title=post.title,
         body=post.body,
+        preview = post.preview,
         # реализовать удаление тегов
         tags=', '.join(list(str(i) for i in post.tags.__iter__()))  
     )
@@ -90,8 +92,8 @@ def edit_post(slug):
     if request.method == 'POST' and session['username'] == post.author and form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
+        post.preview = form.preview.data
         tag_list = re.sub(r'[\s, .]', ' ', form.tags.data).split()
-        # найти все теги поста и добавить те, которые не входят в список
         post.tags.clear()
         db.session.commit()      
         for i in set(tag_list):
@@ -278,7 +280,8 @@ def search():
         posts = Post.query.filter(
             Post.title.contains(q) | # поиск по заголовку
             Post.body.contains(q) | #поиск по телу поста
-            Post.tags.any(name=q) # поиск по тегам
+            Post.tags.any(name=q) |
+            Post.author.contains(q) # поиск по тегам
         ).filter(Post.visible==True)
     else:
         posts = Post.query.order_by(db.desc(Post.created))
