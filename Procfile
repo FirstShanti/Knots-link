@@ -1,1 +1,1 @@
-web: flask db init flask db migrate; flask db upgrade; gunicorn --certfile cert.pem --keyfile key.pem -b main:app
+web: flask db init; flask db migrate; flask db upgrade; gunicorn --certfile cert.pem --keyfile key.pem -b main:app
