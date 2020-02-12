@@ -89,10 +89,13 @@ class LoginForm(FlaskForm):
 class PostForm(FlaskForm):
 	title = StringField('Title',
 		validators=[DataRequired(), Length(4, 78)])
+	preview = StringField('Preview',
+		validators=[DataRequired(), Length(150, 250)])
 	body = CKEditorField('Body',
 		validators=[DataRequired(), Length(250, 50000)])
 	tags = StringField('Tag',
 		validators=[DataRequired(), Length(3, 100)])
+
 	
 	def validate_tags(form, tags):
 		invalid_chars = re.findall(r"[!@#$%^&*()~`\-+=\/?\|:\;'\"{}\\.\[\]]", str(tags._value()))

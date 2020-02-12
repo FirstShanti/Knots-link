@@ -33,8 +33,9 @@ post_tags = db.Table(
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uuid = db.Column(db.String(140), unique=True)
-    title = db.Column(db.String(140))
     slug = db.Column(db.String(140), unique=True)
+    title = db.Column(db.String(78))
+    preview = db.Column(db.String(250))
     body = db.Column(db.Text)
     created = db.Column(db.DateTime, default=datetime.now())
     author = db.Column(db.String(32))
@@ -92,7 +93,7 @@ class Knot(db.Model):
     f_name = db.Column(db.String(32))
     s_name = db.Column(db.String(32))
     username = db.Column(db.String(32))
-    email = db.Column(db.String(129))
+    email = db.Column(db.String(129), unique=True)
     number = db.Column(db.String(15))  # phone number
     password = db.Column(db.String(256))
 
