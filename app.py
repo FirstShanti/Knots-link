@@ -6,11 +6,13 @@ from flask_ckeditor import CKEditor
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from config import * 
+from flask_sslify import SSLify
 
 
 app = Flask(__name__)
 app.config.from_object(Configuration)
 
+sslify = SSLify(app)
 db = SQLAlchemy(app)
 ckeditor = CKEditor(app)
 
