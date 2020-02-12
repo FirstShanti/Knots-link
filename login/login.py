@@ -8,48 +8,17 @@ from flask import (
 	jsonify,
 	flash
 )
-import smtplib
 import os
-from email.message import EmailMessage
 from app import app, db
 from forms import RegistrationForm, LoginForm
 from models import Knot
 from login.hash import encrypt_string
 from datetime import datetime
+from .send_email import send_email
 
 
 # route user enter data to form for autorization process.
-
 login = Blueprint('login', __name__, template_folder='templates')
-
-
-def send_email(user):
-	server = smtplib.SMTP('smtp.gmail.com', 587)
-	server.starttls()
-
-	################################################# 
-	#                                               #
-	#   Check it change how work sending message    #
-	
-	server.login(os.environ.get('MAIL_USERNAME'), os.environ.get('MAIL_PASSWORD')) 
-
-	################################################
-
-	fromaddr = os.environ.get('MAIL_USERNAME')
-	#toaddr = 'steppe.alone@gmail.com'
-	toaddr = user.email
-
-	email = EmailMessage()
-	email['Subject'] = "authentication"
-	email['From'] = fromaddr
-	email['To'] = toaddr
-
-	url = f'{request.url_root}auth/?user={user.slug}&key={user.auth_key}'
-	email.set_content(render_template('confirmed.html', url=url), subtype='html')
-	flash('Mail sent to user {}'.format(user.username))
-	# Send the message via local SMTP server.
-	with server as s:
-		s.send_message(email)
 
 
 @login.route('auth/', methods=['GET'])
