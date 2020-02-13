@@ -571,12 +571,13 @@ button:focus {
 		overflow: hidden;
 	}
 	.post-main-container {
-	display: block;
+		display: block;
+		text-align: center;
 	}
 	#header_inner {
 		display: inline-flex !important;
 		display: inline-flex !important;
-		padding-top: 10px !important;
+		padding-top: 7% !important;
 		padding-left: 20px !important;
 	}
 	.show_all {
