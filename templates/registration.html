@@ -20,7 +20,7 @@
 					{% endif %}
 					{{ field(class='login-form-control', placeholder=field.id) }}
 					{% for error in field.errors %}
-            			<span style="color: red;">{{ error }}</span>
+            			<span class="login-error">{{ error }}</span>
             		{% endfor %}
 				</div>
 			{% endfor %}
