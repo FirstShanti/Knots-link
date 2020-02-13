@@ -90,7 +90,7 @@ class PostForm(FlaskForm):
 	title = StringField('Title',
 		validators=[DataRequired(), Length(4, 78)])
 	preview = StringField('Preview',
-		validators=[DataRequired(), Length(150, 250)])
+		validators=[DataRequired(), Length(50, 250)])
 	body = CKEditorField('Body',
 		validators=[DataRequired(), Length(250, 50000)])
 	tags = StringField('Tag',

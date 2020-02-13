@@ -10,17 +10,17 @@ def slugify(s):
 
 def post_uuid():
     try: ### if post exist ###
-        Post.query.order_by(db.desc(Post.created)).first().id
+        Post.query.order_by(db.desc(Post.id)).first().id
     except AttributeError:
         return '1'
-    return str(Post.query.order_by(db.desc(Post.created)).first().id + 1)
+    return str(Post.query.order_by(db.desc(Post.id)).first().id + 1)
 
 def comment_uuid():
     try:
-        Comment.query.order_by(db.desc(Comment.created)).first().id
+        Comment.query.order_by(db.desc(Comment.id)).first().id
     except AttributeError:
         return '1'
-    return str(Comment.query.order_by(db.desc(Comment.created)).first().id + 1)
+    return str(Comment.query.order_by(db.desc(Comment.id)).first().id + 1)
 
 ### TAGS FOR POST ###
 post_tags = db.Table(
@@ -59,6 +59,7 @@ class Post(db.Model):
     def __repr__(self):
         return f'''
             Post id: {self.id},
+            Post uuid: {self.uuid},
             title: {self.title},
             slug: {self.slug}
         ''' 
