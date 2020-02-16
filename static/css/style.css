@@ -34,7 +34,7 @@
 .post-body img {
 	display: block;
 	margin: auto;
-	width: 75%;
+	width: 100% !important;
 }
 .post-title-author {
 	color: blue;
@@ -572,7 +572,6 @@ button:focus {
 	}
 	.post-main-container {
 		display: block;
-		text-align: center;
 	}
 	#header_inner {
 		display: inline-flex !important;
