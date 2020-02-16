@@ -280,7 +280,7 @@ def search():
         posts = Post.query.filter(
             Post.title.contains(q) | # поиск по заголовку
             Post.body.contains(q) | #поиск по телу поста
-            Post.tags.any(name=q) |
+            Post.tags.any(name=q.upper()) |
             Post.author.contains(q) # поиск по тегам
         ).filter(Post.visible==True)
     else:
