@@ -24,8 +24,8 @@
       <script src="https://kit.fontawesome.com/45fa0ecad3.js" crossorigin="anonymous"></script>
   </head>
     <body >
-        <div class="post-body">
-          <div id="header_inner">
+          <div class="post-body">
+            <div id="header_inner">
             <form class="media_search header_search" action="{{ url_for('posts.search', slug=request.args.get('q', '')) }}" method="GET">
               <div class="search-container">
                 <input type="submit" value=" " class="icon_search">
