@@ -41,14 +41,7 @@
 	/*display: block;
 	margin: auto;
 	width: 100% !important;*/
-	max-width: 40rem;
-}
-
-img:hover {
-	/*display: block;
-	margin: auto;
-	width: 100% !important;*/
-	max-width: 100%;
+	max-width: -webkit-fill-available;
 }
 
 .post-title-author {
@@ -74,6 +67,7 @@ img:hover {
 
 .tags {
 	text-align: center;
+	margin-bottom: -1.5rem;
 }
 
 .tag-buttons {
@@ -626,8 +620,8 @@ button:focus {
 		margin-right: 20px;
 	}
 	.post_content_title_h1 {
-		font-size: 1.5rem !important;
-		margin-top: 2.5rem;
+		font-size: 2rem !important;
+    	margin-top: 3rem;
 	}
 	.login-box {
 		box-shadow: none !important;
@@ -635,10 +629,11 @@ button:focus {
 		border-radius: none !important;
 	}
 	.post-body img {
-		-webkit-fill-available;
+		max-width: 20rem;
 	}
 	.post-body img:active {
-		max-width: max-content;
+		/*max-width: 100*/
+		max-width: fit-content;
 	}
 	.post-body {
 		text-align: left;
@@ -647,6 +642,7 @@ button:focus {
 		text-align: justify;
 	}
 }
+
 .post_paragraph {
 	text-align: left;
 }
