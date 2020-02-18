@@ -628,9 +628,9 @@ button:focus {
 		padding: 2%;
 		border-radius: none !important;
 	}
-	.post-body img {
+/*	.post-body img {
 		max-width: 20rem;
-	}
+	}*/
 	.post-body img:active {
 		/*max-width: 100*/
 		max-width: fit-content;
