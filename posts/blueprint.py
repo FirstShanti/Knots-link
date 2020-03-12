@@ -82,7 +82,7 @@ def create_post():
 
 @posts.route('/<slug>/edit/', methods=['POST', 'GET'])
 def edit_post(slug):
-    post = Post.query.filter(Post.slug==slug).filter(Post.visible==True).first()
+    post = Post.query.filter(Post.slug==slug).filter(Post.author==session.get('username')).first()
     form = PostForm(
         title=post.title,
         body=post.body,
@@ -106,6 +106,8 @@ def edit_post(slug):
             post.tags.append(tag)
 
         try:
+            if request.form['submit'] == 'publish':
+                    post.visible = True
             db.session.commit()
             print('Post save')
         except:
