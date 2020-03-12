@@ -22,5 +22,7 @@ def send_email(user):
 	with smtplib.SMTP_SSL('mail.privateemail.com:465') as server:
 		server.ehlo()
 		server.login(login, password)
+		
+		### catch exception and try to repeat sending message ###
 		server.send_message(email) 
 		server.quit()

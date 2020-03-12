@@ -163,7 +163,7 @@ def post_content(slug):
     try:
         post = Post.query.filter(Post.slug==slug).filter(Post.author==session.get('username')).first()
         tags = post.tags
-        time = post.created.strftime("%d %B %Y (%A) %H:%M")
+        time = post.created.strftime('%H:%M (%d %B %Y)')
         author = post.author
         user = Knot.query.filter(Knot.username==author).first()
         comments = post.comments
@@ -282,7 +282,7 @@ def search():
         posts = Post.query.filter(
             Post.title.contains(q) | # поиск по заголовку
             Post.body.contains(q) | #поиск по телу поста
-            Post.tags.any(name=q.upper()) |
+            Post.tags.any(name=q.lower()) |
             Post.author.contains(q) # поиск по тегам
         ).filter(Post.visible==True)
     else:
