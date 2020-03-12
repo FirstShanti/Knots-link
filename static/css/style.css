@@ -552,11 +552,10 @@ button:focus {
 
 .content_title {
 	margin-top: 5%;
-/*	margin-left: 10%;
-	margin-right: 10%;*/
-    display: flex;
+    display: block;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 @media only screen and (max-device-width: 812px) and (min-device-width: 320px) {
@@ -693,4 +692,9 @@ a.nav-link:active {
 
 .form-group {
 	text-align: center;
+}
+
+h1.post_content_title_h1 {
+    margin-left: 15%;
+    margin-right: 15%;
 }

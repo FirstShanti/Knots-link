@@ -63,6 +63,8 @@ def create_post():
                         tag = Tag(name=i)
                     post.tags.append(tag)
                 post.author = session['username']
+                if request.form['submit'] == 'draft':
+                    post.visible = False
                 db.session.add(post)
                 db.session.commit()
                 flash('Post create')
@@ -159,7 +161,7 @@ def index():
 def post_content(slug):
 
     try:
-        post = Post.query.filter(Post.slug==slug).filter(Post.visible==True).first()
+        post = Post.query.filter(Post.slug==slug).filter(Post.author==session.get('username')).first()
         tags = post.tags
         time = post.created.strftime("%d %B %Y (%A) %H:%M")
         author = post.author
@@ -220,7 +222,7 @@ def get_user_data(slug):
         elif 'username' in session:
             user = Knot.query.filter(Knot.slug==slug).first()
             print(f'get_user_data: {user.username}')
-            posts = Post.query.filter(Post.author==user.username).filter(Post.visible==True)
+            posts = Post.query.filter(Post.author==user.username) #.filter(Post.visible==True)
 
             if page and page.isdigit():
                 page = int(page)
