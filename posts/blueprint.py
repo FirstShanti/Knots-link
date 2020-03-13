@@ -163,7 +163,8 @@ def index():
 def post_content(slug):
 
     try:
-        post = Post.query.filter(Post.slug==slug).filter(Post.author==session.get('username')).first()
+        post = Post.query.filter(Post.slug==slug).filter(Post.visible==True).first() or \
+            Post.query.filter(Post.slug==slug).filter(Post.author==session.get('username')).first()
         tags = post.tags
         time = post.created.strftime('%H:%M (%d %B %Y)')
         author = post.author
