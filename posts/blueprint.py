@@ -107,7 +107,7 @@ def edit_post(slug):
 
         try:
             if request.form['submit'] == 'publish':
-                    post.visible = True
+                post.visible = True
             db.session.commit()
             print('Post save')
         except:
