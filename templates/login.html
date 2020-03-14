@@ -32,7 +32,7 @@
 					{% if field.type != "CSRFTokenField" %}
 						<!-- {{ field.label(class='control-label') }} -->		
 					{% endif %}
-					{{ field(class='login-form-control', placeholder=field.id) }}
+					{{ field(class='login-form-control', autocomplete="off", placeholder=field.id) }}
 					{% for error in field.errors %}
             			<span class="login-error">{{ error }}</span>
             		{% endfor %}

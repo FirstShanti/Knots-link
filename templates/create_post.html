@@ -29,9 +29,8 @@
         margin-right: auto;">
                     <button name="submit" value="create" type="submit" class="btn btn-info">Create</button>
                     <button name="submit" value="draft" type="submit" class="btn btn-warning">Draft</button>
+                    <button type="button" onclick="window.location.href='/blog/';" class="btn btn-secondary">Cancel</button>
                 </div>
-
-            
         </form>
         {{ ckeditor.load() }}
         {{ ckeditor.config(name='body', placeholder='text') }}

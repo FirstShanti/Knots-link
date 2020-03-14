@@ -45,7 +45,7 @@ user_profile = Blueprint('user_profile',
 def create_post():
 
     form = PostForm(request.form)
-
+    
     if 'username' in session:
         if request.method == 'POST' and form.validate_on_submit():
             try:
@@ -91,6 +91,11 @@ def edit_post(slug):
         tags=', '.join(list(str(i) for i in post.tags.__iter__()))  
     )
 
+    try:
+        if request.form['submit'] == 'cancel':
+            return redirect(url_for('posts.index'))
+    except KeyError:
+        pass
     if request.method == 'POST' and session['username'] == post.author and form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
@@ -104,7 +109,6 @@ def edit_post(slug):
             else:
                 tag = Tag(name=i)
             post.tags.append(tag)
-
         try:
             if request.form['submit'] == 'publish':
                 post.visible = True

@@ -207,12 +207,14 @@
 
 .dropdown-menu.show {
 	display: block;
-	background: white;
 	min-width: 0;
+	transition: 0.9s;
+	background-color: #f6fff500;
 
 }
 
 .dropdown-menu.show:hover {
+	transform: 1s;
 	background: white !important;
 }
 
@@ -358,9 +360,8 @@
 }
 
 .user_info {
-	display: flex;
-	align-items: baseline;
-	justify-content: center;
+    align-items: baseline;
+    text-align: center;
 }
 
 .pagination {
@@ -698,8 +699,22 @@ button:focus {
 	text-align: center !important;
 }
 
+.dropdown-item:hover {
+	background-color: white !important;
+}
+
 .navbar-nav.nav-link {
 	text-decoration: none;
+}
+
+a.nav-link {
+	transition: 2s;
+	font-size: 1rem;
+}
+
+a.nav-link:hover {
+	transition: 1s;
+	font-size: 1.3rem;
 }
 
 a.nav-link:active {
