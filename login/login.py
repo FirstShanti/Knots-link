@@ -13,7 +13,7 @@ from app import app, db
 from forms import RegistrationForm, LoginForm
 from models import Knot
 from login.hash import encrypt_string
-from datetime import datetime
+from datetime import datetime, timedelta
 from .send_email import send_email
 
 
@@ -83,7 +83,6 @@ def sign_up():
 @login.route('/log_in', methods=['POST', 'GET'])
 def log_in(alert=None):
 	url = request.url_root
-	print(f'url: {url}')
 	form = LoginForm(request.form)
 	print(session)
 	alert = request.args.get('alert')
@@ -96,6 +95,7 @@ def log_in(alert=None):
 			session['username'] = user.username
 			session['auth'] = user.authenticated
 			user.last_login = datetime.now()
+			session['private_key_exp'] = user.last_login + timedelta(hours=3)
 			return redirect(url_for('posts.index'))
 	
 	return render_template('login.html',

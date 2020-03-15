@@ -20,7 +20,7 @@ from forms import PostForm, CommentForm
 from app import db
 import re
 from datetime import datetime, timedelta
-
+from login.session_time import session_time
 
 locale.setlocale(locale.LC_ALL, "")
 local = locale.getdefaultlocale()[0]
@@ -42,6 +42,7 @@ user_profile = Blueprint('user_profile',
    Than its information put in class Post and add in db.''' 
 
 @posts.route('/create', methods=['POST', 'GET'])
+@session_time
 def create_post():
 
     form = PostForm(request.form)
@@ -81,6 +82,7 @@ def create_post():
 
 
 @posts.route('/<slug>/edit/', methods=['POST', 'GET'])
+@session_time
 def edit_post(slug):
     post = Post.query.filter(Post.slug==slug).filter(Post.author==session.get('username')).first()
     form = PostForm(
@@ -126,6 +128,7 @@ def edit_post(slug):
     )
 
 @posts.route('/<slug>/delete/', methods=['POST', 'GET'])
+@session_time
 def delete_post(slug):
     post = Post.query.filter(Post.slug==slug).filter(Post.visible==True).first()
     post_title = post.title
@@ -220,6 +223,7 @@ def post_content(slug):
 
 
 @user_profile.route('/<slug>/')
+@session_time
 def get_user_data(slug):
     print(f'session: {session}')
     page = request.args.get('page')
