@@ -24,93 +24,97 @@
       <script src="https://kit.fontawesome.com/45fa0ecad3.js" crossorigin="anonymous"></script>
   </head>
     <body >
-          <div class="post-body">
-            <div id="header_inner">
-            <form class="media_search header_search" action="{{ url_for('posts.search', slug=request.args.get('q', '')) }}" method="GET">
-              <div class="search-container">
-                <input type="submit" value=" " class="icon_search">
-                <span>
-                  <input autocomplete="off" class="q" type="text" name="q" value="{{ q }}" placeholder="Search" data-autofocus="" autocomplete="on">
-                </span>
+<!--           <div class='left'>
+            hello
+          </div> -->
+          <div class='center'>
+            <div class="post-body">
+              <div id="header_inner">
+              <form class="media_search header_search" action="{{ url_for('posts.search', slug=request.args.get('q', '')) }}" method="GET">
+                <div class="search-container">
+                  <input type="submit" value=" " class="icon_search">
+                  <span>
+                    <input autocomplete="off" class="q" type="text" name="q" value="{{ q }}" placeholder="Search" data-autofocus="" autocomplete="on">
+                  </span>
 
-              </div>
-              
-            </form>
-            <div>
-              <div class="navbar navbar-light">
+                </div>
                 
-                {% if session['username'] %}
-                  <button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ session['username'] }}">
-                    <i class="fas fa-user-circle with_user"></i>
-                  </button>
-                {% else %}
-                  <button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-user"></i>
+              </form>
+              <div>
+                <div class="navbar navbar-light">
+                  
+                  {% if session['username'] %}
+                    <button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ session['username'] }}">
+                      <i class="fas fa-user-circle with_user"></i>
                     </button>
-                {% endif %}
+                  {% else %}
+                    <button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user"></i>
+                      </button>
+                  {% endif %}
 
-                <div class="collapse navbar-collapse  drop-menu dropdown-menu" id="navbarTogglerDemo02" aria-labelledby="dropdownMenuButton">
-                  <ul class="navbar-nav " id="dropdown-menu-items">
+                  <div class="collapse navbar-collapse  drop-menu dropdown-menu" id="navbarTogglerDemo02" aria-labelledby="dropdownMenuButton">
+                    <ul class="navbar-nav " id="dropdown-menu-items">
 
-                    <li class="dropdown-item" id="dropdown-menu-items">
-                      <a class="nav-link" href=" {{ url_for('index') }} ">Knots</a>
-                    </li>
+                      <li class="dropdown-item" id="dropdown-menu-items">
+                        <a class="nav-link" href=" {{ url_for('index') }} ">Knots</a>
+                      </li>
 
-                    <li class="dropdown-item" id="dropdown-menu-items">
-                      <a class="nav-link" href=" {{ url_for('posts.index') }}">Blog <span class="sr-only">(current)</span></a>
-                    </li>
+                      <li class="dropdown-item" id="dropdown-menu-items">
+                        <a class="nav-link" href=" {{ url_for('posts.index') }}">Blog <span class="sr-only">(current)</span></a>
+                      </li>
 
-                    {% if session['username'] %}
-                      {% if session['auth'] %}
+                      {% if session['username'] %}
+                        {% if session['auth'] %}
+                          <li class="dropdown-item" id="dropdown-menu-items">
+                            <a class="nav-link" style="font-size: 30px;" href="{{ url_for('posts.create_post') }}">&#x270d;</a>
+                          </li>
+                        {% else %}
+                          <li class="dropdown-item" id="dropdown-menu-items">
+                            <a class="nav-link" style="font-size: 30px;" title="Confirm email"
+   href="">&#x270d;</a>
+                          </li>
+                        {% endif %}
+
                         <li class="dropdown-item" id="dropdown-menu-items">
-                          <a class="nav-link" style="font-size: 30px;" href="{{ url_for('posts.create_post') }}">&#x270d;</a>
+                          <a class="nav-link" href="{{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous') }}" title="Profile">Profile</a>
                         </li>
-                      {% else %}
                         <li class="dropdown-item" id="dropdown-menu-items">
-                          <a class="nav-link" style="font-size: 30px;" title="Confirm email"
- href="">&#x270d;</a>
+                          <a class="nav-link" href="{{ url_for('login.log_out') }}">Log out</a>
                         </li>
                       {% endif %}
 
-                      <li class="dropdown-item" id="dropdown-menu-items">
-                        <a class="nav-link" href="{{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous') }}" title="Profile">Profile</a>
-                      </li>
-                      <li class="dropdown-item" id="dropdown-menu-items">
-                        <a class="nav-link" href="{{ url_for('login.log_out') }}">Log out</a>
-                      </li>
-                    {% endif %}
-
-                    {% if not session['username'] %}
-                      <li class="dropdown-item" id="dropdown-menu-items">
-                        <a class="nav-link" href="{{ url_for('login.sign_up') }}">Sign up</a>
-                      </li>
-                      <li class="dropdown-item" id="dropdown-menu-items">
-                        <a class="nav-link" href="{{ url_for('login.log_in') }}">Login</a>
-                      </li>
-                    {% endif %}
-                  </ul>
+                      {% if not session['username'] %}
+                        <li class="dropdown-item" id="dropdown-menu-items">
+                          <a class="nav-link" href="{{ url_for('login.sign_up') }}">Sign up</a>
+                        </li>
+                        <li class="dropdown-item" id="dropdown-menu-items">
+                          <a class="nav-link" href="{{ url_for('login.log_in') }}">Login</a>
+                        </li>
+                      {% endif %}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        
-        {% block logo %}
-
-        {% endblock %}
-
-        <div class="content_title">
-          {% block content_title %}
-
-          {% endblock %}
-        </div>
           
-        <div class="post-body">
-          {% block content %}
+          {% block logo %}
 
           {% endblock %}
-        </div>
 
+          <div class="content_title">
+            {% block content_title %}
+
+            {% endblock %}
+          </div>
+            
+          <div class="post-body">
+            {% block content %}
+
+            {% endblock %}
+          </div>
+        </div>
         <br>
         <br>
         <br>

@@ -4,6 +4,26 @@
 	vertical-align: middle;
 }
 
+.error-404 {
+	text-align: center;
+	width: auto;
+	height: auto;
+	margin-top: 10%;
+	font: icon;
+}
+
+.error-404-icon {
+    width: 150px;
+    height: 150px;
+    display: inline-block;
+    border: 0;
+    background: url(/static/img/error-404.svg) no-repeat;
+    opacity: .75;
+    transition: opacity .3s;
+    align-self: center;
+    text-align: center;
+}
+
 @keyframes show_all {
 	0% { opacity: 0; }
 	100% { opacity: 100; }
@@ -210,11 +230,13 @@
 	min-width: 0;
 	transition: 0.9s;
 	background-color: #f6fff500;
+	box-shadow: 1px 1px 5px grey !important;
+
 
 }
 
 .dropdown-menu.show:hover {
-	transform: 1s;
+	transition: 0s;
 	background: white !important;
 }
 
@@ -232,7 +254,7 @@
 	box-shadow: 0 0 20px rgba(102, 204, 153) !important;
 }
 
-.login-form-control:active {
+.login-form-control:focus {
 	box-shadow: 0 0 20px rgba(102, 204, 153) !important;
 }
 
@@ -258,8 +280,7 @@
 }
 
 .new-user-reg {
-	padding-bottom: 10px;
-	font-size: 14px;
+	font-size: 12px;
 	text-align: center;
 	display: flex;
 	justify-content: center;
@@ -360,8 +381,8 @@
 }
 
 .user_info {
-    align-items: baseline;
-    text-align: center;
+	align-items: baseline;
+	text-align: center;
 }
 
 .pagination {
@@ -376,12 +397,12 @@
 
 #header_inner {
 	position: inherit;
-    margin-left: 5%;
-    margin-right: 5%;
-    /* padding: 10px 58px 8px; */
-    height: auto;
-    /* display: flex; */
-    padding-top: 5%;
+	margin-left: 5%;
+	margin-right: 5%;
+	/* padding: 10px 58px 8px; */
+	height: auto;
+	/* display: flex; */
+	padding-top: 5%;
 }
 
 .search-container{
@@ -463,6 +484,7 @@ input:-webkit-autofill {
 	align-self: center;
 	margin-right: 8px;
 }
+
 
 .icon_menu_loupe {
 	background-position: -200px 0;
@@ -566,10 +588,10 @@ button:focus {
 .content_title {
 	margin-top: 5%;
 <<<<<<< HEAD
-    display: block;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+	display: block;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
 =======
 	display: block;
 	align-items: center;
@@ -581,6 +603,9 @@ button:focus {
 }
 
 @media only screen and (max-width: 999px) and (min-width: 320px) {
+	.post_title {
+		font-size: 1.3rem;
+	}
 	.post_container {
 		width: 100%;
 		height: 200px;
@@ -593,7 +618,7 @@ button:focus {
 	}
 	.post-main-container {
 		display: block;
-		margin-top: 3.5rem;
+		/*margin-top: 3.5rem;*/
 	}
 	#header_inner {
 /*		display: inline-flex !important;
@@ -627,28 +652,66 @@ button:focus {
 		margin-left: 20px;
 		margin-right: 20px;
 	}
+	.content_title {
+		margin-top: 3rem;
+	}
 	.post_content_title_h1 {
 		font-size: 2rem !important;
-    	margin-top: 3rem;
+		margin-top: 3rem;
+		text-align: center !important;
 	}
 	.login-box {
 		box-shadow: none !important;
 		padding: 2%;
 		border-radius: none !important;
+		margin-top: 25% !important;
 	}
 /*	.post-body img {
 		max-width: 20rem;
 	}*/
-	.post-body img:active {
+	.post-body-content img:active {
 		/*max-width: 100*/
 		max-width: fit-content;
 	}
 	.post-body {
 		text-align: left;
+		margin-left: 7%;
+    	margin-right: 7%;
 	}
 	.post-body-content {
-		text-align: justify;
+    	line-height: initial;
 	}
+	.dropdown-menu.show {
+	display: block;
+	min-width: 0;
+	transition: 0.9s;
+	background-color: white;
+	}
+	.col-md-10 {
+		padding-right: 0 !important;
+		padding-left: 0 !important;
+		margin-top: 1.5rem;
+	}
+	.error-404 {
+		text-align: center;
+		width: auto;
+		height: auto;
+		margin-top: 25%;
+		font: icon;
+	}
+	.user_info {
+	    margin-top: 3rem;
+	}
+}
+
+.post-body-content {
+	word-break: break-word;
+}
+
+.new-post {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .post_paragraph {
@@ -708,12 +771,12 @@ button:focus {
 }
 
 a.nav-link {
-	transition: 2s;
+	transition: 0.5s;
 	font-size: 1rem;
 }
 
 a.nav-link:hover {
-	transition: 1s;
+	transition: 0.4s;
 	font-size: 1.3rem;
 }
 
@@ -755,14 +818,16 @@ a.nav-link:active {
 <<<<<<< HEAD
 
 h1.post_content_title_h1 {
-    margin-left: 15%;
-    margin-right: 15%;
+	margin-left: 15%;
+	margin-right: 15%;
 }
 =======
-/*
-@media only screen and (max-width: 414px) (min-width: 320px){
-	#header_inner {
-		display: inline-flex !important;
-	}
-}*/
+
 >>>>>>> 4e7ff928cfa6ba7025c9e32ca4bda1f11a248a7c
+
+@media (min-width: 768px) {
+	.col-md-8 {
+    	max-width: inherit !important;
+    	display: contents !important;
+    }
+}
