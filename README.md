@@ -1,5 +1,5 @@
 #Flask_Tutorial
 
-Simple web application for demonstration skills of python and flask.
+Simple web application for create self blog page.
 
 http://knots-link.online/
