@@ -51,7 +51,6 @@ def sign_up():
 	form = RegistrationForm(request.form)
 
 	if 'username' in session:
-		#точка выхода из сессии
 		return redirect('/blog/')
 	elif request.method == 'POST' and form.validate_on_submit(): 
 		try:
@@ -59,9 +58,9 @@ def sign_up():
 				f_name=form.f_name.data,
 				s_name=form.s_name.data,
 				username=form.username.data,
+				# включить шифрование для номеров телефона
 				number=form.number.data,
 				email=form.email.data,
-				# включить шифрование для номеров телефона
 				password=encrypt_string(form.password.data)
 			)
 			send_email(user)
@@ -95,6 +94,7 @@ def log_in(alert=None):
 			session['username'] = user.username
 			session['auth'] = user.authenticated
 			user.last_login = datetime.now()
+			session['last_login'] = user.last_login
 			session['private_key_exp'] = user.last_login + timedelta(hours=3)
 			return redirect(url_for('posts.index'))
 	

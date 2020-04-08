@@ -130,7 +130,7 @@ class Knot(db.Model):
         ''' 
             #posts: {self.posts},
 
-# class Comment - (class of cpmments for Post)
+# class Comment - (class of comments for Post)
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uuid = db.Column(db.String(140))

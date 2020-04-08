@@ -229,10 +229,8 @@
 	display: block;
 	min-width: 0;
 	transition: 0.9s;
-	background-color: #f6fff500;
+	/*background-color: #f6fff500;*/
 	box-shadow: 1px 1px 5px grey !important;
-
-
 }
 
 .dropdown-menu.show:hover {
@@ -332,7 +330,7 @@
 	box-shadow: 0 0 10px rgba(102, 204, 153);
 }
 
-.logo_knots {
+/*.logo_knots {
 	display: flex;
 	align-items: center;
 	display: flex;
@@ -340,7 +338,7 @@
 	margin-top: 40px;
 	margin-left: 15%;
 	margin-bottom: 80px;
-}
+}*/
 
 .show_all {
 	
@@ -420,7 +418,7 @@
 	padding: 18px 0;
 	border: 0;
 	resize: none;
-	height: fit-content;
+	height: max-content !important;
 	outline:none;
 }
 
@@ -518,10 +516,9 @@ input:-webkit-autofill {
 }
 
 .img-block-bottom {
-	display: flex;
+	display: block;
 	margin-right: auto;
 	margin-left: auto;
-	width: 100%
 	max-width: 100%;
 
 }
@@ -602,7 +599,33 @@ button:focus {
 >>>>>>> 4e7ff928cfa6ba7025c9e32ca4bda1f11a248a7c
 }
 
-@media only screen and (max-width: 999px) and (min-width: 320px) {
+#toTop {
+	text-align:center;
+	padding:5px;
+	position:fixed;
+	bottom:80%; /* отступ кнопки от нижнего края страницы*/
+	right:10px;
+	cursor:pointer;
+	display:none;
+	color:#4ea08a;
+	font-family:verdana;
+	font-size:19px;
+	margin-right: 14.75%;
+	transition: 1s;
+}
+
+#toTop:hover {
+	transition: 1s;
+	font-size: 30px;
+}
+
+#toTop:active {
+	transition: 1s;
+	font-size: 30px;
+	opacity: 0;
+}
+
+@media only screen and (max-width: 999px) and (min-width: 120px) {
 	.post_title {
 		font-size: 1.3rem;
 	}
@@ -635,7 +658,7 @@ button:focus {
 	}
 	.logo_knots {
 		margin-bottom: 40px !important;
-		margin-left: 0 !important;
+		/*margin-left: 0 !important;*/
 	}
 	.backgound_img#img_2 {
 		display: none;
@@ -701,6 +724,33 @@ button:focus {
 	}
 	.user_info {
 	    margin-top: 3rem;
+	}
+	#toTop {
+	    text-align: center;
+	    padding: 5px;
+	    position: fixed;
+	    bottom: 33% !important;
+	    right: 10px;
+	    cursor: pointer;
+	    display: none;
+	    color: #4ea08a;
+	    font-family: verdana;
+	    font-size: 19px;
+	    transition: 1s;
+	    background-color: #ececec;
+	    border-radius: 50px;
+	    height: 30px;
+	    -webkit-writing-mode: vertical-rl;
+	    margin: 10px;
+	}
+	#toTop:hover {
+		transition: 1s;
+		font-size: 19px !important;
+	}
+	#toTop:active {
+		transition: 1s;
+		font-size: 19px !important; 
+		opacity: 0;
 	}
 }
 
@@ -830,4 +880,8 @@ h1.post_content_title_h1 {
     	max-width: inherit !important;
     	display: contents !important;
     }
+}
+
+.pagination_block {
+	display: block;
 }

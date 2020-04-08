@@ -14,7 +14,7 @@
 
     {% if pages.items|length > 0 %}
         {% for post in pages.items %}
-            <div class='post_container shadown'>
+            <div class='post_container'>
                 <div class='post_paragraph'>
                     <a class='post_title' href="{{ url_for('posts.post_content', slug=post.slug) }}"> {{ post.title }} </a>
                     <div class="posts-index">
@@ -62,6 +62,7 @@
                 </li>
             </ul>
         </nav>
+
     {% endif %}
 
     {% if pages.items|length < 1 %}

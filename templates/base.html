@@ -22,11 +22,10 @@
       <link rel="shortcut icon" href="/static/img/favicon.ico">
       
       <script src="https://kit.fontawesome.com/45fa0ecad3.js" crossorigin="anonymous"></script>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+      <script src="/static/scripts/button_to_top.js" type="text/javascript"></script>
   </head>
     <body >
-<!--           <div class='left'>
-            hello
-          </div> -->
           <div class='center'>
             <div class="post-body">
               <div id="header_inner">
@@ -42,7 +41,6 @@
               </form>
               <div>
                 <div class="navbar navbar-light">
-                  
                   {% if session['username'] %}
                     <button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ session['username'] }}">
                       <i class="fas fa-user-circle with_user"></i>
@@ -71,8 +69,7 @@
                           </li>
                         {% else %}
                           <li class="dropdown-item" id="dropdown-menu-items">
-                            <a class="nav-link" style="font-size: 30px;" title="Confirm email"
-   href="">&#x270d;</a>
+                            <a class="nav-link" style="font-size: 30px;" title="Confirm email" href="">&#x270d;</a>
                           </li>
                         {% endif %}
 
@@ -98,10 +95,6 @@
               </div>
             </div>
           </div>
-          
-          {% block logo %}
-
-          {% endblock %}
 
           <div class="content_title">
             {% block content_title %}
@@ -114,6 +107,10 @@
 
             {% endblock %}
           </div>
+          {% block logo %}
+
+          {% endblock %}
+        <div id="toTop" ><i class="fas fa-chevron-up"></i></div>
         </div>
         <br>
         <br>
