@@ -35,11 +35,13 @@ def authentication():
 		elif user.auth_key == request.args.get('key') and user.check_auth_key():
 			user.authenticated = 1
 			db.session.commit()
-			return redirect(url_for('login.log_in', alert='Y'))
+			flash(u'Your email address has been verified!', 'alert alert-success')
+			return redirect(url_for('login.log_in'))
 		else:
 			user.get_auth_key()
 			send_email(user)
-			return redirect(url_for('login.log_in', alert='T'))
+			flash(u'Time has passed, we are sending a new link', 'alert alert-danger')
+			return redirect(url_for('login.log_in'))
 	except Exception as e:
 		print(f'Something wrong: {e.__class__}')
 		return redirect(url_for('posts.index'))
@@ -66,16 +68,16 @@ def sign_up():
 			send_email(user)
 			db.session.add(user)
 			db.session.commit()
+			flash(u'Confirm you email', 'alert alert-warning')
 		except Exception as e:
 			print(f'Something wrong: {e.__class__}')
 			raise e
-		return redirect(url_for('login.log_in', alert='C'))
-		return jsonify({'status': 'success'})
-	
+		return redirect(url_for('login.log_in'))	
 	return render_template('registration.html',
 		title='Sign In',
 		form=form,
 		session=session,
+		endpoint=request.endpoint
 	)
 
 
@@ -83,9 +85,8 @@ def sign_up():
 def log_in(alert=None):
 	url = request.url_root
 	form = LoginForm(request.form)
-	print(session)
 	alert = request.args.get('alert')
-	
+
 	if 'username' in session:
 		return redirect('/blog/')
 	elif request.method == "POST" and form.validate_on_submit():
@@ -102,7 +103,8 @@ def log_in(alert=None):
 		title='Log in',
 		form=form,
 		session=session,
-		alert=alert
+		alert=alert,
+		endpoint=request.endpoint
 	)
 	
 	
