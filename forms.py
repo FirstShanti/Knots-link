@@ -1,6 +1,7 @@
 from wtforms import (
 	StringField,
 	TextAreaField,
+	SelectField,
 	PasswordField,
 	BooleanField,
 	SubmitField,
@@ -15,26 +16,30 @@ from wtforms.validators import (
 )
 from flask_wtf import FlaskForm
 from flask_ckeditor import CKEditorField
-from models import Knot
+from models import Knot, Category
 from login.hash import encrypt_string
 import re
-from models import slugify, Post
+from models import slugify, Post, Category
 from app import db
 
 
+def get_category():
+	return [('ch', '--choose category--',)] + [(i.short_name, i.name) for i in Category.query.all()]
+
+
 class RegistrationForm(FlaskForm):
-	f_name = StringField('First name*', 
-		validators=[DataRequired()], id='first name*')
-	s_name = StringField('Last name*',
-		validators=[DataRequired()], id='last name*')
-	username = StringField('Username*',
-		validators=[DataRequired()], id='username*')
+	f_name = StringField('First name', 
+		validators=[DataRequired()], id='first name')
+	s_name = StringField('Last name',
+		validators=[DataRequired()], id='last name')
+	username = StringField('Username',
+		validators=[DataRequired()], id='username')
 	email = StringField('Email*',
-		validators=[DataRequired()], id='email*')
+		validators=[DataRequired()], id='email')
 	number = StringField('Phone number', id='phone number')
-	password = PasswordField('New Password*',
-		validators=[DataRequired()], id='password*')
-	confirm = PasswordField('Repeat password*',
+	password = PasswordField('New Password',
+		validators=[DataRequired()], id='password')
+	confirm = PasswordField('Re-enter password',
 		validators=[DataRequired(),
 					EqualTo('password', message='Passwords do not match')],
 		id='repeat password*')
@@ -89,10 +94,13 @@ class LoginForm(FlaskForm):
 class PostForm(FlaskForm):
 	title = StringField('Title',
 		validators=[DataRequired(), Length(4, 78)])
-	preview = StringField('Preview',
+	preview = TextAreaField('Preview',
 		validators=[DataRequired(), Length(50, 250)])
 	body = CKEditorField('Body',
 		validators=[DataRequired(), Length(250, 50000)])
+	category = SelectField('Category',
+		choices=get_category(),
+		validators=[DataRequired()])
 	tags = StringField('Tag',
 		validators=[DataRequired(), Length(3, 100)])
 
@@ -111,7 +119,20 @@ class PostForm(FlaskForm):
 				{" ".join(tag for tag in invalid_tags)}</span>:\
 				<span style="color: red;">{", ".join(char for char in invalid_chars)}</span>')
 
+	def validate_category(form, category):
+		print(category.data)
+		if category.data in ['ch', '--choose category--']:
+			raise ValidationError(f'Choose category')
+
+
 
 class CommentForm(FlaskForm):
 	text = TextAreaField('Text',
 		validators=[DataRequired(), Length(1, 2000)])
+
+
+class CategoryForm(FlaskForm):
+	name = StringField('Name', validators=[DataRequired()])
+	short_name = StringField('Short name', validators=[DataRequired()])
+
+
