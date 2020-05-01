@@ -1,23 +1,23 @@
 $(function() {
+	
+	$(window).scroll(function() {
+		console.log($(this).scrollTop())
+		if($(this).scrollTop() > 250) {
 
- $(window).scroll(function() {
+			$('#toTop').fadeIn();
+			
+		} else {
 
- if($(this).scrollTop() != 0) {
+			$('#toTop').fadeOut();
 
- $('#toTop').fadeIn();
- 
- } else {
+		}
 
- $('#toTop').fadeOut();
+	});
+	
+	$('#toTop').click(function() {
 
- }
+		$('body,html').animate({scrollTop:0}, 800);
 
- });
- 
- $('#toTop').click(function() {
-
- $('body,html').animate({scrollTop:0}, 800);
-
- });
- 
+	});
+	
 });
