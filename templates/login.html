@@ -9,57 +9,40 @@
 {% endblock %}
 
 {% block content %}
-		
-
-	<div class='col-md-3 login-box' style="margin: auto;">
-		{% if alert == "Y" %}
-			<div class="alert alert-success">
-				Your email address has been verified!
-			</div>
-		{% elif alert == "T" %}
-			<div class="alert alert-danger">
-				Time has passed, we are sending a new link
-			</div>
-		{% elif alert == "C" %}
-			<div class="alert alert-warning">
-				Confirm you email
-			</div>
-		{% elif alert == "P" %}
-			<div class="alert alert-warning">
-				Session time has expired
-			</div>
-		{% endif %}
-
-		<form style="justify-content: center;" action="" method="POST">
-			{% for field in form %}
-				<div class="form-group">
+		<div class="logo_on_index">
+	        <div class="logo_knots">
+	            <a class="knots_title" href='{{ url_for("posts.index")}}' title="Узлы">
+	                <img src="/static/img/logo.png">
+	            </a>
+	        </div>
+	    </div>
+        <div class='container-fluid text-center body_'>
+			<form class='form-signin' action="" method="POST">
+				{% for field in form %}
 					{% if field.type != "CSRFTokenField" %}
 						<!-- {{ field.label(class='control-label') }} -->		
 					{% endif %}
-					{{ field(class='login-form-control', autocomplete="off", placeholder=field.id) }}
+					{{ field(class='form-control', autocomplete="off", placeholder=field.id) }}
 					{% for error in field.errors %}
-            			<span class="login-error">{{ error }}</span>
-            		{% endfor %}
-				</div>
-			{% endfor %}
-			{% if alert %}
-				{% if alert|length < 0 %}
+	           		 	<span class="badge badge-danger">{{ error }}</span>
+	           		{% endfor %}
+				{% endfor %}
+				{% if alert %}
+					{% if alert|length < 0 %}
+						<div class="new-user-reg">
+							New user?<pre> </pre><a class="btn-group" href="{{ url_for('login.sign_up') }}">start here</a>
+						</div>
+					{% endif %}
+				{% else %}
 					<div class="new-user-reg">
-						New user?<pre> </pre><a class="btn-group" href="{{ url_for('login.sign_up') }}">start here</a>
+							New user?<pre> </pre><a class="btn-group" href="{{ url_for('login.sign_up') }}">start here</a>
 					</div>
 				{% endif %}
-			{% else %}
-				<div class="new-user-reg">
-						New user?<pre> </pre><a class="btn-group" href="{{ url_for('login.sign_up') }}">start here</a>
-					</div>
-			{% endif %}
 
-			<div class="btn-group" style="margin-top: 10px; display: block; text-align: center;"><button type="submit" class="btn btn-info">Log in</button>
-			</div>
-			
-		</form>
-	
-	</div>
-
+	            <button class="btn btn-lg btn-primary btn-block" style='background: rgb(0, 120, 121); border-color: rgb(0, 120, 121);' type="submit">Sign in
+	            </button>
+	            <p class="mt-5 mb-3 text-muted">© 2019-2020</p>
+			</form>
+		</div>
 {% endblock %}
 

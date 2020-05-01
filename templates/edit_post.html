@@ -14,14 +14,13 @@
 {% block content %}
 	
 	<div class='col-md-10' style="margin-left: auto;
-    margin-right: auto;">
+    margin-right: auto; position: inherit;">
 
 		<form action="" method="POST">
 
 			{% for field in form %}
                 <div class="form-group">
-                    
-                    {{ field(class='form-control form-value', placeholder=field.id) }}
+                    {{ field(class='form-control form-value', autocomplete='off', placeholder=field.id) }}
                     {% for error in field.errors %}
                         {% if field.id == 'tags' %}
                             {{ error|safe }}

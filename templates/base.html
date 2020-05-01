@@ -1,119 +1,169 @@
 <!DOCTYPE html>
 <html lang='en'>
   <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" charset='UTF-8'>
-      <title>
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0" charset='UTF-8'>
+	  <title>
 
-        {% block title %}
+		{% block title %}
 
-        {% endblock %} | Flask app
+		{% endblock %}
 
-      </title>
+	  </title>
 
-      <link rel="stylesheet" href="/static/css/style.css" type="text/css"> 
-      <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      
+	  <link rel="stylesheet" href="/static/css/style.css" type="text/css"> 
+	  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	  
 
-      <link href="https://fonts.googleapis.com/css?family=Slabo+27px&display=swap" rel="stylesheet">
+	  <link href="https://fonts.googleapis.com/css?family=Slabo+27px&display=swap" rel="stylesheet">
 
-      <link rel="shortcut icon" href="/static/img/favicon.ico">
-      
-      <script src="https://kit.fontawesome.com/45fa0ecad3.js" crossorigin="anonymous"></script>
-      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-      <script src="/static/scripts/button_to_top.js" type="text/javascript"></script>
+	  <link rel="shortcut icon" href="/static/img/brain.svg">
+
+	  <script src="https://kit.fontawesome.com/45fa0ecad3.js" crossorigin="anonymous"></script>
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="/static/scripts/button_to_top.js" type="text/javascript"></script>
+	<script>
+	</script>
+<!-- 	<script>
+		$( "submit_search" ).click(function() {
+		  alert(this.value);
+		});
+	</script> -->
   </head>
-    <body >
-          <div class='center'>
-            <div class="post-body">
-              <div id="header_inner">
-              <form class="media_search header_search" action="{{ url_for('posts.search', slug=request.args.get('q', '')) }}" method="GET">
-                <div class="search-container">
-                  <input type="submit" value=" " class="icon_search">
-                  <span>
-                    <input autocomplete="off" class="q" type="text" name="q" value="{{ q }}" placeholder="Search" data-autofocus="" autocomplete="on">
-                  </span>
+	<body>
+		<!-- <div style="display: flex"> -->
+		<!-- <div class='left'>left</div> -->
+		  <div class='center'>
+			<div class="post-body">
+			  <div id="header_inner">
+				
+				<div class='media_search header_search' >
+				<form action="{{ url_for('posts.search', slug=request.args.get('q', ' ')) }}" method="GET">
+					<div class="search-container">
+						<input id="submit_search" type="submit" value=" " class="icon_search">
+						<span>
+						  <input autocomplete="off" class="q" type="text" name="q" value="{{ q }}" placeholder="Search" data-autofocus="">
+						</span>
+					</div>
+				
 
-                </div>
-                
-              </form>
-              <div>
-                <div class="navbar navbar-light">
-                  {% if session['username'] %}
-                    <button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ session['username'] }}">
-                      <i class="fas fa-user-circle with_user"></i>
-                    </button>
-                  {% else %}
-                    <button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-user"></i>
-                      </button>
-                  {% endif %}
+				<div class="navbar navbar-light profile-button">
+				  {% if session['username'] %}
+					<button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ session['username'] }}">
+					  <i class="fas fa-user-circle with_user"></i>
+					</button>
+				  {% else %}
+					<button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fas fa-user"></i>
+					  </button>
+				  {% endif %}
 
-                  <div class="collapse navbar-collapse  drop-menu dropdown-menu" id="navbarTogglerDemo02" aria-labelledby="dropdownMenuButton">
-                    <ul class="navbar-nav " id="dropdown-menu-items">
+				  <div class="collapse navbar-collapse  drop-menu dropdown-menu" id="navbarTogglerDemo02" aria-labelledby="dropdownMenuButton">
+					<ul class="navbar-nav " id="dropdown-menu-items">
 
-                      <li class="dropdown-item" id="dropdown-menu-items">
-                        <a class="nav-link" href=" {{ url_for('index') }} ">Knots</a>
-                      </li>
+					  <li class="dropdown-item" id="dropdown-menu-items">
+						<a class="nav-link" href=" {{ url_for('index') }} ">Knots</a>
+					  </li>
 
-                      <li class="dropdown-item" id="dropdown-menu-items">
-                        <a class="nav-link" href=" {{ url_for('posts.index') }}">Blog <span class="sr-only">(current)</span></a>
-                      </li>
+					  <li class="dropdown-item" id="dropdown-menu-items">
+						<a class="nav-link" href=" {{ url_for('posts.index') }}">Blog <span class="sr-only">(current)</span></a>
+					  </li>
 
-                      {% if session['username'] %}
-                        {% if session['auth'] %}
-                          <li class="dropdown-item" id="dropdown-menu-items">
-                            <a class="nav-link" style="font-size: 30px;" href="{{ url_for('posts.create_post') }}">&#x270d;</a>
-                          </li>
-                        {% else %}
-                          <li class="dropdown-item" id="dropdown-menu-items">
-                            <a class="nav-link" style="font-size: 30px;" title="Confirm email" href="">&#x270d;</a>
-                          </li>
-                        {% endif %}
+					  {% if session['username'] %}
+						{% if session['auth'] %}
+						  <li class="dropdown-item" id="dropdown-menu-items">
+							<a class="nav-link" style="font-size: 30px;" href="{{ url_for('posts.create_post') }}">&#x270d;</a>
+						  </li>
+						{% else %}
+						  <li class="dropdown-item" id="dropdown-menu-items">
+							<a class="nav-link" style="font-size: 30px;" title="Confirm email" href="">&#x270d;</a>
+						  </li>
+						{% endif %}
 
-                        <li class="dropdown-item" id="dropdown-menu-items">
-                          <a class="nav-link" href="{{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous') }}" title="Profile">Profile</a>
-                        </li>
-                        <li class="dropdown-item" id="dropdown-menu-items">
-                          <a class="nav-link" href="{{ url_for('login.log_out') }}">Log out</a>
-                        </li>
-                      {% endif %}
+						<li class="dropdown-item" id="dropdown-menu-items">
+						  <a class="nav-link" href="{{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous') }}" title="Profile">Profile</a>
+						</li>
+						<li class="dropdown-item" id="dropdown-menu-items">
+						  <a class="nav-link" href="{{ url_for('login.log_out') }}">Log out</a>
+						</li>
+					  {% endif %}
 
-                      {% if not session['username'] %}
-                        <li class="dropdown-item" id="dropdown-menu-items">
-                          <a class="nav-link" href="{{ url_for('login.sign_up') }}">Sign up</a>
-                        </li>
-                        <li class="dropdown-item" id="dropdown-menu-items">
-                          <a class="nav-link" href="{{ url_for('login.log_in') }}">Login</a>
-                        </li>
-                      {% endif %}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+					  {% if not session['username'] %}
+						<li class="dropdown-item" id="dropdown-menu-items">
+						  <a class="nav-link" href="{{ url_for('login.sign_up') }}">Sign up</a>
+						</li>
+						<li class="dropdown-item" id="dropdown-menu-items">
+						  <a class="nav-link" href="{{ url_for('login.log_in') }}">Login</a>
+						</li>
+					  {% endif %}
+					</ul>
+					</div>
+				</div>
+				{% if categories %}
+					<div class="category-show" >
+						<select id="category-value-select" data-url="{{ url_for('posts.category_detail', slug='empty')}}" name="c">
+							{% if c %}
+								<option style='color: #4ea08a;;' value='none'>All category</option>
+								<option selected="selected">{{ c.name }}</option>
+								{% for category in categories %}
+									{% if category.name != c.name %}
+										<option value="{{ category.name }}">{{ category.name }}</option>
+									{% endif %}
+								{% endfor %}
+							{% else %}
+								<option style='color: #4ea08a;;' value='none'>All category</option>
+								{% for category in categories %}
+									<option value="{{ category.name }}">{{ category.name }}</option>
+								{% endfor %}
+							{% endif %}
+						</select>
+					</div>
+				{% endif %}             
+				</form>
+				</div>
+			</div>
+		  </div>
 
-          <div class="content_title">
-            {% block content_title %}
+		  <div class="content_title">
+			{% block content_title %}
+			{% endblock %}
+		  </div>
+			
+		  <div class="post-body">
+				{% with messages = get_flashed_messages(with_categories=true) %}
+					{% if messages %}
+						{% for category, message in messages %}
+						<div  id='alert-msg' class="{{ category }}" role="alert">
+							{{ message }}
+						</div>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+			{% block content %}
+			{% endblock %}
+		  </div>
+		  {% block logo %}
 
-            {% endblock %}
-          </div>
-            
-          <div class="post-body">
-            {% block content %}
-
-            {% endblock %}
-          </div>
-          {% block logo %}
-
-          {% endblock %}
-        <div id="toTop" ><i class="fas fa-chevron-up"></i></div>
-        </div>
-        <br>
-        <br>
-        <br>
-    </body>
+		  {% endblock %}
+		<div id="toTop" ><i class="fas fa-chevron-up"></i></div>
+		<br >
+<!-- 		<div class='footer'>
+			<div>Your account</div>
+			<div>Info</div>
+			<div>Categories</div>
+		</div> -->
+		<br>
+		</div>
+		<!-- <div class='right'>
+			<img src="/static/img/right.webp" alt="WebP rules." />
+		</div> -->
+		<!-- </div> -->
+		<script src="/static/scripts/main.js" type="text/javascript" charset="utf-8"S></script>
+		<script src="/static/scripts/category_move.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$("div#alert-msg").fadeOut(4000);
+		</script>
+	</body>
 </html>

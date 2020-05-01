@@ -70,8 +70,6 @@
                         </div>
                     </div>
                 {% endfor %}
-            {% else %}
-                ...
             {% endif %}
         </div>
 
@@ -80,10 +78,9 @@
         <div>
             <form action="" method="POST">
                 {% if session.get('username') %}
-                    <h4>Write comment</h4>
                     {% for field in form %}
                     <div class="form-group">
-                        {{ field(class='form-control form-value-comment textarea', placeholder=field.id)|safe }}
+                        {{ field(class='form-control form-value-comment textarea', placeholder='write comment') }}
                         {% for error in field.errors %}
                         <span style="color: red;">{{ error }}</span>
                         {% endfor %}

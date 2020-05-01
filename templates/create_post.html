@@ -11,15 +11,21 @@
 {% block content %}
     
     <div class='col-md-10'  style="margin-left: auto;
-    margin-right: auto; padding-top: 8px;">
+    margin-right: auto; padding-top: 8px; position: inherit;">
 
         <form action="" method="POST">
             {% for field in form %}
                 <div class="form-group">
-                    
-                    {{ field(class='form-control', placeholder=field.id) }}
+ <!--                    {% if field.type != "CSRFTokenField" and field.name == "category" %}
+                        {{ field.label(class='control-label') }}       
+                    {% endif %} -->
+                    {{ field(class='form-control', autocomplete='off', placeholder=field.id) }}
                     {% for error in field.errors %}
-                        <span style="color: red;">{{ error }}</span>
+                        {% if field.id == 'tags' %}
+                            {{ error|safe }}
+                        {% else %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endif %}
                     {% endfor %}
                 </div>
             {% endfor %}

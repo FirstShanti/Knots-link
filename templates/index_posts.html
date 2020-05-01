@@ -4,9 +4,6 @@
     {{ title }}
 {% endblock %}
 
-{% block content_title %}
-
-{% endblock %}
 
 {% block content %}
 
@@ -27,7 +24,7 @@
         <nav>
             <ul class="pagination">
 
-                <li 
+                <li id='prev-page'
                     {% if not pages.has_prev %}
                         class="page-item disabled"
                     {% endif %}
@@ -40,7 +37,7 @@
                     {% if page %}
                         <li {% if page == pages.page %} class="page-item active" {% endif %}>
 
-                            <a class="page-link" href="./?page={{ page }}&q={{ q }}">{{ page }}<span class="sr-only">(current)</span></a>
+                            <a id='current-page' class="page-link" href="./?page={{ page }}&q={{ q }}&c={{ c }}" value={{page}}>{{ page }}<span class="sr-only">(current)</span></a>
                             
                         </li>
                     {%else %}
@@ -54,11 +51,12 @@
                 {% endfor %}
                 
 
-                <li {% if not pages.has_next %}
+                <li id='next-page'
+                    {% if not pages.has_next %}
                         class="page-item disabled"
                     {% endif %}
                 >
-                    <a class="page-link" href="./?page={{ pages.next_num }}">&#187;<span class="sr-only">(current)</span></a>
+                    <a id='next-page' class="page-link" href="./?page={{ pages.next_num }}">&#187;<span class="sr-only">(current)</span></a>
                 </li>
             </ul>
         </nav>

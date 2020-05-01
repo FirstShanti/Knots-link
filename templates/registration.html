@@ -10,28 +10,33 @@
 
 {% block content %}
 
-	<div class='col-md-3 login-box' style="margin: auto;">
 
-		<form style="justify-content: center;" action="" method="POST">
+		<div class="logo_on_index" >
+        <div class="logo_knots">
+            <a class="knots_title" href='{{ url_for("posts.index")}}' title="Узлы">
+                <img src="/static/img/logo.png">
+            </a>
+        </div>
+	    </div>
+
+        <div class='container-fluid text-center body_'>
+		<form class='form-signin' action="" method="POST">
 			{% for field in form %}
-				<div class="form-group">
-					{% if field.type != "CSRFTokenField" %}
-						<!-- {{ field.label(class='control-label') }} -->
-					{% endif %}
-					{{ field(class='login-form-control', placeholder=field.id) }}
-					{% for error in field.errors %}
-            			<span class="login-error">{{ error }}</span>
-            		{% endfor %}
-				</div>
+				{% if field.type != "CSRFTokenField" %}
+					<!-- {{ field.label(class='control-label') }} -->		
+				{% endif %}
+				{{ field(class='form-control', autocomplete="off", placeholder=field.id) }}
+				{% for error in field.errors %}
+           			<div class="alert alert-danger" role="alert">
+ 						{{ error }}
+					</div>
+           		{% endfor %}
 			{% endfor %}
-
-			<div class="btn-group" style="padding-top: 15px; display: block; text-align: center;">
-		  		<button type="submit" 
-		  		href="https://t.me/knots_bot?start" target="_blank" class="btn btn-info">Sign up</button>
-			</div>
-			
+            <button class="btn btn-lg btn-primary btn-registration" style='background: rgb(0, 120, 121); border-color: rgb(0, 120, 121);' type="submit">Create account</button>
+            <a class="btn btn-lg btn-primary" style='margin-top: 20px; box-shadow: none; color: #3a3a3a; outline: none; background: rgb(34,223,177); border-color: rgb(34,223,177);' href="{{ url_for('login.log_in') }}" type='button'>Sign up</a>
+            <p class="mt-5 mb-3 text-muted">© 2019-2020</p>
 		</form>
-	</div>
+		</div>
 
 {% endblock %}
 
