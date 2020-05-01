@@ -1,11 +1,10 @@
-
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
-from config import * 
+from config import Configuration
 
 
 app = Flask(__name__)
