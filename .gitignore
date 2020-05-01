@@ -1,6 +1,8 @@
 .gitignore
+.gitignore.save
 __pycache__
 *.vscode
 *.pyc
 migrations/versions/
 *.db
+venv/
