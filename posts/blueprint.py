@@ -5,18 +5,21 @@ from flask import (
     url_for,
     request,
     session,
-    flash
+    flash,
+    jsonify
 )
 from models import (
     Post,
     Tag,
     Knot,
     Comment,
+    Category,
     slugify
 )
-from sqlalchemy.exc import IntegrityError
+# from sqlalchemy.exc import IntegrityError
+import json
 import locale
-from forms import PostForm, CommentForm
+from forms import PostForm, CommentForm, CategoryForm
 from app import db
 import re
 from datetime import datetime, timedelta
@@ -28,6 +31,10 @@ lang = {'ru_RU':{'comment':['вчера в ', 'сегодня в ']},
         'en_US':{'comment':['yesterday at ', 'today at ']}
     }
 
+SUCCESSFUL = 'alert alert-success'
+ERROR = 'alert alert-danger'
+WARNING = "alert alert-warning"
+
 posts = Blueprint('posts',
     __name__,
     template_folder='templates'
@@ -37,6 +44,11 @@ user_profile = Blueprint('user_profile',
     template_folder='templates'
 )
 
+
+def get_category():
+    return [(i.short_name, i.name) for i in Category.query.all()]
+
+
 ### Create post ###
 '''Page with form for write Title Body and Tag. 
    Than its information put in class Post and add in db.''' 
@@ -44,16 +56,16 @@ user_profile = Blueprint('user_profile',
 @posts.route('/create', methods=['POST', 'GET'])
 @session_time
 def create_post():
-
     form = PostForm(request.form)
     
     if 'username' in session:
         if request.method == 'POST' and form.validate_on_submit():
             try:
                 post = Post(
-                    title=form.title.data,
+                    title = form.title.data,
                     preview = form.preview.data,
-                    body=form.body.data,
+                    body = form.body.data,
+                    owner_id = Category.query.filter(Category.short_name==form.category.data).first().id, 
                     author = session['username']
                 )
                 tag_list = re.sub(r'[\s, .]', ' ', form.tags.data).split()
@@ -68,17 +80,14 @@ def create_post():
                     post.visible = False
                 db.session.add(post)
                 db.session.commit()
-                flash('Post create')
+                flash(u'Post create', SUCCESSFUL)
             except Exception as e:
-                print(f'Something wrong\n{e.__class__}')
-                raise e
+                flash(u'ERROR: {e.__class__}', ERROR)
             return redirect(url_for('posts.index'))
-        elif not form.validate_on_submit():
-            print('validate: ', form.validate_on_submit())
     else:
         return redirect('/log_in')
 
-    return render_template('create_post.html', form=form)
+    return render_template('create_post.html', form=form, categories=Category.query.all())
 
 
 @posts.route('/<slug>/edit/', methods=['POST', 'GET'])
@@ -86,11 +95,12 @@ def create_post():
 def edit_post(slug):
     post = Post.query.filter(Post.slug==slug).filter(Post.author==session.get('username')).first()
     form = PostForm(
-        title=post.title,
-        body=post.body,
+        title = post.title,
+        body = post.body,
         preview = post.preview,
+        category = Category.query.get(post.owner_id).short_name,
         # реализовать удаление тегов
-        tags=', '.join(list(str(i) for i in post.tags.__iter__()))  
+        tags=', '.join(list(str(i.name) for i in post.tags.__iter__()))  
     )
 
     try:
@@ -98,10 +108,12 @@ def edit_post(slug):
             return redirect(url_for('posts.index'))
     except KeyError:
         pass
+
     if request.method == 'POST' and session['username'] == post.author and form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
         post.preview = form.preview.data
+        post.owner_id = Category.query.filter(Category.short_name==form.category.data).first().id
         tag_list = re.sub(r'[\s, .]', ' ', form.tags.data).split()
         post.tags.clear()
         db.session.commit()      
@@ -115,9 +127,9 @@ def edit_post(slug):
             if request.form['submit'] == 'publish':
                 post.visible = True
             db.session.commit()
-            print('Post save')
-        except:
-            print('not save')
+            flash(u'Changes saved successfully', 'alert alert-success')
+        except Exception as e:
+            flash(u'ERROR: {e}', 'alert alert-warning')
         return redirect(url_for('posts.post_content', slug=post.slug))
     elif not session:
         return redirect(url_for('login.log_in'))
@@ -125,6 +137,7 @@ def edit_post(slug):
     return render_template('edit_post.html',
         post=post,
         form=form,
+        categories=Category.query.all()
     )
 
 @posts.route('/<slug>/delete/', methods=['POST', 'GET'])
@@ -137,33 +150,38 @@ def delete_post(slug):
         try:
             post.invisible()
             db.session.commit()
+            flash(u'Post moved to trash', WARNING)
         except Exception as e:
-            print(f'Something wrong\n{e.__class__}')
+            flash(u'Something happened', ERROR)
     return redirect('/blog/')
 
 
 @posts.route('/', methods=['GET'])
 def index():
-    print(f"user: {session.get('username')}")
-    page = request.args.get('page')
+    
+    if session.get('username'):
+        page = request.args.get('page')
+        if page and page.isdigit():
+            page = int(page)
+        else:
+            page = 1
+        # сортировка видимых от последнего до первого 
+        posts = Post.query.order_by(db.desc(Post.created)).filter(Post.visible==True)
 
-    if page and page.isdigit():
-        page = int(page)
+        for post in posts:
+            post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>|<table|<tr|<td|</table|</td|</tr', '', ''.join(i for i in post.body.split("\n")[:3]))
+
+        pages = posts.paginate(page=page, per_page=6, max_per_page=6)
+
+        return render_template('index_posts.html',
+            posts=posts,
+            pages=pages,
+            title="Blog",
+            categories=Category.query.all(),
+            с=''
+        )
     else:
-        page = 1
-    # сортировка видимых от последнего до первого 
-    posts = Post.query.order_by(db.desc(Post.created)).filter(Post.visible==True)
-
-    for post in posts:
-        post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>|<table|<tr|<td|</table|</td|</tr', '', ''.join(i for i in post.body.split("\n")[:3]))
-
-    pages = posts.paginate(page=page, per_page=6, max_per_page=6)
-
-    return render_template('index_posts.html',
-        posts=posts,
-        pages=pages,
-        title="Blog"
-    )
+        return redirect('/log_in')
 
 
 @posts.route('/<slug>', methods=['POST', 'GET'])
@@ -219,20 +237,19 @@ def post_content(slug):
         comments = comments,
         form=form,
         slug=slug,
+        categories=Category.query.all()
     )
 
 
 @user_profile.route('/<slug>/')
 @session_time
 def get_user_data(slug):
-    print(f'session: {session}')
     page = request.args.get('page')
     try:
         if slug == 'anonymous':
             return redirect('/log_in')
         elif 'username' in session:
             user = Knot.query.filter(Knot.slug==slug).first()
-            print(f'get_user_data: {user.username}')
             posts = Post.query.filter(Post.author==user.username) #.filter(Post.visible==True)
 
             if page and page.isdigit():
@@ -254,7 +271,8 @@ def get_user_data(slug):
         username=user.username,
         number=user.number,
         posts=posts,
-        pages=pages
+        pages=pages,
+        categories=Category.query.all()
     )
 
 
@@ -275,13 +293,48 @@ def tag_detail(slug):
         tag=tag,
         pages=pages,
         title=tag,
-        content_title=f'#{tag}'
+        content_title=f'#{tag}',
+        categories=Category.query.all()
     )
 
 
-@posts.route('/search/')
-def search():
-    q = request.args.get('q') # search value from form
+@posts.route('/category/add', methods=['GET', 'POST'])
+@session_time
+def category_create():
+
+    form = CategoryForm(request.form)
+
+    if 'username' in session:
+        if request.method == 'POST' and form.validate_on_submit():
+            try:
+                category = Category(
+                    name=form.name.data,
+                    short_name=form.short_name.data
+                )
+                db.session.add(category)
+                db.session.commit()
+                flash('Category create')
+            except Exception as e:
+                print(f'Something wrong\n{e.__class__}')
+            return redirect(url_for('admin.admin_index'))
+    else:
+        return redirect('/log_in')
+
+
+@posts.route('/category/<slug>/', methods=['GET'])
+def category_detail(slug):
+
+    headers = request.headers
+    api_header = headers.get('api_header')
+
+    if slug == 'none':
+        posts = Post.query.filter(Post.visible==True)
+    elif Category.query.filter(Category.name==slug).first():
+        category = Category.query.filter(Category.slug==slug).first()
+        posts = Post.query.filter(Post.owner_id==category.id)
+    else:
+        return jsonify({'json_list':0})
+
     page = request.args.get('page')
 
     if page and page.isdigit():
@@ -289,21 +342,81 @@ def search():
     else:
         page = 1
 
-    if q:
+    pages = posts.paginate(page=page, per_page=6)
+    categories = Category.query.all()
+
+    pagination = {}
+    pagination['pages'] = [i for i in pages.iter_pages()]
+    pagination['items'] = [i.__dict__ for i in pages.items]
+    pagination['has_prev'] = pages.has_prev
+    pagination['has_next'] = pages.has_next
+    pagination['next_num'] = pages.next_num
+    pagination['prev_num'] = pages.prev_num
+
+    for i in pagination['items']:
+        del i['_sa_instance_state']
+        i['created'] = i['created'].isoformat(timespec='seconds')
+    print(pagination)
+    if api_header:
+        num_list = []
+        for i in pages.iter_pages():
+            num_list.append(i)
+        # return jsonify({'json_list' : [{'title':i.title, 'preview':i.preview, 'slug':i.slug} for i in pages.items], 'pages_list' : num_list})
+        return jsonify(pagination)
+
+    return render_template('index_posts.html',
+        title=category.name,
+        pages=pages,
+        c=category,
+        categories=categories
+    )
+
+
+@posts.route('/search/')
+def search():
+    q = request.args.get('q') # search value from form
+    cat = request.args.get('c')
+    print(f'q: {q}\ncategory: {cat}')
+    page = request.args.get('page')
+    try:
+        category = Category.query.filter(Category.name==cat).first()
+    except Exception as e:
+        category = False
+    print(category)
+    if page and page.isdigit():
+        page = int(page)
+    else:
+        page = 1
+
+    if q and category:
+        posts = Post.query.filter(Post.owner_id.contains(category.id)).filter(
+            Post.title.contains(q) |
+            Post.title.contains(q.lower()) |
+            Post.title.contains(q.capitalize()) |
+            Post.title.contains(' '.join(i.capitalize() for i in q.split(' '))) |
+            Post.body.contains(q) |
+            Post.tags.any(name=q.lower()) |
+            Post.author.contains(q)
+        ).filter(Post.visible==True)
+    elif q and not category:
         posts = Post.query.filter(
             Post.title.contains(q) | # поиск по заголовку
             Post.body.contains(q) | #поиск по телу поста
             Post.tags.any(name=q.lower()) |
             Post.author.contains(q) # поиск по тегам
         ).filter(Post.visible==True)
+    elif not q and category:
+        posts = Post.query.filter(Post.owner_id.contains(category.id)).filter(Post.visible==True)
+        q = ''
     else:
-        posts = Post.query.order_by(db.desc(Post.created))
-
+        posts = Post.query.order_by(db.desc(Post.created)).filter(Post.visible==True)
     pages = posts.paginate(page=page, per_page=6, max_per_page=6)
 
     return render_template('index_posts.html',
         pages=pages,
         q=q,
-        title=f'{q} results',
-        content_title=f'Result for <span style="color: #718F94">{q}</span>:'
+        title=f'Search: {q} {category.name if category else "All category"}',
+        content_title=f'Result for <span style="color: #718F94">{q}</span>:',
+        categories=Category.query.all(),
+        c=category
     )
