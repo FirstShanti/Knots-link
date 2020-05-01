@@ -40,6 +40,7 @@ class Post(db.Model):
     created = db.Column(db.DateTime, default=datetime.now())
     author = db.Column(db.String(32))
     visible = db.Column(db.Boolean, default=1)
+    owner_id = db.Column(db.Integer, db.ForeignKey('category.id'))
 
     def __init__(self, *args, **kwargs):
         super(Post, self).__init__(*args, **kwargs)
@@ -56,17 +57,30 @@ class Post(db.Model):
         if self.title:
             self.slug = f'post{self.uuid}_{slugify(self.title)}'
 
-    def __repr__(self):
-        return f'''
-            Post id: {self.id},
-            Post uuid: {self.uuid},
-            title: {self.title},
-            slug: {self.slug}
-        ''' 
+    # def __repr__(self):
+    #     return f'''
+    #         Post id: {self.id},
+    #         Post uuid: {self.uuid},
+    #         title: {self.title},
+    #         slug: {self.slug}
+    #     ''' 
     
     # tags and comments to post
     tags = db.relationship('Tag', passive_deletes=True, secondary=post_tags)
     comments = db.relationship('Comment', backref='owner')
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(46), unique=True)
+    short_name = db.Column(db.String(46), unique=True)
+    slug = db.Column(db.String(100), unique=True)
+    
+    posts = db.relationship('Post', backref='owner')
+
+    def __init__(self, *args, **kwargs):
+        super(Category, self).__init__(*args, **kwargs)
+        self.slug = slugify(self.name)
 
 
 # class Tag (class of tag for Post)
@@ -85,8 +99,9 @@ class Tag(db.Model):
         super(Tag, self).__init__(*args, **kwargs)
         self.slug = slugify(self.name)
 
-    def __repr__(self):
-        return self.name
+    # def __repr__(self):
+    #     return self.name
+
 
 # class Knot - (class of user)
 class Knot(db.Model):
@@ -154,14 +169,12 @@ class Comment(db.Model):
         if self.text:
             self.slug = f'comment_{self.uuid}'
 
-    def __repr__(self):
-        return f'''
-            Comment id: {self.id}
-            Comment uuid: {self.uuid},
-            text: {self.text},
-            slug: {self.slug}.
-            author: {self.author},
-            created: {self.created}
-        ''' 
-
-
+    # def __repr__(self):
+    #     return f'''
+    #         Comment id: {self.id}
+    #         Comment uuid: {self.uuid},
+    #         text: {self.text},
+    #         slug: {self.slug}.
+    #         author: {self.author},
+    #         created: {self.created}
+    #     ''' 
