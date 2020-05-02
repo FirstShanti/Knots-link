@@ -4,11 +4,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
-from config import Configuration
+from config import Development, Production, env
 
 
 app = Flask(__name__)
-app.config.from_object(Configuration)
+app.config.from_object(env[os.environ.get('ENVIRONMENT')])
 
 db = SQLAlchemy(app)
 ckeditor = CKEditor(app)
