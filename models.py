@@ -121,6 +121,7 @@ class Knot(db.Model):
     authenticated = db.Column(db.Boolean, default=0)
     auth_key = db.Column(db.String(256))
     auth_key_create = db.Column(db.DateTime, default=created)
+    admin = db.Column(db.Boolean, default=False)
 
     def __init__(self, *args, **kwargs):
         super(Knot, self).__init__(*args, **kwargs)
