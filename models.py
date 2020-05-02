@@ -110,7 +110,7 @@ class Knot(db.Model):
     s_name = db.Column(db.String(32))
     username = db.Column(db.String(32))
     email = db.Column(db.String(129), unique=True)
-    number = db.Column(db.String(15))  # phone number
+    phone_number = db.Column(db.String(15))  # phone number
     password = db.Column(db.String(256))
 
     slug = db.Column(db.String(140), unique=True)
@@ -121,7 +121,7 @@ class Knot(db.Model):
     authenticated = db.Column(db.Boolean, default=0)
     auth_key = db.Column(db.String(256))
     auth_key_create = db.Column(db.DateTime, default=created)
-    admin = db.Column(db.Boolean, default=False)
+    admin = db.Column(db.Boolean, default=0)
 
     def __init__(self, *args, **kwargs):
         super(Knot, self).__init__(*args, **kwargs)
