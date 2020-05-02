@@ -61,7 +61,7 @@ def sign_up():
 				s_name=form.s_name.data,
 				username=form.username.data,
 				# включить шифрование для номеров телефона
-				number=form.number.data,
+				phone_number=form.phone_number.data,
 				email=form.email.data,
 				password=encrypt_string(form.password.data)
 			)
