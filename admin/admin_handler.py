@@ -10,7 +10,7 @@ def admin_handler(f):
 		if session:
 			if session['username']:
 				try:
-					user = Knot.query.filter(Knot.username==session['username'])
+					user = Knot.query.filter(Knot.username==session['username']).first()
 					if user.admin:
 						return f(*args, **kwargs)
 				except:

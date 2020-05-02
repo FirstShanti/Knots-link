@@ -269,7 +269,7 @@ def get_user_data(slug):
         first_name=user.f_name,
         second_name=user.s_name,
         username=user.username,
-        number=user.number,
+        phone_number=user.phone_number,
         posts=posts,
         pages=pages,
         categories=Category.query.all()

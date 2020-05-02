@@ -34,6 +34,7 @@ def authentication():
 			return redirect('/blog/')
 		elif user.auth_key == request.args.get('key') and user.check_auth_key():
 			user.authenticated = 1
+			session['auth'] = True
 			db.session.commit()
 			flash(u'Your email address has been verified!', 'alert alert-success')
 			return redirect(url_for('login.log_in'))
