@@ -40,7 +40,7 @@ class Post(db.Model):
     created = db.Column(db.DateTime, default=datetime.now())
     author = db.Column(db.String(32))
     visible = db.Column(db.Boolean, default=1)
-    owner_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    owner_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
 
     def __init__(self, *args, **kwargs):
         super(Post, self).__init__(*args, **kwargs)
