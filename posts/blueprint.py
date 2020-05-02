@@ -356,7 +356,7 @@ def category_detail(slug):
     for i in pagination['items']:
         del i['_sa_instance_state']
         i['created'] = i['created'].isoformat(timespec='seconds')
-    print(pagination)
+    # print(pagination)
     if api_header:
         num_list = []
         for i in pages.iter_pages():
@@ -382,7 +382,7 @@ def search():
         category = Category.query.filter(Category.name==cat).first()
     except Exception as e:
         category = False
-    print(category)
+    # print(category)
     if page and page.isdigit():
         page = int(page)
     else:
