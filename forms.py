@@ -36,7 +36,7 @@ class RegistrationForm(FlaskForm):
 		validators=[DataRequired()], id='username')
 	email = StringField('Email*',
 		validators=[DataRequired()], id='email')
-	number = StringField('Phone number', id='phone number')
+	phone_number = StringField('Phone number', id='phone number')
 	password = PasswordField('New Password',
 		validators=[DataRequired()], id='password')
 	confirm = PasswordField('Re-enter password',
@@ -54,11 +54,11 @@ class RegistrationForm(FlaskForm):
 		except AttributeError:
 			raise ValidationError('''Invalid email''')
 
-	def validate_number(form, number):
-		if number.data:
+	def validate_number(form, phone_number):
+		if phone_number.data:
 			try:
-				num = re.match(r"^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$", number.data).string
-				if Knot.query.filter_by(number=num).first() is not None:
+				num = re.match(r"^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$", phone_number.data).string
+				if Knot.query.filter_by(phone_number=num).first() is not None:
 					raise ValidationError('''This phone number is reserved.\n
 						Please use another number.''')
 			except AttributeError:
