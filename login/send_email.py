@@ -6,8 +6,7 @@ def send_email(user):
 	
 	login = os.environ.get('MAIL_USERNAME')
 	password = os.environ.get('MAIL_PASSWORD')
-
-	fromaddr = os.environ.get('MAIL_USERNAME')
+	fromaddr = login
 	toaddr = user.email
 
 	email = EmailMessage()
@@ -17,9 +16,8 @@ def send_email(user):
 
 	url = f'{request.url_root}auth/?user={user.slug}&key={user.auth_key}'
 	email.set_content(render_template('confirmed.html', url=url), subtype='html')
-	flash('Mail sent to user {}'.format(user.username))
 	# Send the message via local SMTP server.
-	with smtplib.SMTP_SSL('mail.privateemail.com:465') as server:
+	with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
 		server.ehlo()
 		server.login(login, password)
 		
