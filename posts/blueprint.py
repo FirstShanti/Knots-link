@@ -19,7 +19,7 @@ from models import (
 # from sqlalchemy.exc import IntegrityError
 import json
 import locale
-from forms import PostForm, CommentForm, CategoryForm
+from forms import PostForm, CommentForm, CategoryForm, get_category
 from app import db
 import re
 from datetime import datetime, timedelta
@@ -43,10 +43,6 @@ user_profile = Blueprint('user_profile',
     __name__,
     template_folder='templates'
 )
-
-
-def get_category():
-    return [(i.short_name, i.name) for i in Category.query.all()]
 
 
 ### Create post ###
@@ -86,6 +82,8 @@ def create_post():
             return redirect(url_for('posts.index'))
     else:
         return redirect('/log_in')
+
+    form.category.choices = get_category()
 
     return render_template('create_post.html', form=form, categories=Category.query.all())
 
@@ -127,9 +125,9 @@ def edit_post(slug):
             if request.form['submit'] == 'publish':
                 post.visible = True
             db.session.commit()
-            flash(u'Changes saved successfully', 'alert alert-success')
+            flash(u'Changes saved successfully', SUCCESSFUL)
         except Exception as e:
-            flash(u'ERROR: {e}', 'alert alert-warning')
+            flash(u'ERROR: {e}', ERROR)
         return redirect(url_for('posts.post_content', slug=post.slug))
     elif not session:
         return redirect(url_for('login.log_in'))
@@ -210,7 +208,7 @@ def post_content(slug):
                 )
                 db.session.add(comment)
                 db.session.commit()
-                flash('Comment create')
+                flash('Comment create', SUCCESSFUL)
             except Exception as e:
                 print(f'Something wrong\n{e.__class__}')
                 raise e
@@ -313,7 +311,7 @@ def category_create():
                 )
                 db.session.add(category)
                 db.session.commit()
-                flash('Category create')
+                flash('Category create', SUCCESSFUL)
             except Exception as e:
                 print(f'Something wrong\n{e.__class__}')
             return redirect(url_for('admin.admin_index'))

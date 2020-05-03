@@ -120,7 +120,6 @@ class PostForm(FlaskForm):
 				<span style="color: red;">{", ".join(char for char in invalid_chars)}</span>')
 
 	def validate_category(form, category):
-		print(category.data)
 		if category.data in ['ch', '--choose category--']:
 			raise ValidationError(f'Choose category')
 
