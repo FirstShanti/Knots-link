@@ -78,7 +78,8 @@ def create_post():
                 db.session.commit()
                 flash(u'Post create', SUCCESSFUL)
             except Exception as e:
-                flash(u'ERROR: {e.__class__}', ERROR)
+                flash(u'ERROR: {}'.format(e.__class__), ERROR)
+                raise e
             return redirect(url_for('posts.index'))
     else:
         return redirect('/log_in')
@@ -157,29 +158,29 @@ def delete_post(slug):
 @posts.route('/', methods=['GET'])
 def index():
     
-    if session.get('username'):
-        page = request.args.get('page')
-        if page and page.isdigit():
-            page = int(page)
-        else:
-            page = 1
-        # сортировка видимых от последнего до первого 
-        posts = Post.query.order_by(db.desc(Post.created)).filter(Post.visible==True)
-
-        for post in posts:
-            post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>|<table|<tr|<td|</table|</td|</tr', '', ''.join(i for i in post.body.split("\n")[:3]))
-
-        pages = posts.paginate(page=page, per_page=6, max_per_page=6)
-
-        return render_template('index_posts.html',
-            posts=posts,
-            pages=pages,
-            title="Blog",
-            categories=Category.query.all(),
-            с=''
-        )
+    # if session.get('username'):
+    page = request.args.get('page')
+    if page and page.isdigit():
+        page = int(page)
     else:
-        return redirect('/log_in')
+        page = 1
+    # сортировка видимых от последнего до первого 
+    posts = Post.query.order_by(db.desc(Post.created)).filter(Post.visible==True)
+
+    for post in posts:
+        post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>|<table|<tr|<td|</table|</td|</tr', '', ''.join(i for i in post.body.split("\n")[:3]))
+
+    pages = posts.paginate(page=page, per_page=6, max_per_page=6)
+
+    return render_template('index_posts.html',
+        posts=posts,
+        pages=pages,
+        title="Blog",
+        categories=Category.query.all(),
+        с=''
+    )
+    # else:
+    #     return redirect('/log_in')
 
 
 @posts.route('/<slug>', methods=['POST', 'GET'])
