@@ -530,6 +530,7 @@ body {
 	height: max-content !important;
 	outline:none;
 	border-bottom: none;
+	color: grey;
 	/*transition: 1s;*/
 }
 
@@ -1112,3 +1113,10 @@ canvas {
     color: white;
 }
 
+.valid_input {
+	color: green !important;
+}
+
+.invalid_input {
+	color: red !important;
+}
