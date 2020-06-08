@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content_title %}
-    <div><h1>New post</h1></div>
+    <h1>New post</h1>
 {% endblock %}
 
 {% block content %}
@@ -16,10 +16,17 @@
         <form action="" method="POST">
             {% for field in form %}
                 <div class="form-group">            
- <!--                    {% if field.type != "CSRFTokenField" and field.name == "category" %}
+                    <!-- {% if field.type != "CSRFTokenField" and field.name == "category" %}
                         {{ field.label(class='control-label') }}       
                     {% endif %} -->
                     {{ field(class='form-control', autocomplete='off', placeholder=field.id) }}
+                    {% if field.lable != 'Category' %}
+                        {% for validator in field.validators %}
+                            {% if 'min' in validator.__dict__ %}
+                            <small min={{ validator.min }} max={{ validator.max }} id="form_{{ field.label.field_id }}_input_length_display" class="form-text ml-1" style="display: none; color: grey; text-align: left !important;">0/{{ validator.min }}</small>
+                            {% endif %}
+                        {% endfor %}                    
+                    {% endif %}
                     {% for error in field.errors %}
                         {% if field.id == 'tags' %}
                             {{ error|safe }}
@@ -40,7 +47,9 @@
         {{ ckeditor.load() }}
         {{ ckeditor.config(name='body', placeholder='text') }}
 
-
     </div>
+    <script src="/static/scripts/ckeditor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/scripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/scripts/validate_form_input_length.js" type="text/javascript" charset="utf-8"></script>
 
 {% endblock %}
