@@ -93,18 +93,21 @@ class LoginForm(FlaskForm):
 
 class PostForm(FlaskForm):
 	title = StringField('Title',
-		validators=[DataRequired(), Length(4, 78)])
+		[DataRequired(), Length(4, 78)])
 	preview = TextAreaField('Preview',
-		validators=[DataRequired(), Length(50, 250)])
+		[DataRequired(), Length(50, 250)])
 	body = CKEditorField('Body',
-		validators=[DataRequired(), Length(250, 50000)])
+		[DataRequired(), Length(250, 50000)])
 	category = SelectField('Category',
-		choices=get_category(),
-		validators=[DataRequired()])
+		[DataRequired()],
+		choices=get_category())
 	tags = StringField('Tag',
-		validators=[DataRequired(), Length(3, 100)])
+		[DataRequired(), Length(3, 100)])
 
-	
+	# print(title.kwargs['validators'][1].__dict__['min'])
+	# print(title.kwargs['validators'][1].min)
+
+
 	def validate_tags(form, tags):
 		invalid_chars = re.findall(r"[!@#$%^&*()~`\-+=\/?\|:\;'\"{}\\.\[\]]", str(tags._value()))
 		invalid_tags = []
@@ -122,7 +125,6 @@ class PostForm(FlaskForm):
 	def validate_category(form, category):
 		if category.data in ['ch', '--choose category--']:
 			raise ValidationError(f'Choose category')
-
 
 
 class CommentForm(FlaskForm):
