@@ -5,6 +5,7 @@ a {
 body {
 	/*background-color: #f5f5f5 !important;*/
 	/*background: url('/static/img/2754227.jpg') repeat;*/
+	font-family: 'Noto Sans SC', sans-serif !important;
 }
 .footer {
 	text-align: center;
@@ -723,7 +724,7 @@ button:focus {
 	cursor:pointer;
 	display:none;
 	color:#4ea08a;
-	font-family:verdana;
+	font-family: verdana;
 	font-size:19px;
 	margin-right: 14.75%;
 	transition: 1s;
@@ -1091,7 +1092,7 @@ canvas {
 }
 
 #myCanvas {
-	z-index: 1;
+	z-index: -1;
 	background: white;
 }
 .logo_knots_index_img {
