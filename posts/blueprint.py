@@ -7,7 +7,6 @@ from app import db
 from datetime import datetime, timedelta
 from login.session_time import session_time
 from login.send_email import send_email
-from utils import generate_post_url
 from flask import (
     Blueprint,
     render_template,
