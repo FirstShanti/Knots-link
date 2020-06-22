@@ -6,4 +6,3 @@ __pycache__
 migrations/versions/
 *.db
 venv/
-sitemap_template.xml
