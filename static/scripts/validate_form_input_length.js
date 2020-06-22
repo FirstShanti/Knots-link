@@ -17,7 +17,6 @@ $(function(){
         min = $(elem_w_min_max_length).attr('min')
         max = $(elem_w_min_max_length).attr('max')
         input_length = $(this).val().length
-        console.log(input_length)
         validationInputLength(elem_w_min_max_length, min, max, input_length)
     })
 })
