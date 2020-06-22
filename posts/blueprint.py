@@ -1,3 +1,13 @@
+import json
+import locale
+import re
+
+from forms import PostForm, CommentForm, CategoryForm, get_category
+from app import db
+from datetime import datetime, timedelta
+from login.session_time import session_time
+from login.send_email import send_email
+from utils import generate_post_url
 from flask import (
     Blueprint,
     render_template,
@@ -17,13 +27,6 @@ from models import (
     slugify
 )
 # from sqlalchemy.exc import IntegrityError
-import json
-import locale
-from forms import PostForm, CommentForm, CategoryForm, get_category
-from app import db
-import re
-from datetime import datetime, timedelta
-from login.session_time import session_time
 
 locale.setlocale(locale.LC_ALL, "")
 local = locale.getdefaultlocale()[0]
@@ -50,7 +53,7 @@ user_profile = Blueprint('user_profile',
    Than its information put in class Post and add in db.''' 
 
 @posts.route('/create', methods=['POST', 'GET'])
-@session_time
+# @session_time
 def create_post():
     form = PostForm(request.form)
     
@@ -76,6 +79,13 @@ def create_post():
                     post.visible = False
                 db.session.add(post)
                 db.session.commit()
+                try:
+                    user = Knot.query.filter_by(username=session['username']).first()
+                    if user:
+                        send_email(user, post)
+                except Exception as e:
+                    print(e)
+                    flash(u'Post create, but not send to email', WARNING)
                 flash(u'Post create', SUCCESSFUL)
             except Exception as e:
                 flash(u'ERROR: {}'.format(e.__class__), ERROR)
@@ -90,7 +100,7 @@ def create_post():
 
 
 @posts.route('/<slug>/edit/', methods=['POST', 'GET'])
-@session_time
+# @session_time
 def edit_post(slug):
     post = Post.query.filter(Post.slug==slug).filter(Post.author==session.get('username')).first()
     form = PostForm(
@@ -126,6 +136,13 @@ def edit_post(slug):
             if request.form['submit'] == 'publish':
                 post.visible = True
             db.session.commit()
+            try:
+                user = Knot.query.filter_by(username=session['username']).first()
+                if user:
+                    send_email(user, post)
+            except Exception as e:
+                print(e)
+                flash(u'Post create, but not send to email', WARNING)
             flash(u'Changes saved successfully', SUCCESSFUL)
         except Exception as e:
             flash(u'ERROR: {e}', ERROR)
@@ -291,7 +308,7 @@ def tag_detail(slug):
     return render_template('index_posts.html',
         tag=tag,
         pages=pages,
-        title=tag,
+        title=tag.name,
         content_title=f'#{tag}',
         categories=Category.query.all()
     )
@@ -330,7 +347,7 @@ def category_detail(slug):
         posts = Post.query.filter(Post.visible==True)
     elif Category.query.filter(Category.name==slug).first():
         category = Category.query.filter(Category.slug==slug).first()
-        posts = Post.query.filter(Post.owner_id==category.id)
+        posts = Post.query.filter(Post.owner_id==category.id).filter(Post.visible==True)
     else:
         return jsonify({'json_list':0})
 
