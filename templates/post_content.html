@@ -4,6 +4,12 @@
     {{ post.title }}
 {% endblock %}
 
+{% block seo %}
+    <meta name="description" content="{{ post.preview }}">
+    <meta name="keywords" content="{{ tags|map(attribute='name')|join(', ') }}">
+    <meta name="author" content="{{ user.f_name }} {{ user.s_name }}">
+{% endblock %}
+
 {% block content_title %}
 <div class="post-content-title">
         <span><h1 class="post_content_title_h1">{{ post.title }}</h1></span>
