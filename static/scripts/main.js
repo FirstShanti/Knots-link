@@ -22,7 +22,14 @@ $(function() {
             }
 		})
 	})
+	fixDropdownMenu()
 });
+
+fixDropdownMenu = function () {
+	if ($('i#user_button').hasClass('with_user')) {
+		$('.dropdown-menu').css('left', '0px')
+	}
+}
 
 function updatePosts (response, category) {
 	var posts = response.items

@@ -48,12 +48,12 @@
 				<div class="navbar navbar-light profile-button">
 				  {% if session['username'] %}
 					<button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ session['username'] }}">
-					  <i class="fas fa-user-circle with_user"></i>
+					  <i id='user_button' class="fas fa-user-circle with_user"></i>
 					</button>
 				  {% else %}
 					<button class="navbar-profile" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="fas fa-user"></i>
-					  </button>
+					  <i id='user_button' class="fas fa-user without_user"></i>
+					</button>
 				  {% endif %}
 
 				  <div class="collapse navbar-collapse  drop-menu dropdown-menu" id="navbarTogglerDemo02" aria-labelledby="dropdownMenuButton">

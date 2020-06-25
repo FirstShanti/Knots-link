@@ -306,7 +306,7 @@ body {
 	justify-content: center;	
 }
 
-.drop-menu {
+/*.drop-menu {
 	position: relative;
 	top: 100%;
 	left: 0;
@@ -324,10 +324,10 @@ body {
 	background-clip: padding-box;
 	border: 1px solid rgba(0,0,0,.15);
 	border-radius: .25rem;
-}
+}*/
 
 .dropdown-menu.show {
-	left: -5px !important;
+	left: -5px;
 	display: block;
 	min-width: 0;
 	transition: 0.9s;
