@@ -327,6 +327,7 @@ body {
 }
 
 .dropdown-menu.show {
+	left: -5px !important;
 	display: block;
 	min-width: 0;
 	transition: 0.9s;
