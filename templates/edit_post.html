@@ -21,6 +21,13 @@
 			{% for field in form %}
                 <div class="form-group">
                     {{ field(class='form-control form-value', autocomplete='off', placeholder=field.id) }}
+                    {% if field.lable != 'Category' %}
+                        {% for validator in field.validators %}
+                            {% if 'min' in validator.__dict__ %}
+                            <small min={{ validator.min }} max={{ validator.max }} id="form_{{ field.label.field_id }}_input_length_display" class="form-text ml-1" style="display: none; color: grey; text-align: left !important;">0/{{ validator.min }}</small>
+                            {% endif %}
+                        {% endfor %}                    
+                    {% endif %}
                     {% for error in field.errors %}
                         {% if field.id == 'tags' %}
                             {{ error|safe }}
@@ -44,6 +51,9 @@
         </form>
         {{ ckeditor.load() }}
         {{ ckeditor.config(name='body') }}
+
+        <script src="/static/scripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/static/scripts/validate_form_input_length.js" type="text/javascript" charset="utf-8"></script>
 
 	</div>
 
