@@ -7,6 +7,20 @@ body {
 	/*background: url('/static/img/2754227.jpg') repeat;*/
 	font-family: 'Noto Sans SC', sans-serif !important;
 }
+
+blockquote {
+    text-align: end;
+    font-size: 20px;
+}
+
+small {
+	height: 10px;
+}
+
+.hljs {
+	border-radius: 5px;
+}
+
 .footer {
 	text-align: center;
 	margin-right: 20%;
@@ -29,7 +43,7 @@ body {
 	font-size: 11px;
 	z-index: 3;
 	position: absolute;
-    top: 75%;
+    top: 95%;
     left: 50%;
 }
 
@@ -533,7 +547,7 @@ body {
 	border: none;
 	resize: none;
 	height: max-content !important;
-	outline:none;
+	outline: none;
 	border-bottom: none;
 	color: grey;
 	/*transition: 1s;*/
@@ -819,7 +833,7 @@ button:focus {
 		text-align: left;
 		margin-left: 7%;
 		margin-right: 7%;
-		margin-bottom: 5rem;
+		/*margin-bottom: 5rem;*/
 	}
 	.post-body-content {
 		/*line-height: initial;*/
@@ -882,6 +896,9 @@ button:focus {
 		background: url(/static/img/angle-arrow-down.svg) 2% / 12% no-repeat;
 		transition: 2s;
 		text-align-last: auto;
+	}
+	.logo_knots_index {
+	    top: 11% !important;
 	}
 }
 
