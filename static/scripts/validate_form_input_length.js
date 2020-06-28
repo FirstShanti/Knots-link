@@ -24,19 +24,46 @@ $(function(){
 validationInputLength = function (element_display, min, max, input_length) {
     if (input_length === 0) {
         element_display.fadeOut(2000);
+        // downHeight(element_display, 2) // d
     } else if (input_length < min) {
         element_display.text(`${input_length}/${min}`)
         element_display.addClass('invalid_input')
-        element_display.show()
+        element_display.fadeIn(500)
+        // upHeight(element_display, 2, 10) // d
     } else if (input_length > max) {
         element_display.text(`${input_length}/${max}`)
         element_display.addClass('invalid_input')
-        element_display.show()
+        element_display.fadeIn(500)
+        // upHeight(element_display, 2, 10) // d
     } else {
         element_display.text(`${input_length}/${max}`)
         element_display.addClass('valid_input')
         element_display.removeClass('invalid_input')
         element_display.fadeOut(2000);
+        // downHeight(element_display, 2) // d
     }
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function downHeight(element, time) {
+    var height = element.height()
+    var ms = (time * 1000) /  height
+    for (var i = (height * 10); i >= 1; i--) {
+        element.height(i/10)
+        // element.css('opacity', `${1 - (1 / i)}`)
+        sleep(ms)
+    }
+    element.height(0)
+}
+
+function upHeight(element, time, height) {
+    var ms = (time * 10000) /  (height * 10)
+    for (var i = 1; i <= (height * 10); i++) {
+        element.height(i/10)
+        // element.css('opacity', `${0 + (1 / i)}`)
+        sleep(ms)
+    }
+}
