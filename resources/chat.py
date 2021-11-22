@@ -1,22 +1,9 @@
-import traceback
 from flask import (
-	render_template,
 	session,
-	request,
-	redirect,
 )
-import os
-from globals_cache import DailyMsg
-import json
-
-import traceback
-from datetime import datetime, timedelta
 from flask_restful import Resource, reqparse
-from pprint import pprint
 from utility import get_user
-from login import session_time
 from utility import get_chat, get_message, serrialize
-from pprint import pprint
 
 parser = reqparse.RequestParser(bundle_errors=True)
 
