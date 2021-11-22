@@ -21,7 +21,7 @@ class Configuration(object):
 class Development(Configuration):
 	DEBUG = True
 	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
-	SECRET_KEY = 'secret-very-secret-key'
+	SECRET_KEY = env.get('SECRET_KEY')
 	PORT = 5555
 
 class Production(Configuration):
