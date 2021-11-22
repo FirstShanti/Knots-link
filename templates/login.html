@@ -22,9 +22,9 @@
 					{% if field.type != "CSRFTokenField" %}
 						<!-- {{ field.label(class='control-label') }} -->		
 					{% endif %}
-					{{ field(class='form-control', autocomplete="off", placeholder=field.id) }}
+					{{ field(class='form-control',autocomplete="off",  placeholder=field.id) }}
 					{% for error in field.errors %}
-	           		 	<span class="badge badge-danger">{{ error }}</span>
+	           		 	<span class="auth-error badge badge-danger">{{ error }}</span>
 	           		{% endfor %}
 				{% endfor %}
 				{% if alert %}

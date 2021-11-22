@@ -1,6 +1,7 @@
-from app import manager
-from main import *
+from app import manager, db
 
 
 if __name__ == '__main__':
+    db.create_all()
+    db.session.commit()
     manager.run()

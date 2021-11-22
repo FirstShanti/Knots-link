@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang='en'>
   <head>
-	  <meta name="viewport" content="width=device-width, initial-scale=1.0" charset='UTF-8'>
+	  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+	  <meta 
+	  	name="viewport"
+	  	content="width=device-width initial-scale=1.0 no-cache"
+	  	http-equiv="cache-control">
 	  <title>
 
 		{% block title %}
@@ -16,6 +20,7 @@
 
        <link rel="stylesheet"
       href="/static/scripts/code_highlight/styles/monokai-sublime.css">
+      <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet"> 
 
 	  
 	  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap" rel="stylesheet">
@@ -24,7 +29,6 @@
 	  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 	  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	  
 
 	  <link rel="shortcut icon" href="/static/img/brain.svg">
 
@@ -36,14 +40,14 @@
 		<!-- <div style="display: flex"> -->
 		<!-- <div class='left'>left</div> -->
 		  <div class='center'>
-			<div class="post-body">
+			<div class="post-header">
 			  <div id="header_inner">
 				
 				<div class='media_search header_search' >
 				<form action="{{ url_for('posts.search', slug=request.args.get('q', ' ')) }}" method="GET">
 					<div class="search-container">
 						<input id="submit_search" type="submit" value=" " class="icon_search">
-						<span>
+						<span style="margin: auto;">
 						  <input autocomplete="off" class="q" type="text" name="q" value="{{ q }}" placeholder="Search" data-autofocus="">
 						</span>
 					</div>
@@ -63,24 +67,30 @@
 				  <div class="collapse navbar-collapse  drop-menu dropdown-menu" id="navbarTogglerDemo02" aria-labelledby="dropdownMenuButton">
 					<ul class="navbar-nav " id="dropdown-menu-items">
 
-					  <li class="dropdown-item" id="dropdown-menu-items">
+<!-- 					  <li class="dropdown-item" id="dropdown-menu-items">
 						<a class="nav-link" href=" {{ url_for('index') }} ">Knots</a>
-					  </li>
-
-					  <li class="dropdown-item" id="dropdown-menu-items">
-						<a class="nav-link" href=" {{ url_for('posts.index') }}">Blog <span class="sr-only">(current)</span></a>
-					  </li>
+					  </li> -->
 
 					  {% if session['username'] %}
-						{% if session['auth'] %}
-						  <li class="dropdown-item" id="dropdown-menu-items">
-							<a class="nav-link" style="font-size: 30px;" href="{{ url_for('posts.create_post') }}">&#x270d;</a>
+						  <li class="dropdown-item" id="dropdown-menu-items" style="display: flex; align-items: center; margin: auto;">
+							<a class="nav-link disable-scale" href=" {{ url_for('posts.index') }}">Blog</a>
+								{% if session['auth'] %}
+								  <a class="nav-link" style="font-size: 30px; margin-left: auto;" href="{{ url_for('posts.create_post') }}">&#x270d;</a>
+								{% else %}
+									<a class="nav-link" style="font-size: 30px; margin-left: auto;" title="Confirm email" href="">&#x270d;</a>
+								{% endif %}
 						  </li>
-						{% else %}
+					  {% else %}
 						  <li class="dropdown-item" id="dropdown-menu-items">
-							<a class="nav-link" style="font-size: 30px;" title="Confirm email" href="">&#x270d;</a>
+							<a class="nav-link" href=" {{ url_for('posts.index') }}">Blog</a>
 						  </li>
-						{% endif %}
+					  {% endif %}
+
+
+					  {% if session['username'] %}
+					  	<li class="dropdown-item" id="dropdown-menu-items">
+						  <a class="nav-link" href="{{ url_for('message.message_index') }}" title="Profile">Chat</a>
+						</li>
 
 						<li class="dropdown-item" id="dropdown-menu-items">
 						  <a class="nav-link" href="{{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous') }}" title="Profile">Profile</a>
@@ -126,12 +136,12 @@
 			</div>
 		  </div>
 
+			
+		  <div class="post-body">
 		  <div class="content_title">
 			{% block content_title %}
 			{% endblock %}
 		  </div>
-			
-		  <div class="post-body">
 				{% with messages = get_flashed_messages(with_categories=true) %}
 					{% if messages %}
 						{% for category, message in messages %}
@@ -149,7 +159,8 @@
 		  {% endblock %}
 		<div id="toTop" ><i class="fas fa-chevron-up"></i></div>
 		<br >
-<!-- 		<div class='footer'>
+		<!-- <div class='footer'>
+			<span>&#169; knots-link.online 2020</span>
 			<div>Your account</div>
 			<div>Info</div>
 			<div>Categories</div>

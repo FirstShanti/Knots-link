@@ -7,12 +7,17 @@ from models import Knot
 def session_time(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
+		print(f.__dict__)
 		try:
-			if session['private_key_exp'] > datetime.now() and abs(session['last_login'] - datetime.now()).days < 1:
-				session['private_key_exp'] = datetime.now() + timedelta(seconds=3600)
+			if session.get('username') and Knot.query.filter(Knot.username==session['username']).first():
+				if session['private_key_exp'] > datetime.now() and abs(session['last_login'] - datetime.now()).days < 1:
+					session['private_key_exp'] = datetime.now() + timedelta(seconds=3600)
+				else:
+					session.clear()
+					flash(u'Session time has expired', 'alert alert-warning')
+					return redirect(url_for('login.log_in')) #redirect=f.request.url
 			else:
 				session.clear()
-				flash(u'Session time has expired', 'alert alert-warning')
 				return redirect(url_for('login.log_in'))
 		except KeyError:
 			return redirect(url_for('login.log_in'))

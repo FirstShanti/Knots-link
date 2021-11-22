@@ -42,7 +42,7 @@
         </div>
     </div>
     
-    <hr style="size: 50px;">
+    <hr class='content_title_hr'>
 
     <div class="post-body-content">
         {{ post.body|safe }}
@@ -66,12 +66,15 @@
                 {% for comment in comments %}
                     <div class="main-content" style="padding-top: 10px; font-size: 20px; position: block; word-wrap: break-word;">
                         <div class="post-comment-author">
-                            <a href="{{ url_for('user_profile.get_user_data', slug=user.slug or 'anonymous')}}" >@{{ comment.author }}</a>
+                            <img class="user_comment_avatar" src="{{ user.avatar(size=25) }}">
+                            <a href="{{ url_for('user_profile.get_user_data', slug=user.slug or 'anonymous')}}" >
+                                @{{ comment.author }}
+                            </a>
+                            <div class="post-comment-created">
+                                {{ comment.created_to_str() }}
+                            </div>
                         </div>
-                        <div class="post-comment-created">
-                            {{ comment.created }}
-                        </div>
-                        <div style="font-size: 1.1rem;">
+                        <div style="font-size: 1.1rem; margin-left: 35px">
                             {{ comment.text }}
                         </div>
                     </div>
@@ -83,6 +86,7 @@
 
         <div>
             <form action="" method="POST">
+                <a name="comments"></a>
                 {% if session.get('username') %}
                     {% for field in form %}
                     <div class="form-group">

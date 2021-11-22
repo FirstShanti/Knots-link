@@ -1,8 +1,15 @@
 .gitignore
 .gitignore.save
+.env
 __pycache__
 *.vscode
 *.pyc
 migrations/versions/
 *.db
 venv/
+
+globals_cache.py
+*.bak
+test_img.py
+run.sh
+ai-images/

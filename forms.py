@@ -21,6 +21,7 @@ from login.hash import encrypt_string
 import re
 from models import slugify, Post, Category
 from app import db
+from pprint import pprint
 
 
 def get_category():
@@ -69,8 +70,6 @@ class RegistrationForm(FlaskForm):
 	def validate_username(form, username):
 		if Knot.query.filter_by(username=username.data).first() is not None:
 			raise ValidationError('Please use a different username.')
-			# может следует добавить ссылку на инициалы узла 
-			# который зарегистрирован под этим username
 
 	#submit = SubmitField('register')
 
@@ -123,6 +122,8 @@ class PostForm(FlaskForm):
 				<span style="color: red;">{", ".join(char for char in invalid_chars)}</span>')
 
 	def validate_category(form, category):
+		pprint(dir(category))
+		print('category: ', category.data)
 		if category.data in ['ch', '--choose category--']:
 			raise ValidationError(f'Choose category')
 

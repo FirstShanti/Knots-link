@@ -61,12 +61,13 @@ def sign_up():
 				f_name=form.f_name.data,
 				s_name=form.s_name.data,
 				username=form.username.data,
-				# включить шифрование для номеров телефона
 				phone_number=form.phone_number.data,
 				email=form.email.data,
-				password=encrypt_string(form.password.data)
+				password=form.password.data
 			)
-			send_email(user)
+			if user.email == os.getenv('MAIL_USERNAME'):
+				user.admin = 1
+			# send_email(user)
 			db.session.add(user)
 			db.session.commit()
 			flash(u'Confirm you email', 'alert alert-warning')
@@ -83,11 +84,12 @@ def sign_up():
 
 
 @login.route('/log_in', methods=['POST', 'GET'])
-def log_in(alert=None):
+def log_in(alert=None, redirect_url=None):
+
 	url = request.url_root
 	form = LoginForm(request.form)
 	alert = request.args.get('alert')
-
+	print('redirect: ', redirect_url)
 	if 'username' in session:
 		return redirect('/blog/')
 	elif request.method == "POST" and form.validate_on_submit():
@@ -98,6 +100,8 @@ def log_in(alert=None):
 			user.last_login = datetime.now()
 			session['last_login'] = user.last_login
 			session['private_key_exp'] = user.last_login + timedelta(hours=3)
+			if redirect_url:
+				return redirect(redirect_url)
 			return redirect(url_for('posts.index'))
 	
 	return render_template('login.html',

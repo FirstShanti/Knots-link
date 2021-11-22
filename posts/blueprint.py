@@ -1,5 +1,4 @@
 import json
-import locale
 import re
 
 from forms import PostForm, CommentForm, CategoryForm, get_category
@@ -7,6 +6,8 @@ from app import db
 from datetime import datetime, timedelta
 from login.session_time import session_time
 from login.send_email import send_email
+from login.is_email_authenticated import is_email_authenticated
+from admin.admin_handler import admin_handler
 from flask import (
     Blueprint,
     render_template,
@@ -23,15 +24,13 @@ from models import (
     Knot,
     Comment,
     Category,
-    slugify
+    slugify,
+    Chat
 )
+from utility import get_user, get_chat, get_all_chat
+from config import local, lang
 # from sqlalchemy.exc import IntegrityError
 
-locale.setlocale(locale.LC_ALL, "")
-local = locale.getdefaultlocale()[0]
-lang = {'ru_RU':{'comment':['вчера в ', 'сегодня в ']},
-        'en_US':{'comment':['yesterday at ', 'today at ']}
-    }
 
 SUCCESSFUL = 'alert alert-success'
 ERROR = 'alert alert-danger'
@@ -45,16 +44,57 @@ user_profile = Blueprint('user_profile',
     __name__,
     template_folder='templates'
 )
+message = Blueprint('message',
+    __name__,
+    template_folder='templates'
+)
 
 
+@message.route('/', methods=['GET', 'POST'])
+@session_time
+@is_email_authenticated
+def message_index():
+    if session.get('username'):
+        current_user = get_user()
+        if request.method == 'POST':
+            username = request.form.to_dict().get('username')
+            another_user = get_user(username=username)
+            chat = get_chat(current_user, another_user)
+            if not chat:
+                chat = Chat()
+                for user in [current_user, another_user]:
+                    chat.users.append(user)
+                db.session.add(chat)
+                db.session.commit()
+        chats = get_all_chat(current_user.id)
+        if chats:
+            users = [i.username for i in chats[0].users if i.username != session['username']]
+            another_user = users[0]
+        else:
+            users = []
+            chats = []
+            another_user = ''
+        return render_template('chat.html',
+            users=users,
+            another_user=another_user,
+            chats=chats,
+            user=session.get('username'),
+            root_url=request.url)
+    else:
+        return redirect(url_for('/log_in'))
+        
 ### Create post ###
 '''Page with form for write Title Body and Tag. 
    Than its information put in class Post and add in db.''' 
 
 @posts.route('/create', methods=['POST', 'GET'])
 # @session_time
+@is_email_authenticated
 def create_post():
+
     form = PostForm(request.form)
+    form.category.choices = get_category()
+    print('form.category.choices: ', form.category.choices)
     
     if 'username' in session:
         if request.method == 'POST' and form.validate_on_submit():
@@ -79,7 +119,7 @@ def create_post():
                 db.session.add(post)
                 db.session.commit()
                 try:
-                    user = Knot.query.filter_by(username=session['username']).first()
+                    user = get_user()
                     if user:
                         send_email(user, post)
                 except Exception as e:
@@ -93,13 +133,13 @@ def create_post():
     else:
         return redirect('/log_in')
 
-    form.category.choices = get_category()
 
     return render_template('create_post.html', form=form, categories=Category.query.all())
 
 
 @posts.route('/<slug>/edit/', methods=['POST', 'GET'])
 # @session_time
+@is_email_authenticated
 def edit_post(slug):
     post = Post.query.filter(Post.slug==slug).filter(Post.author==session.get('username')).first()
     form = PostForm(
@@ -136,7 +176,7 @@ def edit_post(slug):
                 post.visible = True
             db.session.commit()
             try:
-                user = Knot.query.filter_by(username=session['username']).first()
+                user = get_user()
                 if user:
                     send_email(user, post)
             except Exception as e:
@@ -187,13 +227,17 @@ def index():
         post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>|<table|<tr|<td|</table|</td|</tr', '', ''.join(i for i in post.body.split("\n")[:3]))
 
     pages = posts.paginate(page=page, per_page=6, max_per_page=6)
+    print(dir(pages))
+    print(pages.total)
 
     return render_template('index_posts.html',
         posts=posts,
         pages=pages,
         title="Blog",
         categories=Category.query.all(),
-        с=''
+        с='',
+        root_url=f'{request.url_root}',
+        user=session.get('username')
     )
     # else:
     #     return redirect('/log_in')
@@ -206,7 +250,7 @@ def post_content(slug):
         post = Post.query.filter(Post.slug==slug).filter(Post.visible==True).first() or \
             Post.query.filter(Post.slug==slug).filter(Post.author==session.get('username')).first()
         tags = post.tags
-        time = post.created.strftime('%H:%M (%d %B %Y)')
+        time = post.created_to_str() #post.created.strftime('%H:%M (%d %B %Y)')
         author = post.author
         user = Knot.query.filter(Knot.username==author).first()
         comments = post.comments
@@ -233,30 +277,20 @@ def post_content(slug):
         else:
             return redirect(url_for('login.log_in'))
 
-    #### change comment time format to '19 <Month> 2020 (<Week day>) 20:23' ####
-    for comment in comments:
-        timedelta = int(datetime.now().strftime("%d")) - int(comment.created.strftime("%d"))
-        if timedelta == 1:
-            comment.created = comment.created.strftime("{}%H:%M").format(f'{lang[local]["comment"][0]}')
-        elif timedelta >= 0:
-            comment.created = comment.created.strftime("{}%H:%M").format(f'{lang[local]["comment"][1]}')
-        else:
-            comment.created = comment.created.strftime("%d %B %Y (%A) %H:%M")
-
     return render_template('post_content.html',
         post=post,
         tags=tags,
         time=time,
         author=author,
         user=user,
-        comments = comments,
+        comments=comments,
         form=form,
         slug=slug,
         categories=Category.query.all()
     )
 
 
-@user_profile.route('/<slug>/')
+@user_profile.route('/<slug>')
 @session_time
 def get_user_data(slug):
     page = request.args.get('page')
@@ -314,6 +348,7 @@ def tag_detail(slug):
 
 
 @posts.route('/category/add', methods=['GET', 'POST'])
+@admin_handler
 @session_time
 def category_create():
 

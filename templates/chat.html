@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    messanger
+{% endblock %}
+
+
+{% block content %}
+
+    {% if user %}
+    <div class='messanger_container'>
+        <div class='chats_list'>
+            {% for chat in chats %}
+                <div class='chat_room'>
+                    {% for user in chat.users %}
+                    {% if user.username != session.username %}
+                    <div class='room_info' value={{user.username}}>
+                        <img class='chat_room_icon' src="{{ user.avatar(size=75) }}"/>
+                        <div class='room_username_msg'>
+                            <div class='room_username' >{{ user.username }}</div>
+                            {% if chat.messages %}
+                                <div class='room_last_msg' >{{ chat.messages[-1].text|truncate(70, True) }}</div>
+                            {% else %}
+                                <div class='room_last_msg' ></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+            <div class="vl"></div>
+        <div class='chat_container'>
+
+            <div class="bookmob">
+            </div>
+            <div class='book_pc'>
+            </div>
+            <div class='message_container' username='{{ another_user }}'>
+                <form id="form_send_msg" root_url="{{root_url}}" autocomplete="off" novalidate>
+                    <textarea type="text" id="message_textarea"></textarea>
+                </form>
+                <div class='send_button_container'>
+                    <!-- <img src="/static/img/paper-plane.svg"> -->
+                    <button chat-url="/api/v1/chat" class="btn badge-pill send_message_button">send
+                    </button>
+                <div>
+            </div>
+            <div id="page" hidden="true" page='0'></div>
+        </div>
+    </div>
+    {% endif %}
+
+    <script src="../static/scripts/socketio.js" crossorigin="anonymous"></script>
+    <script src="../static/scripts/send_chat_msg.js" crossorigin="anonymous"></script>
+    <script src="../static.scripts/notification1.mp3" type="text/javascript" ></script>
+
+{% endblock %}
+

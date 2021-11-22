@@ -67,4 +67,4 @@ function updatePosts (response, category) {
 		$('li#next-page').empty()
 	}
 	$('ul.pagination').empty().append(paginate)
-}	
+}

@@ -19,6 +19,7 @@
 
   FIRST_COLOR = document.currentScript.getAttribute('first')
   SECOND_COLOR = document.currentScript.getAttribute('second')
+  MOUSE_RADIUS = parseInt(document.currentScript.getAttribute('mouse_radius'))
 
   circ = 2 * Math.PI;
   nodes = [];
