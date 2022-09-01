@@ -75,7 +75,6 @@ class Post(db.Model):
 
     def created_to_str(self, formatter=None):
         timedelta = int(datetime.utcnow().strftime("%d")) - int(self.created.strftime("%d"))
-        print('timedelta: ', timedelta)
         if timedelta > 1:
             return self.created.strftime("%d %B %y {} %H:%M".format(f'{lang[local]["comment"][2]}'))
         elif timedelta == 1:
@@ -237,3 +236,11 @@ class Message(db.Model):
         super(Message, self).__init__(*args, **kwargs)
         self.created = datetime.utcnow()
         self.uuid = str(uuid4())
+
+    def data(self):
+        return {
+            'text': self.text,
+            'created': self.created.timestamp(),
+            'author_username': self.author_username,
+            'is_read': self.is_read
+        }

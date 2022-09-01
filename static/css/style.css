@@ -116,8 +116,10 @@ small {
 }
 
 .post_not_found {
-	display: grid;
+	display: flex;
 	text-align: center;
+	flex-direction: column;
+	align-items: center;
 }
 
 .profile-button {
@@ -429,6 +431,7 @@ div.post-comment-author > * {
 	display: flex;
 	justify-content: center;
 	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 .tag {
@@ -520,7 +523,7 @@ div.post-comment-author > * {
 	height: 70%;
 	/*box-shadow: 0 0 3px rgba(102, 204, 153);*/
 	border-radius: 5px;
-	/*padding: 25px;*/
+	padding: 10px;
 	overflow: hidden;
 	/*border-bottom: solid 1rem rgba(255, 255, 255, 0);*/
 	/*margin-right: auto;*/
@@ -1066,6 +1069,24 @@ button:focus {
 
 }
 
+.msg_left {
+	font-size: 1rem !important;
+	margin: 1%;
+	margin-left: 1%;
+	border: 1px solid #bce5e3;
+	border-radius: 5px;
+	width: fit-content;
+	width: -moz-fit-content;
+	text-align: left;
+	margin-right: auto;
+	box-shadow: -1px 1px 2px 0px #bce5e3;
+	padding: 5px;
+	font-family: 'Nunito', sans-serif;
+	word-break: break-word;
+	display: flow-root;
+	align-items: end;
+}
+
 .msg_right {
 	font-size: 1rem !important;
 	margin: 1%;
@@ -1078,48 +1099,40 @@ button:focus {
 	margin-left: auto;
 	white-space: ;
 	min-height: ;
-	box-shadow: 2px 2px 2px 1px #bce5d6;
+	box-shadow: 1px 1px 2px 0px #bce5d6;
 	padding: 5px;
 	font-family: 'Nunito', sans-serif;
+	word-break: break-word;
+	display: flow-root;
+    align-items: end;
+	margin-right: 10px;
 }
 
-/*.book_pc::-webkit-scrollbar {
-  width: 2px;
+
+.book_pc::-webkit-scrollbar {
+  width: 3px;
   transition: 1s;
+  padding: 5px;
 }
  
 .book_pc::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   transition: 1s;
+  display: none;
 }
  
 .book_pc::-webkit-scrollbar-thumb {
-  background-color: white;
-  outline: 1px solid white;
+  background-color: #60aa85;
+  outline: 1px solid #60aa85;
   transition: 1s;
+  border-radius: 10px;
 }
-*/
+
 .media_search {
 	width: 100% !important;
 }
 
-.msg_left {
-	font-size: 1rem !important;
-	margin: 1%;
-    margin-left: 1%;
-	border: 1px solid #bce5e3;
-	border-radius: 5px;
-	width: fit-content;
-	width: -moz-fit-content;
-	text-align: left;
-	margin-right: auto;
-	box-shadow: -2px 2px 2px 1px #bce5e3;
-	padding: 5px;
-	font-family: 'Nunito', sans-serif;
-}
-
 .msg_container {
-	width: 45%;
+	width: 75%;
 }
 
 .right {
@@ -1160,29 +1173,30 @@ button:focus {
 .book_pc {
 	overflow: scroll;
 	overflow-x: hidden;
-	overflow-y: hidden;
+	/* overflow-y: hidden; */
 	/*height: 300px;*/
 	display: block;
 	flex-wrap: wrap;
 	/*margin: 5%;*/
 	margin-bottom: 0% !important;
 	transition: 1s !important;
-	padding: 10px;
+	/* padding: 10px; */
 	margin-top: auto;
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
-    scrollbar-width: none;  /* Firefox */
+	/* margin-right: 12px; */
+    /* -ms-overflow-style: none;
+    scrollbar-width: none; */
 }
 
-.book_pc::-webkit-scrollbar { 
+/* .book_pc::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
-}
+} */
 
-
+/* 
 .book_pc:hover {
 	overflow-y: auto;
 	transition: 1s !important;
 
-}
+} */
 
 .left_page {
 	width: 45%;
@@ -1201,22 +1215,35 @@ button:focus {
 
 .message_container {
 	text-align: center !important;
-	/*display: flex;*/
-	margin: auto;
+	display: flex;
+	/* margin: auto; */
+	border-radius: 5px;
+	/* width: 97%; */
+	padding: 10px;
+	/* border: 1px solid #4b524e;; */
+	box-shadow: 0 0 4px #4a906c;
+	transition: 0.5s;
+	outline: none !important;
+	font-family: 'Nunito', sans-serif;
+	margin-top: 1%;
+}
+
+.message_container:hover {
+	transition: 1s;
+	box-shadow: 0 0 10px #4a906c;
 	
 }
 
 .send_button_container {
 	text-align: end;
-	width: 97% !important;
-	margin: auto;
+	margin: 5px;
 }
 
 .send_message_button {
 	margin-top: 0.5%;
-	color: #6bdfb4 !important;
-	fill: white !important;
-	background-color: white !important;
+	color: #ffffff !important;
+	fill: #60aa85 !important;
+	background-color: #60aa85 !important;
 	/*border-color: #bce5d6 !important;*/
     font-size: 1.3rem !important;
     outline: none !important;
@@ -1228,32 +1255,30 @@ button:focus {
 	transition: 1s;
 	color: white !important;
 	background-color: #6bdfb4 !important;
+	fill: rgb(28, 131, 92) !important;
 }
 
 .current_chat_room {
 	border-right: 4px solid #bce5e3;
 }
 
+#form_send_msg {
+	width: 100%;
+}
+
 textarea#message_textarea {
-	border-radius: 5px;
-	width: 97%;
-	padding: 10px;
+	/* border-radius: 5px; */
+	width: 100%;
+	/* padding: 10px; */
 	border: none;
-	box-shadow: 0 0 4px #bce5d6;
+	/* box-shadow: 0 0 4px #282e2c; */
 	transition: 0.5s;
 	outline: none !important;
 	font-family: 'Nunito', sans-serif;
 /*	margin-left: 2%;
 	margin-right: 10%;*/
-	margin-top: 1%;
 }
 
-textarea#message_textarea:focus {
-	transition: 1s;
-	/*height: 120px !important;*/
-    box-shadow: 0 0 10px rgba(102, 204, 153);
-	
-}
 
 @keyframes expand_textarea {
   from {
@@ -1438,7 +1463,10 @@ label {
 	transition: border-color 0.25s ease-in-out,box-shadow 0.25s ease-in-out !important;
 }
 .btn-registration {
-	margin-top: 20px;
+	height: 50px;
+	width: 100%;
+	background: rgb(0, 120, 121) !important;
+	border-color: rgb(0, 120, 121) !important;
 }
 
 /*animation on home page*/
@@ -1521,4 +1549,29 @@ a.knots_logo_link {
 
 .invalid_input {
 	color: red !important;
+}
+
+.new-date {
+	text-align: center;
+	width: fit-content;
+	padding: 3px;
+	font-size: 1.5ch;
+	border: 1px solid #60aa85;
+	border-radius: 15px;
+	background-color: #60aa85;
+	color: white;
+	font-weight: bold;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+#chat_loader {
+	display: none;
+}
+
+#btn-create {
+	margin-top: 40px;
+	width: max-content;
 }

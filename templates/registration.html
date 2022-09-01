@@ -32,8 +32,13 @@
 					</div>
            		{% endfor %}
 			{% endfor %}
-            <button class="btn btn-lg btn-primary btn-registration" style='background: rgb(0, 120, 121); border-color: rgb(0, 120, 121);' type="submit">Create account</button>
-            <a class="btn btn-lg btn-primary" style='margin-top: 20px; box-shadow: none; color: #3a3a3a; outline: none; background: rgb(34,223,177); border-color: rgb(34,223,177);' href="{{ url_for('login.log_in') }}" type='button'>Sign up</a>
+            <button class="btn btn-lg btn-primary btn-registration" type="submit">Sign Up</button>
+			<div style="margin-top: 5px; font-size: 11px;">
+				By signing up you agree to the <a href={{ url_for('login.privacy') }}>Privacy Policy</a>
+			</div>
+			<div class="new-user-reg">
+				<a href="{{ url_for('login.log_in') }}">Sign in</a>
+			</div>
             <p class="mt-5 mb-3 text-muted">© 2019-2020</p>
 		</form>
 		</div>

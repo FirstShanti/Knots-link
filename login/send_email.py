@@ -1,11 +1,17 @@
-import smtplib, os
+import smtplib, logging
 from email.message import EmailMessage
 from flask import render_template, request, flash
+from app import app
+import traceback
+import ssl
+
+logger = logging.getLogger(__name__)
 
 def send_email(user, msg=None):
 	
-	login = os.environ.get('MAIL_USERNAME')
-	password = os.environ.get('MAIL_PASSWORD')
+	ctx = ssl.create_default_context()
+	login = app.config.get('MAIL_USERNAME')
+	password = app.config.get('MAIL_PASSWORD')
 	fromaddr = login
 	toaddr = user.email
 
@@ -21,10 +27,14 @@ def send_email(user, msg=None):
 		email['Subject'] = "Good job!"
 		email.set_content(render_template('post_to_email.html', post=msg), subtype='html')
 	# Send the message via local SMTP server.
-	with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-		server.ehlo()
-		server.login(login, password)
-		
-		### catch exception and try to repeat sending message ###
-		server.send_message(email) 
-		server.quit()
+	with smtplib.SMTP_SSL('smtp.gmail.com', port=465, context=ctx) as server:
+		try:
+			logger.info('login smtp')
+			server.login(login, password)
+			
+			### catch exception and try to repeat sending message ###
+			logger.info('try to send msg')
+			server.send_message(email) 
+			server.quit()
+		except Exception as e:
+			logger.error(e)

@@ -13,48 +13,56 @@
             {% for chat in chats %}
                 <div class='chat_room'>
                     {% for user in chat.users %}
-                    {% if user.username != session.username %}
-                    <div class='room_info' value={{user.username}}>
-                        <img class='chat_room_icon' src="{{ user.avatar(size=75) }}"/>
-                        <div class='room_username_msg'>
-                            <div class='room_username' >{{ user.username }}</div>
-                            {% if chat.messages %}
-                                <div class='room_last_msg' >{{ chat.messages[-1].text|truncate(70, True) }}</div>
-                            {% else %}
-                                <div class='room_last_msg' ></div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% endif %}
+                        {% if user.username != session.username %}
+                            <div class='room_info' value={{user.username}}>
+                                <img class='chat_room_icon' src="{{ user.avatar(size=75) }}"/>
+                                <div class='room_username_msg'>
+                                    <div class='room_username' >
+                                        <span>{{ user.username }}<span>
+                                    </div>
+                                    <div id={{user.username}} class='room_last_msg'>
+                                        {% if chat.messages %}
+                                            {{ chat.messages[-1].text|truncate(30, True) }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             {% endfor %}
         </div>
-            <div class="vl"></div>
+        <div id="chat_devider" class="vl"></div>
         <div class='chat_container'>
 
             <div class="bookmob">
             </div>
             <div class='book_pc'>
+                <div id="chat_loader" class="loader">
+                    <div></div>
+                </div>
             </div>
             <div class='message_container' username='{{ another_user }}'>
                 <form id="form_send_msg" root_url="{{root_url}}" autocomplete="off" novalidate>
-                    <textarea type="text" id="message_textarea"></textarea>
+                    <textarea placeholder="Type your message..." type="text" id="message_textarea"></textarea>
                 </form>
                 <div class='send_button_container'>
                     <!-- <img src="/static/img/paper-plane.svg"> -->
-                    <button chat-url="/api/v1/chat" class="btn badge-pill send_message_button">send
+                    <button chat-url="/api/v1/chat" class="btn badge-pill send_message_button">
+                        <!-- <i class="far fa-paper-plane"></i> -->
+                        Send
                     </button>
-                <div>
+                </div>
             </div>
+            <!-- <i id="mute" class="fas fa-volume-mute" style="height: 60px; weight: 60px; font-size: 30px; margin: 10px; float: right;"> -->
             <div id="page" hidden="true" page='0'></div>
         </div>
     </div>
     {% endif %}
 
     <script src="../static/scripts/socketio.js" crossorigin="anonymous"></script>
+    <script src="../static/scripts/playNotification.js" type="text/javascript" ></script>
     <script src="../static/scripts/send_chat_msg.js" crossorigin="anonymous"></script>
-    <script src="../static.scripts/notification1.mp3" type="text/javascript" ></script>
 
 {% endblock %}
 

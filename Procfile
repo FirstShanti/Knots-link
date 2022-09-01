@@ -1,1 +1,1 @@
-web: python manager.py db init; python manager.py db migrate; python manager.py db upgrade; gunicorn main:app
+web: python manager.py db init; python manager.py db migrate; python manager.py db upgrade; gunicorn --bind 0.0.0.0:5000 main:app

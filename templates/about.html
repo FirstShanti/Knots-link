@@ -78,7 +78,14 @@
                 {% if not username==session['username'] %}
                     <img src="/static/img/animation_500_khwngevr.gif" width="260">
                 {% else %}
-                    <button chat-url="/create" class="btn btn-success">Write post</button>
+                    <button 
+                        id='btn-create'
+                        value="blog/create"
+                        type="submit"
+                        class="btn btn-success"
+                        onclick="document.location.href='{{ url_for('posts.create_post') }}';">
+                            Add post
+                    </button>
                 {% endif %}
     {% endif %}
 		</div>

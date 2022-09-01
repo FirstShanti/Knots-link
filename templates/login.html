@@ -27,18 +27,9 @@
 	           		 	<span class="auth-error badge badge-danger">{{ error }}</span>
 	           		{% endfor %}
 				{% endfor %}
-				{% if alert %}
-					{% if alert|length < 0 %}
-						<div class="new-user-reg">
-							New user?<pre> </pre><a class="btn-group" href="{{ url_for('login.sign_up') }}">start here</a>
-						</div>
-					{% endif %}
-				{% else %}
-					<div class="new-user-reg">
-							New user?<pre> </pre><a class="btn-group" href="{{ url_for('login.sign_up') }}">start here</a>
-					</div>
-				{% endif %}
-
+				<div class="new-user-reg">
+					<span style="margin-right: 10px">New user?</span><a class="btn-group" href="{{ url_for('login.sign_up') }}">Sign up</a>
+				</div>
 	            <button class="btn btn-lg btn-primary btn-block" style='background: rgb(0, 120, 121); border-color: rgb(0, 120, 121);' type="submit">Sign in
 	            </button>
 	            <p class="mt-5 mb-3 text-muted">© 2019-2020</p>
