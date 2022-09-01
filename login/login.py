@@ -65,9 +65,11 @@ def sign_up():
 				email=form.email.data,
 				password=form.password.data
 			)
-			if user.email == os.getenv('MAIL_USERNAME'):
+			if user.email != app.config.get('MAIL_USERNAME'):
+				send_email(user)
+			else:
 				user.admin = 1
-			# send_email(user)
+				user.authenticated = 1
 			db.session.add(user)
 			db.session.commit()
 			flash(u'Confirm you email', 'alert alert-warning')
@@ -89,7 +91,7 @@ def log_in(alert=None, redirect_url=None):
 	url = request.url_root
 	form = LoginForm(request.form)
 	alert = request.args.get('alert')
-	print('redirect: ', redirect_url)
+
 	if 'username' in session:
 		return redirect('/blog/')
 	elif request.method == "POST" and form.validate_on_submit():
@@ -118,3 +120,12 @@ def log_out():
 	if session['username']:
 		session.clear()
 		return redirect('/')
+
+
+@login.route('/privacy_policy', methods=['GET'])
+def privacy():
+
+	return render_template('privacy.html',
+		title='Privacy Policy',
+		session=session,
+	)

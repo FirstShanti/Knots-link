@@ -36,59 +36,59 @@
         {% endif %}
         {% if pages.total == 0 %}
             <div class='post_not_found'>
-                <i>
-                Not found
-                </i>
+                {% if not username==session['username'] %}
+                    <img alt='Not found' src="/static/img/animation_500_khwngevr.gif" width="280">
+                {% endif %}
                 <button 
                     id='btn-create'
                     value="blog/create"
                     type="submit"
                     class="btn btn-success"
                     onclick="document.location.href='{{ url_for('posts.create_post') }}';">
-                        Write post
+                        Add post
                 </button>
             </div>
         {% endif %}
     </div>
     {% if pages.items|length > 6 %}
-    <nav>
-        <ul class="pagination pagination-sm">
+        <nav>
+            <ul class="pagination pagination-sm">
 
-            <li id='prev-page'
-                {% if not pages.has_prev %}
-                    class="page-item disabled"
-                {% endif %}
-            >
-                <a class="page-link" href="./?page={{ pages.prev_num }}" tabindex="-1">&#171;<span class="sr-only">(current)</span></a>
-            </li>
+                <li id='prev-page'
+                    {% if not pages.has_prev %}
+                        class="page-item disabled"
+                    {% endif %}
+                >
+                    <a class="page-link" href="./?page={{ pages.prev_num }}" tabindex="-1">&#171;<span class="sr-only">(current)</span></a>
+                </li>
 
-            {% for page in pages.iter_pages() %}
+                {% for page in pages.iter_pages() %}
 
-                {% if page %}
-                    <li {% if page == pages.page %} class="page-item active" {% endif %}>
+                    {% if page %}
+                        <li {% if page == pages.page %} class="page-item active" {% endif %}>
 
-                        <a id='current-page' class="page-link" href="./?page={{ page }}&q={{ q }}&c={{ c }}" value={{page}}>{{ page }}<span class="sr-only">(current)</span></a>
-                        
-                    </li>
-                {% else %}
-                    <li {% if page == pages.page %} class="page-item active" {% endif %}>
+                            <a id='current-page' class="page-link" href="./?page={{ page }}&q={{ q }}&c={{ c }}" value={{page}}>{{ page }}<span class="sr-only">(current)</span></a>
+                            
+                        </li>
+                    {% else %}
+                        <li {% if page == pages.page %} class="page-item active" {% endif %}>
 
-                        <a class="page-link" href="#">...<span class="sr-only">(current)</span></a>
-                        
-                    </li>
-                {% endif %}
+                            <a class="page-link" href="#">...<span class="sr-only">(current)</span></a>
+                            
+                        </li>
+                    {% endif %}
 
-            {% endfor %}
-            
+                {% endfor %}
+                
 
-            <li id='next-page'
-                {% if not pages.has_next %}
-                    class="page-item disabled"
-                {% endif %}
-            >
-                <a id='next-page' class="page-link" href="./?page={{ pages.next_num }}">&#187;<span class="sr-only">(current)</span></a>
-            </li>
-        </ul>
-    </nav>
+                <li id='next-page'
+                    {% if not pages.has_next %}
+                        class="page-item disabled"
+                    {% endif %}
+                >
+                    <a id='next-page' class="page-link" href="./?page={{ pages.next_num }}">&#187;<span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </nav>
     {% endif %}
 {% endblock %}

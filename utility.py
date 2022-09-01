@@ -44,7 +44,7 @@ def serrialize(data, new_data={}):
             del data['id']
         for key, value in data.items():
             if isinstance(value, datetime.datetime):
-                new_data[key] = value.strftime("%Y %B %d %A %H:%M")
+                new_data[key] = value.timestamp() #.strftime("%Y %B %d %A %H:%M")
             elif isinstance(value, (list, dict)):
                 serrialize(value, new_data)
             elif key == '_sa_instance_state':
@@ -54,7 +54,7 @@ def serrialize(data, new_data={}):
     elif isinstance(data, list):
         for key, value in enumerate(data, 0):
             if isinstance(value, datetime.datetime):
-                new_data[key] = value.strftime("%Y %B %d %A %H:%M")
+                new_data[key] = value.timestamp() #.strftime("%Y %B %d %A %H:%M")
             elif isinstance(value, (list, dict)):
                 serrialize(value, new_data)
             elif key == '_sa_instance_state':

@@ -103,10 +103,6 @@ class PostForm(FlaskForm):
 	tags = StringField('Tag',
 		[DataRequired(), Length(3, 100)])
 
-	# print(title.kwargs['validators'][1].__dict__['min'])
-	# print(title.kwargs['validators'][1].min)
-
-
 	def validate_tags(form, tags):
 		invalid_chars = re.findall(r"[!@#$%^&*()~`\-+=\/?\|:\;'\"{}\\.\[\]]", str(tags._value()))
 		invalid_tags = []
@@ -122,8 +118,6 @@ class PostForm(FlaskForm):
 				<span style="color: red;">{", ".join(char for char in invalid_chars)}</span>')
 
 	def validate_category(form, category):
-		pprint(dir(category))
-		print('category: ', category.data)
 		if category.data in ['ch', '--choose category--']:
 			raise ValidationError(f'Choose category')
 

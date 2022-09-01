@@ -10,21 +10,26 @@ lang = {'ru_RU':{'comment':['вчера в ', 'сегодня в ', 'в']},
         'en_US':{'comment':['yesterday at ', 'today at ', 'at']}
     }
 
+
 class Configuration(object):
-	DEBUG = False
+	DEBUG = True
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
 	SECRET_KEY = os.environ.get('SECRET_KEY')
 	CKEDITOR_PKG_TYPE = "standard"
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+	HOST='0.0.0.0'
+	PORT = 5000
 
 
 class Development(Configuration):
 	DEBUG = True
-	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app2.db')
+	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
 	SECRET_KEY = env.get('SECRET_KEY')
-	PORT = 5555
+	MAIL_USERNAME=env.get('MAIL_USERNAME')
+	MAIL_PASSWORD=env.get('MAIL_PASSWORD')
 
 class Production(Configuration):
+	DEBUG = False
 	pass
 
 

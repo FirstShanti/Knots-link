@@ -2,8 +2,7 @@ from flask import (
 	session,
 )
 from flask_restful import Resource, reqparse
-from utility import get_user
-from utility import get_chat, get_message, serrialize
+from utility import get_user, get_chat, get_message, serrialize
 
 parser = reqparse.RequestParser(bundle_errors=True)
 
@@ -37,16 +36,17 @@ class Chat(Resource):
 			chat_id, page = data['chat_id'], int(data['page'])
 			# current_user = get_user()
 			# another_user = get_user(username=data['another_username'])
-			messages = [serrialize(item.__dict__) for item in get_message(chat_id=chat_id)]
+			messages = [serrialize(item.__dict__) for item in get_message(chat_id=chat_id) or []]
+			# from time import sleep 
+			# sleep(50)
 			return {
 				'status': 'success',
-				'data': messages}, 200
+				'messages': messages}, 200
 		return {'status': 'error', 'chat_id': None}, 403
 
 
 	def post(self):
 		try:
-			print('in POST chat')
 			if session.get('username'):
 				parser = args_to_parser(validator, 'get_chat_uuid', 'headers')
 				data = parser.parse_args()
@@ -54,10 +54,8 @@ class Chat(Resource):
 				if current_user.username == session['username']:
 					another_user = get_user(data.get('username'))
 					chat = get_chat(current_user, another_user)
-					print(f'return chat_id: {chat.uuid}')
 					if chat:
 						return {'status': 'success', 'chat_id': chat.uuid}, 200
 		except Exception as e:
-			print('\n\n\n', e, '\n\n\n')
 			raise e
 		return {'status': 'error', 'details': 'permission denied'}, 403

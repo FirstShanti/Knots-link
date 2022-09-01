@@ -38,17 +38,27 @@ WARNING = "alert alert-warning"
 
 posts = Blueprint('posts',
     __name__,
-    template_folder='templates'
-)
+    template_folder='templates')
 user_profile = Blueprint('user_profile',
     __name__,
-    template_folder='templates'
-)
+    template_folder='templates')
 message = Blueprint('message',
     __name__,
-    template_folder='templates'
-)
+    template_folder='templates')
 
+# quest = Blueprint('quest',
+#     __name__,
+#     template_folder='templates'
+# )
+
+# from posts.mock import enigmas
+# import json
+# @quest.route('/', methods=['GET'])
+# def message_index():
+#     return render_template(
+#         'quest.html',
+#         enigmas=json.dumps(enigmas)
+#     )
 
 @message.route('/', methods=['GET', 'POST'])
 @session_time
@@ -94,7 +104,6 @@ def create_post():
 
     form = PostForm(request.form)
     form.category.choices = get_category()
-    print('form.category.choices: ', form.category.choices)
     
     if 'username' in session:
         if request.method == 'POST' and form.validate_on_submit():
@@ -220,15 +229,13 @@ def index():
         page = int(page)
     else:
         page = 1
-    # сортировка видимых от последнего до первого 
+
     posts = Post.query.order_by(db.desc(Post.created)).filter(Post.visible==True)
 
     for post in posts:
         post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>|<table|<tr|<td|</table|</td|</tr', '', ''.join(i for i in post.body.split("\n")[:3]))
 
     pages = posts.paginate(page=page, per_page=6, max_per_page=6)
-    print(dir(pages))
-    print(pages.total)
 
     return render_template('index_posts.html',
         posts=posts,
@@ -319,6 +326,7 @@ def get_user_data(slug):
         second_name=user.s_name,
         username=user.username,
         phone_number=user.phone_number,
+        email=user.email,
         posts=posts,
         pages=pages,
         categories=Category.query.all()
@@ -406,12 +414,11 @@ def category_detail(slug):
     for i in pagination['items']:
         del i['_sa_instance_state']
         i['created'] = i['created'].isoformat(timespec='seconds')
-    # print(pagination)
+
     if api_header:
         num_list = []
         for i in pages.iter_pages():
             num_list.append(i)
-        # return jsonify({'json_list' : [{'title':i.title, 'preview':i.preview, 'slug':i.slug} for i in pages.items], 'pages_list' : num_list})
         return jsonify(pagination)
 
     return render_template('index_posts.html',
@@ -426,13 +433,12 @@ def category_detail(slug):
 def search():
     q = request.args.get('q') # search value from form
     cat = request.args.get('c')
-    print(f'q: {q}\ncategory: {cat}')
     page = request.args.get('page')
     try:
         category = Category.query.filter(Category.name==cat).first()
     except Exception as e:
         category = False
-    # print(category)
+
     if page and page.isdigit():
         page = int(page)
     else:

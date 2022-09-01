@@ -1,6 +1,12 @@
 var socket;
 let window_size = $( window ).height()
 let book_pc_size = (window_size - window_size%3) / 1.5
+let prevDay = null;
+var receivedAudio = new Audio('/static/audio/received.mp3');
+var sendAudio = new Audio('/static/audio/send.mp3');
+receivedAudio.volume = 0.2;
+sendAudio.volume = 0.2;
+
 $('.book_pc').css('height', `${book_pc_size}px`)
 $('.chats_list').css('height', `${book_pc_size}px`)
 $('.vl').css('height', `${book_pc_size}px`)
@@ -14,6 +20,13 @@ $(document).ready(function() {
     let url = '/api/v1/chat'
     let chat_active = ''
     get_chat_id()
+    let isMute = false
+    
+    $('#mute').click(function() {
+        isMute = !isMute
+        receivedAudio.volume = isMute ? 0 : 0.2
+        sendAudio.volume = isMute ? 0 : 0.2
+    })
 
     $('.room_info').click(function() {
         if (to_prev) {
@@ -37,13 +50,12 @@ $(document).ready(function() {
             type: 'POST',
             headers: {'username': to},
             dataType: 'json',
-            beforeSend: function(){
-                $("#loader").show();
-            },
+            // beforeSend: function(){
+            //     $("#chat_loader").show();
+            // },
             async: false,
             success: function (response) {   
                 chat_id = response.chat_id
-                console.log('chat_id: ', chat_id)
             },
             error: function(error) {
                 console.log(error);
@@ -69,7 +81,6 @@ $(document).ready(function() {
     function sendText(chat_id, socket_id, msg) {
         let type = 'msg'
         socket.emit('text', {chat_id, socket_id, msg, type})
-        // console.log('sended')
     }
 
 
@@ -78,23 +89,19 @@ $(document).ready(function() {
         socket.send('leave', {chat_id, socket_id, type})
     }
 
-    socket.on('message', data => {
+    socket.on('message', ({data, messages}) => {
         if (data.type == 'service' & data.socket_id != socket.id) {
             $('.book_pc').append(`<div class="text-muted">${data.msg}</div>`);
         } else {
             if ( data.type == 'msg' ) {
-                var myAudio = new Audio('/static/audio/notification3.mp3');
-                myAudio.volume = 0.2;
-                if ( data.socket_id == socket.id ) {
-                    $('.book_pc').append(`<div class='msg_container right'><div class='msg_right'>${data.msg}</div></div>`);
-                    $(".book_pc").animate({scrollTop:9999}, 800);
-                } else {
-                    $('.book_pc').append(`<div class='msg_container left'><div class='msg_left'>${data.msg}</div></div>`);
-                    myAudio.play();
-                    $(".book_pc").animate({scrollTop:9999}, 800);
+                update_msgs(messages, false)
+                if (messages[0].author_username == to && !isMute) {
+                    receivedAudio.play()
                 }
+                $(`.room_last_msg#${to}`).text(truncate(data.msg, 30))
+                $(".book_pc").animate({scrollTop:9999}, 800);
             }
-        } 
+        }
         return false;
     });
 
@@ -104,21 +111,49 @@ $(document).ready(function() {
             '/api/v1/chat',
             {chat_id, page, 'another_username': to},
             function(response) {
-                update_msgs(response, clear)
+                update_msgs(response.messages, clear)
+                $(".loader").hide();
             }
         )}
 
-    function update_msgs(response, clear=false) {
+    function get_msg_html(side, msg, date) {
+        return `
+            <div class='msg_container ${side}'>
+                <div class='msg_${side}'>
+                    <div>${msg}</div>
+                    <div style="font-size: 10px; color: grey; float: ${side}">${date}</div>
+            </div></div>`
+    }
+
+    function update_msgs(messages, clear=false) {
         var prev_content = $('.book_pc')
         if (clear) {
-            prev_content.empty()        }
-        for (var i in response.data) {
-            if ( response.data[i].author_username == to ) {
-                prev_content.append(`<div class='msg_container left'><div class='msg_left'>${response.data[i].text}</div></div>`);
-                // $(".book_pc").animate({scrollTop:9999}, 800);
+            prev_content.empty()
+        }
+        for (var i in messages) {
+            let date = new Date(messages[i].created * 1000);
+            let year = date.getYear()
+            let month = date.getMonth()
+            let day = date.getDay()
+            let hours = date.getHours()
+            let minutes = date.getMinutes()
+            
+            let msg_content = messages[i].text
+            let msg_date = `${hours}:${minutes}`
+
+            if (!prevDay || prevDay != day) {
+                prev_content.append(
+                    `<div class='new-date'>
+                        ${date.format("dd.m.yy")}
+                    </div>`
+                )
+                prevDay = day
+            }
+
+            if ( messages[i].author_username == to ) {
+                prev_content.append(get_msg_html('left', msg_content, msg_date));
             } else {
-                prev_content.append(`<div class='msg_container right'><div class='msg_right'>${response.data[i].text}</div></div>`);  
-                // $(".book_pc").animate({scrollTop:9999}, 800);
+                prev_content.append(get_msg_html('right', msg_content, msg_date));  
             }
         }
     }
@@ -126,42 +161,21 @@ $(document).ready(function() {
     get_msgs(false)
     $(".book_pc").animate({scrollTop:9999}, 800);
 
-    // var get = getData('/api/v1/chat', chat_id, page, to)
-    //     .then((data) => {
-    //         console.log(data['data'])
-    //         return data['data']; // JSON data parsed by `response.json()` call
-
-    //       })
-    //     .then((data) => {
-    //         var prev_content = $('.book_pc').val()
-    //         // ${Date.parse(msgs[i].createdAt)}: 
-    //         for (var i in data) {
-    //             if ( data[i].msg != 'new Knot conected' ) {
-    //                 prev_content += `<div class="msg_left">
-    //                                 ${data[i].msg}
-    //                             </div>` 
-    //             }
-    //         }
-    //         $('.book_pc').empty().append(prev_content)
-    //         $('#message_textarea').val()
-    //         $(".book_pc").animate({scrollTop:9999}, 800);
-    //     })
-    // }
-    // get.then((data) => {
-    //     console.log('response data: ', data)
-    //     updatePosts(data)
-    // })
-    // updatePosts(getData)
-
     $('button.send_message_button').on('click', () => {
         var msg = $('#message_textarea').val()
         if ( msg ) {
+            sendAudio.play()
             sendText(chat_id, socket.id, msg)
             $('#message_textarea').val('');
         } else {
             // change input dic to red color VALIDATION
         }
     });
+
+    function truncate(str, maxlength) {
+    return (str.length > maxlength) ?
+        str.slice(0, maxlength - 1) + '…' : str;
+    }
 
 })
 

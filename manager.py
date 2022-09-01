@@ -1,7 +1,7 @@
-from app import manager, db
+from main import manager
+from models import *
+import view
 
 
 if __name__ == '__main__':
-    db.create_all()
-    db.session.commit()
     manager.run()
