@@ -1,4 +1,3 @@
-import json
 import re
 
 from forms import PostForm, CommentForm, CategoryForm, get_category
@@ -29,7 +28,6 @@ from models import (
 )
 from utility import get_user, get_chat, get_all_chat
 from config import local, lang
-# from sqlalchemy.exc import IntegrityError
 
 
 SUCCESSFUL = 'alert alert-success'
