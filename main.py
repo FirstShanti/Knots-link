@@ -27,4 +27,4 @@ app.register_blueprint(message, url_prefix='/messanger')
 
 
 if __name__=='__main__':
-    socketio.run(app, host=app.config['HOST'], port=app.config['PORT'])
+    socketio.run(app)
