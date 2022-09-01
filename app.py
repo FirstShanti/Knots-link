@@ -2,7 +2,9 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
-from config import Development, Production, environments, env
+from config import environments, env
+from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager, Command
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
@@ -16,3 +18,7 @@ else:
 db = SQLAlchemy(app)
 ckeditor = CKEditor(app)
 
+# migrate data to sql
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)

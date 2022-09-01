@@ -1,6 +1,5 @@
-from main import manager
+from app import manager
 from models import *
-import view
 
 
 if __name__ == '__main__':
