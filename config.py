@@ -20,7 +20,7 @@ class Configuration(object):
 
 class Development(Configuration):
 	DEBUG = True
-	SQLALCHEMY_DATABASE_URI = 'postgresql://bca:12345@localhost:5432/knots'
+	SQLALCHEMY_DATABASE_URI = env.get('DATABASE_URL')
 	SECRET_KEY = env.get('SECRET_KEY')
 	MAIL_USERNAME=env.get('MAIL_USERNAME')
 	MAIL_PASSWORD=env.get('MAIL_PASSWORD')
