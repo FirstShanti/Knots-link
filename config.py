@@ -36,6 +36,8 @@ class Development(Configuration):
 class Production(Configuration):
 	DEBUG = False
 
+	HOST = os.environ.get('HOST')
+	PORT = os.environ.get('PORT')
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
