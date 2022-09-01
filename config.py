@@ -17,9 +17,6 @@ class Configuration(object):
 	SECRET_KEY = os.environ.get('SECRET_KEY')
 	CKEDITOR_PKG_TYPE = "standard"
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-	HOST='0.0.0.0'
-	PORT = 5000
-
 
 class Development(Configuration):
 	DEBUG = True
@@ -27,10 +24,11 @@ class Development(Configuration):
 	SECRET_KEY = env.get('SECRET_KEY')
 	MAIL_USERNAME=env.get('MAIL_USERNAME')
 	MAIL_PASSWORD=env.get('MAIL_PASSWORD')
+	HOST='0.0.0.0'
+	PORT = 5000
 
 class Production(Configuration):
 	DEBUG = False
-	pass
 
 
 environments = {
