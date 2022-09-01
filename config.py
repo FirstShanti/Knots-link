@@ -23,14 +23,13 @@ class Configuration(object):
 
 class Development(Configuration):
 	DEBUG = True
-	SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+	SQLALCHEMY_DATABASE_URI = 'postgresql://bca:12345@localhost:5432/knots'
 	SECRET_KEY = env.get('SECRET_KEY')
 	MAIL_USERNAME=env.get('MAIL_USERNAME')
 	MAIL_PASSWORD=env.get('MAIL_PASSWORD')
 
 class Production(Configuration):
 	DEBUG = False
-	SQLALCHEMY_DATABASE_URI = 'postgresql://bca:12345@localhost:5432/knots'
 	pass
 
 
