@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 76aa47bfeb41
+Revision ID: 67c8796321c3
 Revises: 
-Create Date: 2022-09-01 19:32:19.456522
+Create Date: 2022-09-01 23:35:35.511789
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '76aa47bfeb41'
+revision = '67c8796321c3'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -32,7 +32,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('uuid', sa.String(length=140), nullable=True),
     sa.Column('created', sa.DateTime(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('uuid')
     )
     op.create_table('knot',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -51,7 +52,9 @@ def upgrade():
     sa.Column('admin', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
-    sa.UniqueConstraint('slug')
+    sa.UniqueConstraint('phone_number'),
+    sa.UniqueConstraint('slug'),
+    sa.UniqueConstraint('username')
     )
     op.create_table('tag',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -64,9 +67,10 @@ def upgrade():
     op.create_table('chat_users',
     sa.Column('chat_id', sa.Integer(), nullable=False),
     sa.Column('knot_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['chat_id'], ['chat.uuid'], ),
+    sa.ForeignKeyConstraint(['chat_id'], ['chat.id'], ),
     sa.ForeignKeyConstraint(['knot_id'], ['knot.id'], ),
-    sa.PrimaryKeyConstraint('chat_id', 'knot_id')
+    sa.PrimaryKeyConstraint('chat_id', 'knot_id'),
+    sa.UniqueConstraint('chat_id', 'knot_id', name='chat_user_id')
     )
     op.create_table('message',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -77,7 +81,8 @@ def upgrade():
     sa.Column('is_read', sa.Boolean(), nullable=True),
     sa.Column('author_username', sa.String(length=32), nullable=True),
     sa.ForeignKeyConstraint(['author_username'], ['knot.username'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('uuid')
     )
     op.create_table('post',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -98,9 +103,10 @@ def upgrade():
     op.create_table('chat_msgs',
     sa.Column('chat_id', sa.Integer(), nullable=False),
     sa.Column('message_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['chat_id'], ['chat.uuid'], ),
+    sa.ForeignKeyConstraint(['chat_id'], ['chat.id'], ),
     sa.ForeignKeyConstraint(['message_id'], ['message.id'], ),
-    sa.PrimaryKeyConstraint('chat_id', 'message_id')
+    sa.PrimaryKeyConstraint('chat_id', 'message_id'),
+    sa.UniqueConstraint('chat_id', 'message_id', name='chat_msg_id')
     )
     op.create_table('comment',
     sa.Column('id', sa.Integer(), nullable=False),
