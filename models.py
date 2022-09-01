@@ -206,7 +206,7 @@ class Comment(db.Model):
 
 class Chat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(140))
+    uuid = db.Column(db.String(140), unique=True)
     created = db.Column(db.DateTime)
 
 
@@ -222,7 +222,7 @@ class Chat(db.Model):
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(140))
+    uuid = db.Column(db.String(140), unique=True)
     text = db.Column(db.String(5000), nullable=False)
 
     created = db.Column(db.DateTime)
