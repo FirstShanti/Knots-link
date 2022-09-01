@@ -30,6 +30,7 @@ class Development(Configuration):
 
 class Production(Configuration):
 	DEBUG = False
+	SQLALCHEMY_DATABASE_URI = 'postgresql://bca:12345@localhost:5432/knots'
 	pass
 
 

@@ -4,6 +4,7 @@ import re
 from login.hash import encrypt_string
 from uuid import uuid4
 from config import local, lang
+from sqlalchemy import UniqueConstraint
 
 
 def slugify(s):
@@ -36,15 +37,17 @@ post_tags = db.Table(
 
 chat_users = db.Table(
     'chat_users', 
-    db.Column('chat_id', db.Integer, db.ForeignKey('chat.uuid'), primary_key=True),
-    db.Column('knot_id', db.Integer, db.ForeignKey('knot.id'), primary_key=True)
+    db.Column('chat_id', db.Integer, db.ForeignKey('chat.id'), primary_key=True),
+    db.Column('knot_id', db.Integer, db.ForeignKey('knot.id'), primary_key=True),
+    UniqueConstraint('chat_id', 'knot_id', name='chat_user_id')
 )
 
 chat_msgs = db.Table(
     'chat_msgs',
-    db.Column('chat_id', db.Integer, db.ForeignKey('chat.uuid'), primary_key=True),
-    db.Column('message_id', db.Integer, db.ForeignKey('message.id'), primary_key=True)
-    )
+    db.Column('chat_id', db.Integer, db.ForeignKey('chat.id'), primary_key=True),
+    db.Column('message_id', db.Integer, db.ForeignKey('message.id'), primary_key=True),
+    UniqueConstraint('chat_id', 'message_id', name='chat_msg_id')
+)
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -125,9 +128,9 @@ class Knot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     f_name = db.Column(db.String(32))
     s_name = db.Column(db.String(32))
-    username = db.Column(db.String(32))
+    username = db.Column(db.String(32), unique=True)
     email = db.Column(db.String(129), unique=True)
-    phone_number = db.Column(db.String(15))  # phone number
+    phone_number = db.Column(db.String(15), unique=True)  # phone number
     password = db.Column(db.String(256))
 
     slug = db.Column(db.String(140), unique=True)
@@ -206,14 +209,14 @@ class Comment(db.Model):
 
 class Chat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(140), unique=True)
+    uuid = db.Column(db.String(140), unique=True, default=str(uuid4()))
     created = db.Column(db.DateTime)
 
 
     def __init__(self, *args, **kwargs):
         super(Chat, self).__init__(*args, **kwargs)
         self.created = datetime.utcnow()
-        self.uuid = str(uuid4())
+        # self.uuid = str(uuid4())
 
 
     users = db.relationship('Knot', passive_deletes=True, secondary=chat_users)
