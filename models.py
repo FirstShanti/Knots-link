@@ -1,3 +1,4 @@
+from xxlimited import Null
 from app import db
 from datetime import datetime
 import re
@@ -39,14 +40,12 @@ chat_users = db.Table(
     'chat_users', 
     db.Column('chat_id', db.Integer, db.ForeignKey('chat.id'), primary_key=True),
     db.Column('knot_id', db.Integer, db.ForeignKey('knot.id'), primary_key=True),
-    UniqueConstraint('chat_id', 'knot_id', name='chat_user_id')
 )
 
 chat_msgs = db.Table(
     'chat_msgs',
     db.Column('chat_id', db.Integer, db.ForeignKey('chat.id'), primary_key=True),
     db.Column('message_id', db.Integer, db.ForeignKey('message.id'), primary_key=True),
-    UniqueConstraint('chat_id', 'message_id', name='chat_msg_id')
 )
 
 class Post(db.Model):
@@ -130,7 +129,7 @@ class Knot(db.Model):
     s_name = db.Column(db.String(32))
     username = db.Column(db.String(32), unique=True)
     email = db.Column(db.String(129), unique=True)
-    phone_number = db.Column(db.String(15), unique=True)  # phone number
+    phone_number = db.Column(db.String(15))  # phone number
     password = db.Column(db.String(256))
 
     slug = db.Column(db.String(140), unique=True)
