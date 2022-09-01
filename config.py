@@ -14,24 +14,33 @@ lang = {'ru_RU':{'comment':['вчера в ', 'сегодня в ', 'в']},
 class Configuration(object):
 	DEBUG = True
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
-	SECRET_KEY = os.environ.get('SECRET_KEY')
+	
 	CKEDITOR_PKG_TYPE = "standard"
+
+	SECRET_KEY = os.environ.get('SECRET_KEY')
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+
 
 class Development(Configuration):
 	DEBUG = True
+	PORT = 5000
+
+	HOST = "0.0.0.0"
+
 	SQLALCHEMY_DATABASE_URI = env.get('DATABASE_URL')
 	SECRET_KEY = env.get('SECRET_KEY')
-	MAIL_USERNAME=env.get('MAIL_USERNAME')
-	MAIL_PASSWORD=env.get('MAIL_PASSWORD')
-	HOST='0.0.0.0'
-	PORT = 5000
+	MAIL_USERNAME = env.get('MAIL_USERNAME')
+	MAIL_PASSWORD = env.get('MAIL_PASSWORD')
+
 
 class Production(Configuration):
 	DEBUG = False
+
+	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
 
 environments = {
 	'Development': Development,
 	'Production': Production
-	}
+}
