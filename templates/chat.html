@@ -7,20 +7,20 @@
 
 {% block content %}
 
-    {% if user %}
-    <div class='messanger_container'>
+    {% if current_user %}
+    <div id='messanger' class='messanger_container'>
         <div class='chats_list'>
             {% for chat in chats %}
                 <div class='chat_room'>
                     {% for user in chat.users %}
-                        {% if user.username != session.username %}
-                            <div class='room_info' value={{user.username}}>
+                        {% if user.username != current_user.username %}
+                            <div class='room_info' value="{{user.username}}">
                                 <img class='chat_room_icon' src="{{ user.avatar(size=75) }}"/>
                                 <div class='room_username_msg'>
                                     <div class='room_username' >
                                         <span>{{ user.username }}<span>
                                     </div>
-                                    <div id={{user.username}} class='room_last_msg'>
+                                    <div id="{{user.username}}" class='room_last_msg'>
                                         {% if chat.messages %}
                                             {{ chat.messages[-1].text|truncate(30, True) }}
                                         {% endif %}

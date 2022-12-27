@@ -17,36 +17,9 @@ $(function(){
         min = $(elem_w_min_max_length).attr('min')
         max = $(elem_w_min_max_length).attr('max')
         input_length = $(this).val().length
+        $(`span#form_${this.name}_model_errors`).fadeOut(1000)
         validationInputLength(elem_w_min_max_length, min, max, input_length)
     })
-    // $( "select#category option:selected" ).on('click', function() {
-    //     console.log(this)
-    //     this.selected = 'selected'
-    // })
-    // $('select#category').on('change', function() {
-    //     let value = this.value
-    //     // console.log(value)
-    //     // console.log(this)
-    //     // console.log(this.children.length)
-    //     for (let i = 0; i < this.children.length; i++) {
-    //         // console.log(i)
-    //         if (this.children[i].value == value) {
-    //             console.log(this.children[i].selected)
-    //             console.log('change')
-    //             this.children[i].selected = 'selected'
-    //             // let  elem = $(`select#category option[value=${value}]`)
-    //             // elem.prop('selected', true);
-    //             // console.log(this.children[i])
-    //             // this.children[i].prop('selected', true);
-    //         } else {
-    //             console.log('delete')
-    //             delete this.children[i].selected
-    //         }
-    //     }
-    //     // console.log(value)
-    //     // // console.log(this.option[value=value])
-    //     // console.log(elem)
-    // })
 })
 
 validationInputLength = function (element_display, min, max, input_length) {

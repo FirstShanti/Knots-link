@@ -1,36 +1,27 @@
 from datetime import datetime, timedelta
+from flask import (
+    render_template,
+    request,
+    make_response,
+    url_for,
+    redirect,
+    jsonify
+)
+
 from app import app
-from flask import render_template, request, make_response, url_for
 from models import Post
-from posts.blueprint import posts
-from pprint import pprint
-
-# @app.before_request
-# def filter_prefetch():
-#     print('before_request')
-#     pprint(request.headers)
-#     # pass
-# # uncomment these to filter Chrome specific prefetch requests.
-# #    if 'Purpose' in request.headers and request.headers.get('Purpose') == 'prefetch':
-# #        logger.debug("prefetch requests are not allowed")
-# #        return '', status.HTTP_403_FORBIDDEN
+from exceptions import *
 
 
-# @app.after_request
-# def debug_after(response):
-#     print('after_request')
-#     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-#     response.headers["Pragma"] = "no-cache"
-#     response.headers["Expires"] = "0"
-#     response.headers['Cache-Control'] = 'public, max-age=0'
-#     response.headers['Connection'] = 'close'
-#     pprint(response.headers)
-#     return response
-
+@app.errorhandler(ApiException)
+def handle_invalid_usage(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html', endpoint=request.endpoint)
+    return redirect(url_for('posts.index'))
 
 
 @app.route('/sitemap.xml', methods=['GET'])

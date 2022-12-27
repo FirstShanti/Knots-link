@@ -1,11 +1,11 @@
-from xxlimited import Null
+from flask import session
+
 from app import db
 from datetime import datetime
 import re
-from login.hash import encrypt_string
+from utils import encrypt_string
 from uuid import uuid4
 from config import local, lang
-from sqlalchemy import UniqueConstraint
 
 
 def slugify(s):
@@ -58,7 +58,7 @@ class Post(db.Model):
     created = db.Column(db.DateTime, default=datetime.utcnow())
     author = db.Column(db.String(32))
     visible = db.Column(db.Boolean, default=1)
-    owner_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
 
     def __init__(self, *args, **kwargs):
         super(Post, self).__init__(*args, **kwargs)
@@ -76,9 +76,9 @@ class Post(db.Model):
             self.slug = f'post{self.uuid}_{slugify(self.title)}'
 
     def created_to_str(self, formatter=None):
-        timedelta = int(datetime.utcnow().strftime("%d")) - int(self.created.strftime("%d"))
+        timedelta = abs(datetime.utcnow().day - self.created.day)
         if timedelta > 1:
-            return self.created.strftime("%d %B %y {} %H:%M".format(f'{lang[local]["comment"][2]}'))
+            return self.created.strftime("%d %B %y / %H:%M")
         elif timedelta == 1:
             return self.created.strftime("{}%H:%M").format(f'{lang[local]["comment"][0]}')
         elif timedelta >= 0:
@@ -95,7 +95,7 @@ class Category(db.Model):
     short_name = db.Column(db.String(46), unique=True)
     slug = db.Column(db.String(100), unique=True)
     
-    posts = db.relationship('Post', backref='owner')
+    posts = db.relationship('Post', backref='category')
 
     def __init__(self, *args, **kwargs):
         super(Category, self).__init__(*args, **kwargs)
@@ -135,6 +135,7 @@ class Knot(db.Model):
     slug = db.Column(db.String(140), unique=True)
     
     created = db.Column(db.DateTime, default=datetime.utcnow())
+    updated = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
     last_login = db.Column(db.DateTime, default=datetime.utcnow())
 
     authenticated = db.Column(db.Boolean, default=0)
@@ -144,6 +145,8 @@ class Knot(db.Model):
 
     messages = db.relationship('Message', backref='author')
     chats = db.relationship('Chat', passive_deletes=True, secondary=chat_users)
+
+    comments = db.relationship('Comment', backref='author')
 
     def __init__(self, *args, **kwargs):
         super(Knot, self).__init__(*args, **kwargs)
@@ -164,13 +167,6 @@ class Knot(db.Model):
     def avatar(self, size):
         return f'https://www.gravatar.com/avatar/{self.auth_key}?d=identicon&s={size}'
 
-    def __repr__(self):
-        return f'''
-            Knot id: {self.id},
-            username: {self.username},
-            slug: {self.slug}
-        ''' 
-            #posts: {self.posts},
 
 # class Comment - (class of comments for Post)
 class Comment(db.Model):
@@ -178,10 +174,10 @@ class Comment(db.Model):
     uuid = db.Column(db.String(140))
     text = db.Column(db.String(2000))
     slug = db.Column(db.String(140), unique=True)
-    author = db.Column(db.String(32))
     created = db.Column(db.DateTime)
     edited = db.Column(db.DateTime, default=datetime.utcnow())
-    owner_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('knot.id'))
 
     def __init__(self, *args, **kwargs):
         super(Comment, self).__init__(*args, **kwargs)
@@ -246,3 +242,70 @@ class Message(db.Model):
             'author_username': self.author_username,
             'is_read': self.is_read
         }
+
+
+### Utils
+def get_user(username=None, user_id=None):
+    if username:
+        return Knot.query.filter_by(username=username).first()
+    elif user_id:
+        return Knot.query.filter_by(id=user_id).first()
+
+
+def get_chat(curent_user=None, another_user=None, chat_id=None, all_chats=False):
+    if chat_id:
+        return Chat.query.filter(Chat.uuid==chat_id).first()
+    return Chat.query.filter(Chat.users.contains(curent_user)).filter(Chat.users.contains(another_user)).first()
+
+
+def get_all_chat(user):
+    return Chat.query.filter(Chat.users.contains(user))
+
+
+def get_message(chat_id, msg_ig=None, username=None):
+    query = Chat.query.filter(Chat.uuid==chat_id).first()
+    if msg_ig:
+        return Message.query.get(msg_ig).first()
+    if username and query:
+        return filter(lambda x : x.author_username == username, query.messages)
+    if query:
+        return query.messages
+    # if order=='desc':
+    #     return query.order_by(Message.created.desc())
+    # elif order=='asc':
+    #     return query.order_by(Message.created.asc())
+    # return query
+
+def get_posts(username):
+    posts = Post.query.all()
+    if username:
+        return posts.filter(Post.author==username).all()
+    return posts
+
+
+def serrialize(data, new_data={}):
+    if not new_data:
+        new_data = {}
+    if isinstance(data, dict):
+        if data.get('id'):
+            del data['id']
+        for key, value in data.items():
+            if isinstance(value, datetime):
+                new_data[key] = value.timestamp() #.strftime("%Y %B %d %A %H:%M")
+            elif isinstance(value, (list, dict)):
+                serrialize(value, new_data)
+            elif key == '_sa_instance_state':
+                continue
+            else:
+                new_data[key] = value
+    elif isinstance(data, list):
+        for key, value in enumerate(data, 0):
+            if isinstance(value, datetime):
+                new_data[key] = value.timestamp() #.strftime("%Y %B %d %A %H:%M")
+            elif isinstance(value, (list, dict)):
+                serrialize(value, new_data)
+            elif key == '_sa_instance_state':
+                continue
+            else:
+                new_data[key] = value
+    return new_data

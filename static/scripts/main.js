@@ -46,6 +46,22 @@ function updatePosts (response, category) {
 					<div class="posts-index">
 						${posts[i].preview}
 					</div>
+					<div class='post_meta_detail'>
+						<div style='margin-right: auto;'>
+							<a style="color: grey;" href="/knot/${posts[i].author || 'anonymous'}">
+								<i class="fas fa-user"></i>
+								${posts[i].author}
+							</a>
+							<a style="color: grey;" href="/blog/${posts[i].slug}#comments">
+								<i class="fas fa-comments"></i>
+								${posts[i].comments|length}
+							</a>
+						</div>
+						<div style="margin-left: auto;">
+							<i class="fas fa-clock"></i>
+							${moment(posts[i].created).format('DD-MM-YYYY')}
+						</div>
+					</div>
 				</div>
 			</div>` 
 	}

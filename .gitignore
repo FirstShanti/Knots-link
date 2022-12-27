@@ -7,8 +7,9 @@ __pycache__
 *.db
 venv/
 
-globals_cache.py
 *.bak
 test_img.py
 run.sh
 ai-images/
+TODO.txt
+*test*

@@ -22,13 +22,13 @@ $(document).ready(function() {
     get_chat_id()
     let isMute = false
     
-    $('#mute').click(function() {
+    $('#mute').on('click', function() {
         isMute = !isMute
         receivedAudio.volume = isMute ? 0 : 0.2
         sendAudio.volume = isMute ? 0 : 0.2
     })
 
-    $('.room_info').click(function() {
+    $('.room_info').on('click', function() {
         if (to_prev) {
             $(to_prev).removeClass('current_chat_room')
         }
@@ -63,14 +63,20 @@ $(document).ready(function() {
         })
     }
 
-    socket = io.connect(root_url);
+    socket = io.connect(root_url,
+        {
+            headers: {
+                "access_token_cookie": getFromStorage('auth').access_token_cookie
+            }
+        }
+    );
 
     socket.on('connect', function() {
-        $('#form_send_msg').click(function(e) {
+        $('#form_send_msg').on('click', function(e) {
             e.preventDefault();
         })
         joinRoom(chat_id, socket.id)
-    })
+    });
 
     // Trigger 'join' event
     function joinRoom(chat_id, socket_id) {
@@ -106,7 +112,6 @@ $(document).ready(function() {
     });
 
     function get_msgs(clear) {
-        console.log('in get')
         $.getJSON(
             '/api/v1/chat',
             {chat_id, page, 'another_username': to},
@@ -132,14 +137,10 @@ $(document).ready(function() {
         }
         for (var i in messages) {
             let date = new Date(messages[i].created * 1000);
-            let year = date.getYear()
-            let month = date.getMonth()
             let day = date.getDay()
-            let hours = date.getHours()
-            let minutes = date.getMinutes()
-            
+
             let msg_content = messages[i].text
-            let msg_date = `${hours}:${minutes}`
+            let msg_date = date.format("HH:MM")
 
             if (!prevDay || prevDay != day) {
                 prev_content.append(
@@ -183,7 +184,6 @@ $(document).ready(function() {
 // // Пример отправки GET запроса:
 async function getData(url = '', chat_id = '', page = 1, username = '') {
   // Default options are marked with *
-  // console.log('send get request: ', url, chat_id, page, username)
   const response = await fetch(url, {
     method: 'GET', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
