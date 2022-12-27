@@ -7,13 +7,13 @@
 {% block seo %}
     <meta name="description" content="{{ post.preview }}">
     <meta name="keywords" content="{{ tags|map(attribute='name')|join(', ') }}">
-    <meta name="author" content="{{ user.f_name }} {{ user.s_name }}">
+    <meta name="author" content="{{ post.author }}">
 {% endblock %}
 
 {% block content_title %}
 <div class="post-content-title">
         <span><h1 class="post_content_title_h1">{{ post.title }}</h1></span>
-        {% if session['username'] == post.author %}
+        {% if user.username == post.author %}
             <div>
                 <a class="far fa-edit" style="font-size: 20px; margin-top: 2px; margin-left: 5px; color: #d5d1ca; text-decoration: none;" href="{{ url_for('posts.edit_post', slug=post.slug) }}" title="Edit post"></a>
                 {% if post.visible %}
@@ -31,7 +31,6 @@
                 <a href="{{ url_for('user_profile.get_user_data', slug=user.slug or 'anonymous')}}">
                     @{{ author }}
                 </a>
-                
             </div>
             <div>
                 <span class="post-title-sep-dot">&#8901;</span>
@@ -66,9 +65,9 @@
                 {% for comment in comments %}
                     <div class="main-content" style="padding-top: 10px; font-size: 20px; position: block; word-wrap: break-word;">
                         <div class="post-comment-author">
-                            <img class="user_comment_avatar" src="{{ user.avatar(size=25) }}">
+                            <img class="user_comment_avatar" src="{{ comment.author.avatar(size=25) }}">
                             <a href="{{ url_for('user_profile.get_user_data', slug=user.slug or 'anonymous')}}" >
-                                @{{ comment.author }}
+                                @{{ comment.author.username }}
                             </a>
                             <div class="post-comment-created">
                                 {{ comment.created_to_str() }}
@@ -87,32 +86,20 @@
         <div>
             <form action="" method="POST">
                 <a name="comments"></a>
-                {% if session.get('username') %}
-                    {% for field in form %}
-                    <div class="form-group">
-                        {{ field(class='form-control form-value-comment textarea', placeholder='write comment') }}
-                        {% for error in field.errors %}
-                        <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
-                    </div>
+                {% for field in form %}
+                <div class="form-group">
+                    {{ field(class='form-control form-value-comment textarea', placeholder='write comment') }}
+                    {% for error in field.errors %}
+                    <span style="color: red;">{{ error }}</span>
                     {% endfor %}
-                
-                    <div class="" style="text-align: left; margin-left: auto;
-                    margin-right: auto;">
-                        <button type="submit" class="btn btn-info">Add comment</button>
-                    </div>
-
-                {% endif %}
-            </form>
-
-            {% if not session.get('username') %}
-                <h4>Login for commenting</h4>
-                <div class="btn" style="text-align: left; margin-left: auto;
-                margin-right: auto;">
-                    <a href="{{ url_for('login.log_in') }}"><button class="btn btn-info">login</button></a>
                 </div>
-            {% endif %}
-
+                {% endfor %}
+            
+                <div class="" style="text-align: left; margin-left: auto;
+                margin-right: auto;">
+                    <button type="submit" class="btn btn-info">Add comment</button>
+                </div>
+            </form>
         </div>
     </div>
 

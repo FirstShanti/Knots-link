@@ -1,0 +1,21 @@
+{% extends 'emails/base_with_content.html' %}
+
+{% block title %}
+	{{ post.title }}
+{% endblock %}
+
+{% block info %}
+  <h1 style='text-align: center;'>{{ post.title }}</h1>
+  <h2 style='text-align: center;'>{{ post.preview }}</h2>
+  <div style='text-align: center;'>
+    {{ post.body|safe }}
+  </div>
+{% endblock %}
+
+{% block link %}
+  <a href="{{ request.url_root + 'blog/' + post.slug }}" class="button button--blue">Go to post</a>
+{% endblock %}
+
+{% block safe_link %}
+  <a href="{{ url }}">Go to post</a>
+{% endblock %}

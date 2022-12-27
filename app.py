@@ -4,18 +4,30 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
 from config import environments, env
 from flask_migrate import Migrate, MigrateCommand
-from flask_script import Manager, Command
+from flask_script import Manager
+from flask_jwt_extended import JWTManager
+from flask_talisman import Talisman
+from middlewares import CustomSessionInterface
+# from flask_marshmallow import Marshmallow
+from flask_wtf.csrf import CSRFProtect
+
 
 app = Flask(__name__)
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-
+app.session_interface = CustomSessionInterface()
 
 if env:
     app.config.from_object(environments[env.get('ENVIRONMENT')])
 else:
     app.config.from_object(environments['Production'])
 
+csrf = CSRFProtect(app)
 db = SQLAlchemy(app)
+jwt = JWTManager(app)
+# ma = Marshmallow(app)
+
+if not app.config['DEBUG']:
+    Talisman(app, content_security_policy=None)
+
 ckeditor = CKEditor(app)
 
 # migrate data to sql

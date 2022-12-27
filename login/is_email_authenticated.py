@@ -1,22 +1,16 @@
-from flask import session, redirect, url_for, flash
 from functools import wraps
+from urllib import response
 
-from utility import get_user
+from flask import redirect, request, url_for, flash
+from flask_jwt_extended import current_user
 
 
 def is_email_authenticated(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
 		try:
-			user = get_user(session['username'])
-			if session.get('username') and user:
-				if not user.authenticated:
-					flash(u'You must confirm email', 'alert alert-warning')
-					return redirect(url_for('posts.index')) #redirect=f.request.url
-			else:
-				session.clear()
-				# flash(u'Session time has expired', 'alert alert-warning')
-				return redirect(url_for('login.log_in'))
+			if not current_user.authenticated:
+				flash(u'Before saving the changes, you must confirm the email address.', 'alert alert-warning')
 		except KeyError:
 			return redirect(url_for('login.log_in'))
 		return f(*args, **kwargs)

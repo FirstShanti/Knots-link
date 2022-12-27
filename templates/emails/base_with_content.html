@@ -1,0 +1,69 @@
+{% extends 'emails/base.html' %}
+
+{% block content %}
+  <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center">
+        <table class="email-content" width="100%" cellpadding="0" cellspacing="0">
+          <!-- Logo -->
+          <tr>
+            <td class="email-masthead">
+              <a class="email-masthead_name">Knots</a>
+            </td>
+          </tr>
+          <!-- Email Body -->
+          <tr>
+            <td class="email-body" width="100%">
+              <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0">
+                <!-- Body content -->
+                <tr>
+                  <td class="content-cell">
+                    {% block info %}
+                    {% endblock %}
+                    <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center">
+                          <div>
+                            {% block link  %}
+                            {% endblock %}
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                    <p>Thanks,<br>The Knots Team</p>
+                    <table class="body-sub">
+                      <tr>
+                        <td>
+                          <p class="sub">If youre having trouble clicking the button, copy and paste the URL below into your web browser.
+                          </p>
+                          <p class="sub">
+                            {% block safe_link %}
+                            {% endblock %}
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <table class="email-footer" align="center" width="570" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td class="content-cell">
+                    <p class="sub center">
+                      Knots-link.
+                      <br>Kiyv, Ukraine
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+{% endblock %}

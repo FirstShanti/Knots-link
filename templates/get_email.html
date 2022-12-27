@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="logo_on_index">
+        <div class="logo_knots">
+            <a class="knots_title" href='{{ url_for("posts.index")}}' title="Узлы">
+                <img src="/static/img/logo.png">
+            </a>
+        </div>
+    </div>
+
+    <div id="emailToReset" class='container-fluid text-center body_' >
+        <form class='form-signin' @submit="checkEmail" ref="emailForm">
+            {% include 'elements/loader.html' %}
+            <div ref='interactive'>
+                <div class='mb-4' style='text-align: left;'>
+                    <span>Enter the email address associated with your Knot account.</span>
+                </div>
+                {% for field in form %}
+                    {% if field.type == "CSRFTokenField" %}
+                        {{field(type="hidden", ref="csrf")}}
+                    {% else %}
+                        <input
+                            name={{field.id}}
+                            class='form-control'
+                            autocomplete="off"
+                            placeholder={{field.id}}
+                            v-model={{field.id}}
+                            ref={{field.id}}
+                            v-on:keyup="resetInput"
+                        >
+                    {% endif %}
+                {% endfor %}
+                <span class="badge badge-danger disabled" v-model="error" ref="errors">{ error }</span>
+                <button class="btn btn-lg btn-primary btn-block mb-4" style='background: rgb(0, 120, 121); border-color: rgb(0, 120, 121);' type="submit">Continue
+                </button>
+            </div>
+        </form>
+        <div class="form-signin disabled " role="alert" ref="sentResetEmail">
+            <div class="mb-4">
+                <span>Instructions for setting a new password have been sent to
+                <a v-bind:href=" `mailto:${email}` ">{email}</a></span>
+            </div>
+            <button 
+                class="btn btn-lg btn-primary mb-4"
+                style='background: rgb(0, 120, 121); border-color: rgb(0, 120, 121);'
+                v-on:click="redirect_to_login"
+            >
+                OK
+            </button>
+        </div>
+    </div>
+
+{% endblock %}

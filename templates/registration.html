@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'index.html' %}
 
 {% block title %}
 	{{ title }}
@@ -8,7 +8,7 @@
 	
 {% endblock %}
 
-{% block content %}
+{% block data %}
 
 
 		<div class="logo_on_index" >
@@ -39,7 +39,6 @@
 			<div class="new-user-reg">
 				<a href="{{ url_for('login.log_in') }}">Sign in</a>
 			</div>
-            <p class="mt-5 mb-3 text-muted">© 2019-2020</p>
 		</form>
 		</div>
 

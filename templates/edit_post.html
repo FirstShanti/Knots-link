@@ -20,7 +20,7 @@
 
 			{% for field in form %}
                 <div class="form-group">
-                    {{ field(class='form-control form-value', autocomplete='off', placeholder=field.id) }}
+                    {{ field(class='form-control', autocomplete='off', placeholder=field.id) }}
                     {% if field.lable != 'Category' %}
                         {% for validator in field.validators %}
                             {% if 'min' in validator.__dict__ %}

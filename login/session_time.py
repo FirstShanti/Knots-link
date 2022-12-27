@@ -1,27 +1,32 @@
 import traceback
 
-from flask import session, redirect, url_for, flash
+from flask import request, session, redirect, url_for, flash
 from datetime import datetime, timedelta
 from functools import wraps
 from models import Knot
-
+from flask_jwt_extended import verify_jwt_in_request
+from flask_jwt_extended import current_user as jwt_current_user
 
 def session_time(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
 		try:
-			if session.get('username') and Knot.query.filter(Knot.username==session['username']).first():
-				if session['private_key_exp'] > datetime.now() and abs(session['last_login'] - datetime.now()).days < 1:
-					session['private_key_exp'] = datetime.now() + timedelta(seconds=3600)
-				else:
-					session.clear()
-					flash(u'Session time has expired', 'alert alert-warning')
-					return redirect(url_for('login.log_in')) #redirect=f.request.url
-			else:
-				session.clear()
-				return redirect(url_for('login.log_in'))
+			verify_jwt_in_request()
 		except Exception as e:
-			traceback.format_exc()
 			return redirect(url_for('login.log_in'))
 		return f(*args, **kwargs)
+	return decorated_function
+
+
+def user_or_anon(f):
+	@wraps(f)
+	def decorated_function(*args, **kwargs):
+		current_user = None
+		try:
+			if request.cookies:
+				verify_jwt_in_request()
+				current_user = jwt_current_user
+		except Exception as e:
+			pass
+		return f(*args, current_user, **kwargs)
 	return decorated_function

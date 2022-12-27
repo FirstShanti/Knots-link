@@ -1,14 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'index.html' %}
 
 {% block title %}
 	{{ title }}
 {% endblock %}
 
-{% block content_title %}
-
-{% endblock %}
-
-{% block content %}
+{% block data %}
 		<div class="logo_on_index">
 	        <div class="logo_knots">
 	            <a class="knots_title" href='{{ url_for("posts.index")}}' title="Узлы">
@@ -16,23 +12,43 @@
 	            </a>
 	        </div>
 	    </div>
-        <div class='container-fluid text-center body_'>
-			<form class='form-signin' action="" method="POST">
+		
+        <div id="login" class='container-fluid text-center body_'>
+			<form class='form-signin' @submit="authenticate">
 				{% for field in form %}
-					{% if field.type != "CSRFTokenField" %}
-						<!-- {{ field.label(class='control-label') }} -->		
+					{% if field.type == "CSRFTokenField" %}
+						{{field(type="hidden", ref="csrf")}}
+					{% else %}
+						{% if field.id == "password" %}
+							<div class="input-group">
+						{% endif %}
+								<input
+									name={{field.id}}
+									class='form-control'
+									autocomplete="off"
+									placeholder={{field.id}}
+									v-model={{field.id}}
+									ref={{field.id}}
+									v-on:keyup="resetInput"
+								>
+						{% if field.id == "password" %}
+								<div class="input-group-append">
+									<span class="input-group-text passwordEye" id="basic-addon2" style="margin-bottom: 10px;" ref="passwordEye">
+										<i class="fas fa-eye" v-if="passwordEyeOpen" ref="passwordEyeOpen" v-on:click="switchPasswordEye"></i>
+										<i class="fas fa-eye-slash" v-if="!passwordEyeOpen" ref="passwordEyeClosed" v-on:click="switchPasswordEye"></i>
+									</span>
+								</div>
+							</div>
+						{% endif %}
 					{% endif %}
-					{{ field(class='form-control',autocomplete="off",  placeholder=field.id) }}
-					{% for error in field.errors %}
-	           		 	<span class="auth-error badge badge-danger">{{ error }}</span>
-	           		{% endfor %}
 				{% endfor %}
-				<div class="new-user-reg">
-					<span style="margin-right: 10px">New user?</span><a class="btn-group" href="{{ url_for('login.sign_up') }}">Sign up</a>
-				</div>
+				<span class="badge badge-danger disabled" v-model="error" ref="errors">{ error }</span>
 	            <button class="btn btn-lg btn-primary btn-block" style='background: rgb(0, 120, 121); border-color: rgb(0, 120, 121);' type="submit">Sign in
 	            </button>
-	            <p class="mt-5 mb-3 text-muted">© 2019-2020</p>
+				<div class="new-user-reg">
+					<a class="btn-group mr-3" href="{{ url_for('login.sign_up') }}">Sign up</a>
+					<a class="btn-group" href="{{ url_for('login.reset_password') }}">Forgot your password?</a>
+				</div>
 			</form>
 		</div>
 {% endblock %}

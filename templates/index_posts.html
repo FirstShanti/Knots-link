@@ -6,6 +6,7 @@
 
 
 {% block content %}
+<div id="posts">
     <div class='post-main-container'>
         {% if pages.total > 0 %}
             {% for post in pages.items %}
@@ -17,12 +18,14 @@
                         </div>
                         <div class='post_meta_detail'>
                             <div style='margin-right: auto;'>
-                                <i class="fas fa-user"></i>
-                                <a style="color: grey;" href="{{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous')}}">
-                                {{ post.author }}
+                                <a style="color: grey;" href="{{ url_for('user_profile.get_user_data', slug=post.author or 'anonymous')}}">
+                                    <i class="fas fa-user"></i>
+                                    {{ post.author }}
                                 </a>
-                                <i class="fas fa-comments"></i>
-                                <a style="color: grey;" href="{{ url_for('posts.post_content', slug=post.slug, _anchor='comments') }}">{{ post.comments|length }}</a>
+                                <a style="color: grey;" href="{{ url_for('posts.post_content', slug=post.slug, _anchor='comments') }}">
+                                    <i class="fas fa-comments"></i>
+                                    {{ post.comments|length }}
+                                </a>
                             </div>
                             <div style="margin-left: auto;">
                                 <i class="fas fa-clock"></i>
@@ -44,7 +47,7 @@
                     value="blog/create"
                     type="submit"
                     class="btn btn-success"
-                    onclick="document.location.href='{{ url_for('posts.create_post') }}';">
+                    onclick="document.location.href='{{ url_for('posts.create_post') }}'">
                         Add post
                 </button>
             </div>
@@ -91,4 +94,5 @@
             </ul>
         </nav>
     {% endif %}
+</div>
 {% endblock %}

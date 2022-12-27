@@ -1,0 +1,18 @@
+{% extends 'emails/base_with_content.html' %}
+
+{% block title %}
+	Email verify
+{% endblock %}
+
+{% block info %}
+  <h1>Verify your email address</h1>
+  <p>Thanks for signing up for Knots! We're excited to have you as an early user.</p>
+{% endblock %}
+
+{% block link %}
+  <a href="{{ url }}" class="button button--blue">Verify Email</a>
+{% endblock %}
+
+{% block safe_link %}
+  <a href="{{ url }}">Confirmed</a>
+{% endblock %}
