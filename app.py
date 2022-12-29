@@ -1,8 +1,7 @@
-import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
-from config import environments, env
+from config import environments, env, fix_heroku_dialect_issue
 from flask_migrate import Migrate#, MigrateCommand
 # from flask_script import Manager
 from flask_jwt_extended import JWTManager
@@ -21,8 +20,11 @@ else:
     app.config.from_object(environments['Production'])
 
 csrf = CSRFProtect(app)
-db = SQLAlchemy(app)
 jwt = JWTManager(app)
+
+# DB
+fix_heroku_dialect_issue(app)
+db = SQLAlchemy(app)
 # ma = Marshmallow(app)
 
 if not app.config['DEBUG']:
