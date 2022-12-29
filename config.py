@@ -58,6 +58,14 @@ class Production(Configuration):
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
+	def __init__(self) -> None:
+		super().__init__()
+		self.fix_heroku_dialect()
+
+	def fix_heroku_dialect(self):
+		if self.SQLALCHEMY_DATABASE_URI.split(':/')[0] == 'postgres':
+			self.SQLALCHEMY_DATABASE_URI.replace('postgres', 'postgresql')
+
 
 environments = {
 	'Development': Development,
