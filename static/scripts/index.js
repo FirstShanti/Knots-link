@@ -11,6 +11,8 @@ const store = reactive({
         const state = getFromStorage('state')
         if (!!state) {
             this.state = state
+        } else {
+            window.location.replace(window.location.origin + `/log_in`);
         }
     },
     setState(state) {

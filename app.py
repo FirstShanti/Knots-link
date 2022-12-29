@@ -3,8 +3,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
 from config import environments, env
-from flask_migrate import Migrate, MigrateCommand
-from flask_script import Manager
+from flask_migrate import Migrate#, MigrateCommand
+# from flask_script import Manager
 from flask_jwt_extended import JWTManager
 from flask_talisman import Talisman
 from middlewares import CustomSessionInterface
@@ -32,5 +32,5 @@ ckeditor = CKEditor(app)
 
 # migrate data to sql
 migrate = Migrate(app, db)
-manager = Manager(app)
-manager.add_command('db', MigrateCommand)
+# manager = Manager(app)
+# manager.add_command('db', MigrateCommand)

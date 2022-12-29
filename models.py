@@ -85,7 +85,11 @@ class Post(db.Model):
             return self.created.strftime("{}%H:%M").format(f'{lang[local]["comment"][1]}')
     
     # tags and comments to post
-    tags = db.relationship('Tag', passive_deletes=True, secondary=post_tags)
+    tags = db.relationship(
+        'Tag',
+        passive_deletes=True,
+        secondary=post_tags
+    )
     comments = db.relationship('Comment', backref='owner')
 
 

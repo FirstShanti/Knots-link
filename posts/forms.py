@@ -1,3 +1,4 @@
+from app import app
 from wtforms import (
 	StringField,
 	TextAreaField,
@@ -19,7 +20,8 @@ from models import Category
 
 
 def get_category():
-	return [('ch', '--choose category--',)] + [(i.short_name, i.name) for i in Category.query.all()]
+	with app.app_context():
+		return [('ch', '--choose category--',)] + [(i.short_name, i.name) for i in Category.query.all()]
 
 
 class PostForm(FlaskForm):

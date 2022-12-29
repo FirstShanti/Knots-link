@@ -36,6 +36,7 @@ def message_index():
             db.session.add(chat)
             db.session.commit()
     chats = get_all_chat(current_user)
+   
     if chats:
         users = [i.username for i in chats[0].users if i.id != current_user.id]
         another_user = users[0]

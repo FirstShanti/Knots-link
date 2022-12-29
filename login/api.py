@@ -91,8 +91,8 @@ class AuthApi(Resource):
             data = dict(
                 username=user.username,
                 user_icon=user.avatar(size=50),
-                access_token_cookie=create_access_token(identity=data).decode(),
-                refresh_token_cookie=create_refresh_token(identity=data).decode(),
+                access_token_cookie=create_access_token(identity=data),
+                refresh_token_cookie=create_refresh_token(identity=data),
                 expired_at=int(expired_at))
             return data, 200
 
