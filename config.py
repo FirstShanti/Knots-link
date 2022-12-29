@@ -64,7 +64,7 @@ class Production(Configuration):
 
 	def fix_heroku_dialect(self):
 		if self.SQLALCHEMY_DATABASE_URI.split(':/')[0] == 'postgres':
-			self.SQLALCHEMY_DATABASE_URI.replace('postgres', 'postgresql')
+			self.SQLALCHEMY_DATABASE_URI = self.SQLALCHEMY_DATABASE_URI.replace('postgres', 'postgresql')
 
 
 environments = {
