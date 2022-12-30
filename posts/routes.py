@@ -46,7 +46,6 @@ posts = Blueprint('posts',
 def create_post():
     form = PostForm(request.form)
     form.category.choices = get_category()
-    del form.csrf_token
 
     if request.method == 'POST' and current_user.authenticated and form.validate_on_submit():
         try:
@@ -115,7 +114,7 @@ def edit_post(slug):
     except KeyError:
         pass
 
-    if request.method == 'POST' and current_user.authenticated and current_user.username == post.author:
+    if request.method == 'POST' and current_user.authenticated and current_user.username == post.author and form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
         post.preview = form.preview.data
@@ -218,7 +217,6 @@ def post_content(current_user, slug):
         return redirect('/blog/')
 
     form = CommentForm(request.form)
-    del form.csrf_token
 
     if request.method == 'POST' and form.validate_on_submit():
         if current_user and current_user.authenticated:
