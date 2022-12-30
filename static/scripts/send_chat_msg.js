@@ -14,6 +14,7 @@ $('.vl').css('height', `${book_pc_size}px`)
 $(document).ready(function() {
     let root_url = $('#form_send_msg').attr('root_url')
     let chat_id = ''
+    let chat_username = ''
     let to = $('.message_container').attr('username')
     let to_prev = ''
     let page = $('#page').attr('page')
@@ -29,9 +30,7 @@ $(document).ready(function() {
     })
 
     $('.room_info').on('click', function() {
-        if (to_prev) {
-            $(to_prev).removeClass('current_chat_room')
-        }
+        $(to_prev).removeClass('current_chat_room')
         to = $(this).attr('value')
         leaveRoom(chat_id, socket.id)
         get_chat_id()
@@ -56,6 +55,7 @@ $(document).ready(function() {
             async: false,
             success: function (response) {   
                 chat_id = response.chat_id
+                chat_username = response.chat_username
             },
             error: function(error) {
                 console.log(error);
@@ -75,8 +75,22 @@ $(document).ready(function() {
         $('#form_send_msg').on('click', function(e) {
             e.preventDefault();
         })
-        joinRoom(chat_id, socket.id)
+        if (!!chat_id) {
+            if (!!to_prev) {
+                $(to_prev).removeClass('current_chat_room')
+            }
+            let selectedRoom = Array.from(document.querySelectorAll(`.room_info[value="${chat_username}"]`))
+            $(selectedRoom[0]).addClass('current_chat_room')
+            to_prev = selectedRoom[0]
+            joinRoom(chat_id, socket.id)
+        }
     });
+
+    socket.on('status', ({status}) => {
+        if (!status) {
+            window.location.replace(window.location.origin + `/log_in`);
+        }
+    })
 
     // Trigger 'join' event
     function joinRoom(chat_id, socket_id) {

@@ -254,16 +254,20 @@ def get_user(username=None, user_id=None):
         return Knot.query.filter_by(username=username).first()
     elif user_id:
         return Knot.query.filter_by(id=user_id).first()
+    else:
+        return None
 
 
 def get_chat(curent_user=None, another_user=None, chat_id=None, all_chats=False):
     if chat_id:
         return Chat.query.filter(Chat.uuid==chat_id).first()
-    return Chat.query.filter(Chat.users.contains(curent_user)).filter(Chat.users.contains(another_user)).first()
-
+    elif curent_user and another_user:
+        return Chat.query.filter(Chat.users.contains(curent_user)).filter(Chat.users.contains(another_user)).first()
+    else:
+        return None
 
 def get_all_chat(user):
-    return Chat.query.filter(Chat.users.contains(user))
+    return Chat.query.filter(Chat.users.contains(user)).all()
 
 
 def get_message(chat_id, msg_ig=None, username=None):

@@ -2,7 +2,7 @@ from distutils import errors
 from flask_cors import CORS
 from flask_restful import Api
 
-from app import app, db, jwt, csrf
+from app import app, db, jwt#, csrf
 from login.routes import login
 from login.api import AuthApi
 from admin.routes import admin
@@ -17,7 +17,7 @@ from models import *
 
 import view
 
-api = Api(app, prefix='/api/v1', errors=errors, decorators=[csrf.exempt])
+api = Api(app, prefix='/api/v1', errors=errors)#, decorators=[csrf.exempt])
 CORS(app, resorces={r'/d/*': {"origins": '*'}})
 
 

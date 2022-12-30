@@ -10,7 +10,7 @@ from flask_jwt_extended import create_refresh_token
 from flask_wtf.csrf import validate_csrf
 from wtforms.validators import ValidationError
 
-from app import app, db, csrf
+from app import app, db#, csrf
 from models import Knot
 from exceptions import (
     UnauthorizedError,
@@ -58,7 +58,7 @@ class AuthApi(Resource):
         except ValidationError:
             raise EmailValidationError
 
-    @csrf.exempt
+    # @csrf.exempt
     def post(self):
         data = request.json
         username = data.get('username')
@@ -99,7 +99,7 @@ class AuthApi(Resource):
         raise UnauthorizedError
 
 
-    def put(self):
-        validate_csrf(request.headers.get('X-CSRFToken'))
+    # def put(self):
+    #     validate_csrf(request.headers.get('X-CSRFToken'))
 
-        data = request.json
+    #     data = request.json

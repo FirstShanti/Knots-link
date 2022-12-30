@@ -35,6 +35,11 @@ const Base = {
     methods: {
         toProfile: () => {
             window.location.replace(window.location.origin + `/knot/${store.state.username}`);
+        },
+        logOut: () => {
+            removeFromStorage('auth', 'LOCAL')
+            updateCookies('access_token_cookie')
+            window.location.replace(window.location.origin + '/log_in')
         }
     },
     mounted() {
@@ -49,7 +54,6 @@ const Login = {
             store,
             username: '',
             password: '',
-            csrf: '',
             error: '',
             requiredFields: [],
             passwordEyeOpen: true
@@ -114,7 +118,6 @@ const Login = {
         }
     },
     mounted() {
-        this.csrf = this.$refs.csrf.value
         this.username = this.$refs.username.value
         this.password = this.$refs.password.value
         this.requiredFields = [

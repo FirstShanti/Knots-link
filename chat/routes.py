@@ -7,7 +7,7 @@ from flask import (
 )
 from flask_jwt_extended import current_user
 
-from app import db, csrf
+from app import db#, csrf
 from login.session_time import session_time
 from models import (
     Chat,
@@ -23,7 +23,7 @@ message = Blueprint('message',
 
 @message.route('/', methods=['GET', 'POST'])
 @session_time
-@csrf.exempt
+# @csrf.exempt
 def message_index():
     if request.method == 'POST':
         username = request.form.to_dict().get('username')

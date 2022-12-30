@@ -37,6 +37,7 @@ class Configuration(object):
 	SEND_FILE_MAX_AGE_DEFAULT = 0
 
 	WTF_CSRF_CHECK_DEFAULT = False
+	WTF_CSRF_ENABLED = False
 
 	FLASK_ADMIN_SWATCH = 'cerulean'
 

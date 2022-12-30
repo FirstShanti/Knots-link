@@ -19,7 +19,7 @@ if env:
 else:
     app.config.from_object(environments['Production'])
 
-csrf = CSRFProtect(app)
+# csrf = CSRFProtect(app)
 jwt = JWTManager(app)
 
 # DB
