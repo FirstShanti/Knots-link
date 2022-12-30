@@ -8,7 +8,7 @@ from flask_jwt_extended import JWTManager
 from flask_talisman import Talisman
 from middlewares import CustomSessionInterface
 # from flask_marshmallow import Marshmallow
-from flask_wtf.csrf import CSRFProtect
+# from flask_wtf.csrf import CSRFProtect
 
 
 app = Flask(__name__)

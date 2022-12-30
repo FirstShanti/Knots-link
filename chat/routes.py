@@ -29,7 +29,7 @@ def message_index():
         username = request.form.to_dict().get('username')
         another_user = get_user(username=username)
         chat = get_chat(current_user, another_user)
-        if not chat:
+        if not chat and (current_user and another_user):
             chat = Chat()
             for user in [current_user, another_user]:
                 chat.users.append(user)
