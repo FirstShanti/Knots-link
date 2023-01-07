@@ -13,6 +13,13 @@ const setInStorage = (key, value, type='LOCAL') => {
   
 const getFromStorage = (key, type='LOCAL') => {
   try {
+    if (type == 'COOKIES') {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${key}=`);
+      if (parts.length === 2) {
+        return parts.pop().split(';').shift();
+      }
+    }
     let storage = sessionStorage
     if (type == 'LOCAL') {
       storage = localStorage

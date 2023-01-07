@@ -9,11 +9,19 @@ const store = reactive({
     },
     getStateFromStorage() {
         const state = getFromStorage('state')
+        const access_token = getFromStorage('access_token_cookie', 'COOKIES')
         if (!!state) {
             this.state = state
-        } else {
-            window.location.replace(window.location.origin + `/log_in`);
         }
+        if (!access_token) {
+            this.state = {
+                isAuth: false,
+                username: '',
+            }
+        } 
+        // else {
+        //     window.location.replace(window.location.origin + `/log_in`);
+        // }
     },
     setState(state) {
         this.state = {...this.state, ...state}
@@ -36,7 +44,8 @@ const Base = {
         toProfile: () => {
             window.location.replace(window.location.origin + `/knot/${store.state.username}`);
         },
-        logOut: () => {
+        logOut: async () => {
+            let data = await request('DELETE', `/api/v1/authenticate`)
             removeFromStorage('auth', 'LOCAL')
             updateCookies('access_token_cookie')
             window.location.replace(window.location.origin + '/log_in')
@@ -71,7 +80,7 @@ const Login = {
                 'password': this.password
             }
             let headers = {'X-CSRFToken': this.csrf}
-            let data = await request('POST', `${host}/api/v1/authenticate`, headers, credentials)
+            let data = await request('POST', `/api/v1/authenticate`, headers, credentials)
             if (!_.isEmpty(data.message)) {
                 this.error = data.message
                 this.$refs.errors.classList.remove('disabled')
@@ -146,14 +155,13 @@ const EmailToReset = {
     methods: {
         checkEmail: async function(event) {
             event.preventDefault()
-            let host = window.location.origin
             let fieldsValid = this.requiredFields.map(field => this.checkForInput(field))
             if (!_.every(fieldsValid)) return
             this.loading = true
             this.$refs.interactive.classList.add('mute')
             let headers = {"X-CSRFToken": `${this.csrf}`}
             let params = {'process': 'check_email', 'email': this.$refs.email.value}
-            let data = await request('GET', `${host}/api/v1/authenticate`, headers, params)
+            let data = await request('GET', `/api/v1/authenticate`, headers, params)
             this.loading = false
             this.$refs.interactive.classList.remove('mute')
             if (!_.isEmpty(data.message)) {
@@ -204,14 +212,13 @@ const PasswordReset = {
     methods: {
         submitPasswordReset: async function(event) {
             event.preventDefault()
-            let host = window.location.origin
             this.password = this.$refs.password.value
             this.password2 = this.$refs.repeat_password.value
             let fieldsValid = this.requiredFields.map(field => this.checkForInput(field))
             if (!_.every(fieldsValid)) return
             let headers = {"X-CSRFToken": `${this.csrf}`}
             let params = {'password': this.password, 'repeat_password': this.password2}
-            let data = await request('POST', `${host}/api/v1/authenticate`, headers, params)
+            let data = await request('POST', `/api/v1/authenticate`, headers, params)
             if (!_.isEmpty(data.message)) {
                 switch (data.status) {
                     case 404:

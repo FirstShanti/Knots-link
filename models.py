@@ -317,3 +317,8 @@ def serrialize(data, new_data={}):
             else:
                 new_data[key] = value
     return new_data
+
+
+class TokenBlackList(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    access_token = db.Column(db.String(512), nullable=True)
