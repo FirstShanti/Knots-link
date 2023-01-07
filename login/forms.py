@@ -55,7 +55,7 @@ class RegistrationForm(FlaskForm):
 
 	def validate_email(form, email):
 		email_validation(email.data)
-		if Knot.query.filter_by(email=email).first() is not None:
+		if Knot.query.filter_by(email=email.data).first() is not None:
 			raise ValidationError('''This email number is reserved.''')
 
 	def validate_number(form, phone_number):

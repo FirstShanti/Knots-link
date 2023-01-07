@@ -38,6 +38,10 @@ class PasswordResetKeyExprired(Exception):
     pass 
 
 
+class DBError(Exception):
+    pass 
+
+
 errors = {
     "InternalServerError": {
         "message": "Something went wrong",
@@ -62,5 +66,9 @@ errors = {
     "PasswordResetKeyExprired": {
         "message": "The time to reset your password has expired",
         "status": 403
+    },
+    "DBError": {
+        "message": "Error while saving token to black list",
+        "status": 500
     }
 }

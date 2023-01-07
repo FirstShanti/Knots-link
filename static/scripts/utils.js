@@ -1,5 +1,7 @@
 const request = async (method, url, headers, params, with_auth) => {
-    new_url = new URL(url)
+    let host = window.location.origin
+    new_url = new URL(`${host}${url}`)
+    headers = {...headers, apiRequest: true}
     const requestOptions = {
         method: method,
         headers: headers,
@@ -36,10 +38,12 @@ const request = async (method, url, headers, params, with_auth) => {
     return response
 }
 
-const updateCookies = (key) => {
+const updateCookies = (key, maxAge) => {
     const auth = getFromStorage('auth', type='LOCAL')
-    if (auth) {
-        Object.keys(auth).filter(k => key ? k == key : true).map(k => document.cookie = `${k}=${auth[k]}; max-age=2592000`)
+    if (!!auth) {
+        Object.keys(auth).filter(k => key ? k == key : true).map(k => document.cookie = `${k}=${auth[k]}; max-age=${maxAge || 2592000}`)
+    } else {
+        document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`
     }
 }
 

@@ -28,7 +28,7 @@
     <div class="tags">
         <div class="post-info">
             <div class="post-title-author">
-                <a href="{{ url_for('user_profile.get_user_data', slug=user.slug or 'anonymous')}}">
+                <a href="{{ url_for('user_profile.get_user_data', slug=author or 'anonymous')}}">
                     @{{ author }}
                 </a>
             </div>
@@ -66,7 +66,7 @@
                     <div class="main-content" style="padding-top: 10px; font-size: 20px; position: block; word-wrap: break-word;">
                         <div class="post-comment-author">
                             <img class="user_comment_avatar" src="{{ comment.author.avatar(size=25) }}">
-                            <a href="{{ url_for('user_profile.get_user_data', slug=user.slug or 'anonymous')}}" >
+                            <a href="{{ url_for('user_profile.get_user_data', slug=comment.author.username or 'anonymous')}}" >
                                 @{{ comment.author.username }}
                             </a>
                             <div class="post-comment-created">

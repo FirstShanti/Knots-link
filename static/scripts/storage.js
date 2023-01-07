@@ -13,6 +13,13 @@ const setInStorage = (key, value, type='LOCAL') => {
   
 const getFromStorage = (key, type='LOCAL') => {
   try {
+    if (type == 'COOKIES') {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${key}=`);
+      if (parts.length === 2) {
+        return parts.pop().split(';').shift();
+      }
+    }
     let storage = sessionStorage
     if (type == 'LOCAL') {
       storage = localStorage
@@ -43,4 +50,15 @@ function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+function deleteAllCookies() {
+  const cookies = document.cookie.split(";");
+
+  for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i];
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  }
 }

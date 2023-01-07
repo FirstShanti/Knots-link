@@ -1,3 +1,4 @@
+from login.session_time import session_time
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import current_user, jwt_required
 from models import get_user, get_chat, get_message, serrialize
@@ -29,6 +30,7 @@ validator = {
 class ChatApi(Resource):
 
 	@jwt_required()
+	@session_time
 	def get(self):
 		if current_user:
 			parser = args_to_parser(validator, 'get_msgs', 'args')
@@ -41,6 +43,7 @@ class ChatApi(Resource):
 		return {'status': 'error', 'chat_id': None}, 403
 
 	@jwt_required()
+	@session_time
 	def post(self):
 		try:
 			if current_user:
@@ -50,7 +53,9 @@ class ChatApi(Resource):
 				another_user = get_user(data.get('username'))
 				chat = get_chat(user, another_user)
 				if chat:
-					return {'status': 'success', 'chat_id': chat.uuid}, 200
+					return {'status': 'success', 'chat_id': chat.uuid, 'chat_username': another_user.username}, 200
+				else:
+					return {'status': 'success', 'chat_id': '', 'chat_username': another_user.username}, 200
 		except Exception as e:
 			raise e
 		return {'status': 'error', 'details': 'permission denied'}, 403

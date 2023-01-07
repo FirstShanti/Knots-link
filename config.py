@@ -37,6 +37,7 @@ class Configuration(object):
 	SEND_FILE_MAX_AGE_DEFAULT = 0
 
 	WTF_CSRF_CHECK_DEFAULT = False
+	WTF_CSRF_ENABLED = False
 
 	FLASK_ADMIN_SWATCH = 'cerulean'
 
@@ -63,3 +64,8 @@ environments = {
 	'Development': Development,
 	'Production': Production
 }
+
+def fix_heroku_dialect_issue(app):
+	db_uri = app.config['SQLALCHEMY_DATABASE_URI']
+	if db_uri.split(':/')[0] == 'postgres':
+		app.config['SQLALCHEMY_DATABASE_URI'] = db_uri.replace('postgres', 'postgresql')

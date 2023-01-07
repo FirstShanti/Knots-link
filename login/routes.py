@@ -1,3 +1,4 @@
+from login.session_time import user_or_anon
 from flask import (
     render_template,
     Blueprint,
@@ -58,13 +59,14 @@ def authentication():
 
 
 @login.route('/sign_up', methods=['GET', 'POST'])
-def sign_up():
+@user_or_anon
+def sign_up(current_user):
 
     form = RegistrationForm(request.form)
 
-    if 'username' in session:
+    if current_user:
         return redirect('/blog/')
-    elif request.method == 'POST' and form.validate_on_submit(): 
+    elif request.method == 'POST' and form.validate_on_submit():
         try:
             user = Knot(
                 f_name=form.f_name.data,
@@ -98,7 +100,8 @@ def sign_up():
 
 
 @login.route('/log_in', methods=['POST', 'GET'])
-def log_in(alert=None, redirect_url=None):
+@user_or_anon
+def log_in(current_user, alert=None, redirect_url=None):
 
     form = LoginForm(request.form)
     alert = request.args.get('alert')
@@ -106,7 +109,7 @@ def log_in(alert=None, redirect_url=None):
     csrf = generate_csrf(
         secret_key=app.config['SECRET_KEY'], token_key=login_stamp)
 
-    if 'username' in session:
+    if current_user:
         return redirect('/blog/')
     elif request.method == "POST" and form.validate_on_submit():
         user = Knot.query.filter_by(username=form.username.data).first()
@@ -140,9 +143,9 @@ def log_in(alert=None, redirect_url=None):
     return response
     
     
-@login.route('/log_out', methods=['POST', 'GET'])
-def log_out():
-    return redirect('/log_in')
+# @login.route('/log_out', methods=['POST', 'GET'])
+# def log_out():
+#     return redirect(url_for('login.log_in'))
 
 
 @login.route('/reset_password', methods=['POST', 'GET'])

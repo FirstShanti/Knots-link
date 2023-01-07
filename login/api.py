@@ -10,14 +10,15 @@ from flask_jwt_extended import create_refresh_token
 from flask_wtf.csrf import validate_csrf
 from wtforms.validators import ValidationError
 
-from app import app, db, csrf
-from models import Knot
+from app import app, db#, csrf
+from models import Knot, TokenBlackList
 from exceptions import (
     UnauthorizedError,
     EmailValidationError,
     NotFoundError,
     DublicatedPassword,
-    PasswordResetKeyExprired
+    PasswordResetKeyExprired,
+    DBError
 )
 from utils import encrypt_string
 from utils import args_to_parser
@@ -58,7 +59,6 @@ class AuthApi(Resource):
         except ValidationError:
             raise EmailValidationError
 
-    @csrf.exempt
     def post(self):
         data = request.json
         username = data.get('username')
@@ -91,15 +91,25 @@ class AuthApi(Resource):
             data = dict(
                 username=user.username,
                 user_icon=user.avatar(size=50),
-                access_token_cookie=create_access_token(identity=data).decode(),
-                refresh_token_cookie=create_refresh_token(identity=data).decode(),
+                access_token_cookie=create_access_token(identity=data),
+                refresh_token_cookie=create_refresh_token(identity=data),
                 expired_at=int(expired_at))
             return data, 200
 
         raise UnauthorizedError
 
+    def delete(self):
+        access_token = request.cookies['access_token_cookie']
+        try:
+            used_token = TokenBlackList(access_token=access_token)
+            db.session.add(used_token)
+            db.session.commit()
+        except Exception as e:
+            raise DBError 
+        return
 
-    def put(self):
-        validate_csrf(request.headers.get('X-CSRFToken'))
 
-        data = request.json
+    # def put(self):
+    #     validate_csrf(request.headers.get('X-CSRFToken'))
+
+    #     data = request.json

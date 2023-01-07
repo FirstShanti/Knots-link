@@ -1,1 +1,1 @@
-web: python manager.py db init; python manager.py db migrate; python manager.py db upgrade; python main.py
+web: flask db init; flask db migrate; flask db upgrade; gunicorn -k gevent -w 1 main:app
