@@ -1,5 +1,7 @@
 const request = async (method, url, headers, params, with_auth) => {
-    new_url = new URL(url)
+    let host = window.location.origin
+    new_url = new URL(`${host}${url}`)
+    headers = {...headers, apiRequest: true}
     const requestOptions = {
         method: method,
         headers: headers,

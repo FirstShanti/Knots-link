@@ -11,13 +11,14 @@ from flask_wtf.csrf import validate_csrf
 from wtforms.validators import ValidationError
 
 from app import app, db#, csrf
-from models import Knot
+from models import Knot, TokenBlackList
 from exceptions import (
     UnauthorizedError,
     EmailValidationError,
     NotFoundError,
     DublicatedPassword,
-    PasswordResetKeyExprired
+    PasswordResetKeyExprired,
+    DBError
 )
 from utils import encrypt_string
 from utils import args_to_parser
@@ -58,7 +59,6 @@ class AuthApi(Resource):
         except ValidationError:
             raise EmailValidationError
 
-    # @csrf.exempt
     def post(self):
         data = request.json
         username = data.get('username')
@@ -97,6 +97,16 @@ class AuthApi(Resource):
             return data, 200
 
         raise UnauthorizedError
+
+    def delete(self):
+        access_token = request.cookies['access_token_cookie']
+        try:
+            used_token = TokenBlackList(access_token=access_token)
+            db.session.add(used_token)
+            db.session.commit()
+        except Exception as e:
+            raise DBError 
+        return
 
 
     # def put(self):

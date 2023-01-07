@@ -27,6 +27,9 @@ fix_heroku_dialect_issue(app)
 db = SQLAlchemy(app)
 # ma = Marshmallow(app)
 
+with app.app_context():
+  from models import *
+
 if not app.config['DEBUG']:
     Talisman(app, content_security_policy=None)
 
