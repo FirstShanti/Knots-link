@@ -13,12 +13,14 @@
 {% endblock %}
 
 {% block logo %}
-    <!-- <div class="logo_index" >     -->
-    <!-- <div class="logo_knots_index">
-            <a class="knots_logo_link" href='{{ url_for("posts.index")}}' title="Узлы">
-                <img class='logo_knots_index_img' src="/static/img/logo.png">
+    <div class="logo_on_index">
+        <!-- <div class="logo_knots"> -->
+            <a class="knots_title" href='{{ url_for("posts.index")}}' title="Узлы">
+                <!-- <img src="/static/img/logo.png"> -->
+                <p style='color: rgb(59, 59, 59); height: 90px; font-size: 80px;' id="demo"></p>
             </a>
-    </div> -->
+        <!-- </div> -->
+    </div>
     {% block data %}
     {% endblock %}
     <canvas id='myCanvas'>
@@ -28,4 +30,32 @@
     </div>
     <!-- </div> -->
     <script type="text/javascript" src="/static/scripts/node_animate.js" second="2, 201, 251," first="79, 254, 75," mouse_radius="200"></script>
+    <script type="text/javascript">
+        var i = 0;
+        var txt = 'Knots'; /* The text */
+        var speed = 200; /* The speed/duration of the effect in milliseconds */
+        var textContainer = document.getElementById("demo")
+        // function animateCursor() {
+        //     if (textContainer.innerHTML.endsWith('|')) {
+        //         console.log(textContainer)
+        //         textContainer.innerHTML = textContainer.innerHTML = txt
+        //     } else {
+        //         console.log(textContainer)
+        //         textContainer.innerHTML = txt + '|'
+        //     }
+        // }
+        function typeWriter() {
+        if (i < txt.length) {
+            textContainer.innerHTML += txt.charAt(i);
+            i++;
+            setTimeout(typeWriter, speed);
+        }
+        // if (textContainer.innerHTML == txt) {
+        //     setInterval(() => {
+        //         animateCursor()
+        //     }, 700)
+        // }
+        }
+        typeWriter()
+    </script>
 {% endblock %}

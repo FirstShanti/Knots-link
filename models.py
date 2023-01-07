@@ -197,7 +197,7 @@ class Comment(db.Model):
             self.slug = f'comment_{self.uuid}'
 
     def created_to_str(self):
-        timedelta = int(datetime.utcnow().strftime("%d")) - int(self.created.strftime("%d"))
+        timedelta = abs(int(datetime.utcnow().strftime("%d")) - int(self.created.strftime("%d")))
         if timedelta >= 1:
             return self.created.strftime("%d %B %Y (%A) %H:%M")
         elif timedelta == 1:

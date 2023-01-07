@@ -9,16 +9,6 @@
 {% endblock %}
 
 {% block data %}
-
-
-		<div class="logo_on_index" >
-        <div class="logo_knots">
-            <a class="knots_title" href='{{ url_for("posts.index")}}' title="Узлы">
-                <img src="/static/img/logo.png">
-            </a>
-        </div>
-	    </div>
-
         <div class='container-fluid text-center body_'>
 		<form class='form-signin' action="" method="POST">
 			{% for field in form %}
