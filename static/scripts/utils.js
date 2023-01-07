@@ -52,3 +52,8 @@ const updateCookies = (key, maxAge) => {
 //     const now = moment.utc().unix()
 //     return !!auth && auth.expired_at > now
 // }
+
+const redirect_to_login = (event) => {
+    let host = window.location.origin
+    window.location.replace(host + '/log_in');
+}

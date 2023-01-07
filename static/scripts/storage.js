@@ -62,3 +62,30 @@ function deleteAllCookies() {
       document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
   }
 }
+
+const store = reactive({
+  state: {
+      isAuth: false,
+      username: '',
+  },
+  getStateFromStorage() {
+      const state = getFromStorage('state')
+      const access_token = getFromStorage('access_token_cookie', 'COOKIES')
+      if (!!state) {
+          this.state = state
+      }
+      if (!access_token) {
+          this.state = {
+              isAuth: false,
+              username: '',
+          }
+      } 
+      // else {
+      //     window.location.replace(window.location.origin + `/log_in`);
+      // }
+  },
+  setState(state) {
+      this.state = {...this.state, ...state}
+      setInStorage('state', this.state)
+  }
+})

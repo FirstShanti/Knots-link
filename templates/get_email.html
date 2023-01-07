@@ -1,18 +1,18 @@
-{% extends 'base.html' %}
+{% extends 'index.html' %}
 
 {% block title %}
     {{ title }}
 {% endblock %}
 
-{% block content %}
+{% block data %}
 
-    <div class="logo_on_index">
+    <!-- <div class="logo_on_index">
         <div class="logo_knots">
             <a class="knots_title" href='{{ url_for("posts.index")}}' title="Узлы">
                 <img src="/static/img/logo.png">
             </a>
         </div>
-    </div>
+    </div> -->
 
     <div id="emailToReset" class='container-fluid text-center body_' >
         <form class='form-signin' @submit="checkEmail" ref="emailForm">
@@ -55,5 +55,7 @@
             </button>
         </div>
     </div>
+
+    <script src='/static/scripts/containers/emailToReset.js'></script>
 
 {% endblock %}

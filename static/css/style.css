@@ -51,9 +51,11 @@ small {
 	text-align: center;
 	font-size: 11px;
 	z-index: 3;
-	position: absolute;
+	position: relative;
     top: 95%;
     left: 50%;
+    width: fit-content;
+	/* margin-top: 95%; */
 }
 
 .cat_search {
@@ -63,7 +65,7 @@ small {
 .navbar.navbar-light.profile-button {
 	height: 69px !important;
 	/* align-content: center; */
-	right: 14%;;
+	right: 14%;
 	/* float: right; */
 	position: sticky;
 	padding: 0 0;
@@ -179,7 +181,7 @@ small {
 	margin-right: 10%; 
 	text-align: justify;
 	margin-top: 0.5%;
-	z-index: 1;
+	z-index: 3;
 	position: relative;
 }
 
@@ -372,6 +374,7 @@ div.post-comment-author > * {
 }*/
 
 .dropdown-menu.show {
+	z-index: 3;
 	left: -5px;
 	display: block;
 	min-width: 0;
@@ -587,7 +590,9 @@ div.post-comment-author > * {
 
 .logo_on_index{
 	text-align: center;
-
+	max-height: 90px;
+	position: relative;
+	z-index: 2;
 }
 
 .post_container.shadow {
@@ -812,11 +817,6 @@ button:focus {
 	display: none !important;
 }*/
 
-.navbar-expand-lg .navbar-nav {
-	-ms-flex-direction: row;
-	flex-direction: column !important;
-}
-
 
 .navbar {
 	float: right;
@@ -945,9 +945,9 @@ button:focus {
 	}
 	.navbar {
 /*		margin-right: -50%;*/
-		flex-wrap: none !important;
+		/* flex-wrap: none !important; */
 		position: absolute !important;
-		margin-left: 60%;
+		/* margin-left: 100%; */
 	}
 
 	.post-content-title {
@@ -957,7 +957,7 @@ button:focus {
 		margin-right: 20px;
 	}
 	.content_title {
-		margin-top: 10% !important;
+		/* margin-top: 10% !important; */
 		margin-left: 2%;
 		margin-right: 2%;
 	}
@@ -990,10 +990,11 @@ button:focus {
 		/*line-height: initial;*/
 	}
 	.dropdown-menu.show {
-	display: block;
-	min-width: 0;
-	transition: 0.9s;
-	background-color: white;
+		/* left: 55%; */
+		/* display: block;
+		min-width: 0;
+		transition: 0.9s;
+		background-color: white; */
 	}
 	.col-md-10 {
 		padding-right: 0 !important;
@@ -1420,8 +1421,9 @@ h1.post_content_title_h1 {
 	-ms-flex-align: center;
 	align-items: center;
 	padding-top: 20px;
-	/*padding-bottom: 0px;*/
-  }
+	max-width: fit-content;
+}
+
 a {
 	text-decoration: none !important;
 }

@@ -5,14 +5,6 @@
 {% endblock %}
 
 {% block data %}
-		<div class="logo_on_index">
-	        <div class="logo_knots">
-	            <a class="knots_title" href='{{ url_for("posts.index")}}' title="Узлы">
-	                <img src="/static/img/logo.png">
-	            </a>
-	        </div>
-	    </div>
-		
         <div id="login" class='container-fluid text-center body_'>
 			<form class='form-signin' @submit="authenticate">
 				{% for field in form %}
@@ -47,5 +39,7 @@
 				</div>
 			</form>
 		</div>
+
+		<script src='/static/scripts/containers/login.js'></script>
 {% endblock %}
 
