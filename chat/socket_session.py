@@ -1,6 +1,8 @@
+from flask import request
 from flask_socketio import SocketIO, join_room, emit
 from flask_jwt_extended import current_user, verify_jwt_in_request
 from jwt.exceptions import ExpiredSignatureError
+from flask_jwt_extended.exceptions import NoAuthorizationError
 
 from app import app
 from .chat_processor import save_message
@@ -16,7 +18,7 @@ def join(message):
     room = message['chat_id']
     try:
         verify_jwt_in_request()
-    except ExpiredSignatureError:
+    except (ExpiredSignatureError, NoAuthorizationError):
         emit('status', {'status': False}, room=room)
     else:
         join_room(room)
@@ -28,10 +30,13 @@ def text(message):
     """Sent by a client when the user entered a new message.
     The message is sent to all people in the room."""
     room = message['chat_id']
+    token = message['token']
     try:
         verify_jwt_in_request()
-    except ExpiredSignatureError: 
-        emit('status', {'status': False}, room=room)
+        if not token:
+            raise NoAuthorizationError
+    except (ExpiredSignatureError, NoAuthorizationError):
+        emit('status', {'status': False})
     else:
         if room:
             msg = save_message(message, current_user)

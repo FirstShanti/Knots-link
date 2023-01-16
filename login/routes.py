@@ -102,15 +102,16 @@ def sign_up(current_user):
 @login.route('/log_in', methods=['POST', 'GET'])
 @user_or_anon
 def log_in(current_user, alert=None, redirect_url=None):
+    if (referer:= request.headers.get('Referer')):
+        referer = referer.split(request.host)[-1]
+        referer = '/blog/' if referer == '/log_in' else referer
 
     form = LoginForm(request.form)
     alert = request.args.get('alert')
 
-    csrf = generate_csrf(
-        secret_key=app.config['SECRET_KEY'], token_key=login_stamp)
-
     if current_user:
-        return redirect('/blog/')
+        if referer:
+            return redirect(referer)
     elif request.method == "POST" and form.validate_on_submit():
         user = Knot.query.filter_by(username=form.username.data).first()
         if user and user.password == encrypt_string(form.password.data):
@@ -120,8 +121,8 @@ def log_in(current_user, alert=None, redirect_url=None):
             db.session.commit()
             session['last_login'] = user.last_login
             session['private_key_exp'] = user.last_login + timedelta(hours=3)
-            if redirect_url:
-            	return redirect(redirect_url)
+            if referer:
+                return redirect(referer)
             return redirect(url_for('posts.index'))
         else:
             form.password.errors.append('Incorrect data. Please try again.')
@@ -130,13 +131,14 @@ def log_in(current_user, alert=None, redirect_url=None):
                     continue
                 f.data = None
 
+
     response = make_response(render_template('login.html',
         title='Log in',
         alert=alert,
-        csrf=csrf,
         form=form,
         session=session,
-        endpoint=request.endpoint
+        endpoint=request.endpoint,
+        referer=referer if referer else ''
     ))
     response.set_cookie('access_token_cookie', '', expires=0)
 

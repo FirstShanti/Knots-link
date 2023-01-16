@@ -1,3 +1,5 @@
+from nis import cat
+from pprint import pprint
 import re
 from flask_jwt_extended import current_user
 from flask import (
@@ -25,6 +27,8 @@ from models import (
     Category,
 )
 
+from .schemas import posts_schema
+
 
 SUCCESSFUL = 'alert alert-success'
 ERROR = 'alert alert-danger'
@@ -39,10 +43,11 @@ posts = Blueprint('posts',
 '''Page with form for write Title Body and Tag. 
    Than its information put in class Post and add in db.''' 
 
-@posts.route('/create', methods=['POST', 'GET'])
+@posts.route('/create', defaults={'category': None}, methods=['POST', 'GET'])
+@posts.route('/create/<category>', methods=['POST', 'GET'])
 @session_time
 @is_email_authenticated
-def create_post():
+def create_post(category):
     form = PostForm(request.form)
     form.category.choices = get_category()
 
@@ -83,6 +88,8 @@ def create_post():
     elif request.method == 'POST' and not current_user.authenticated:
         flash(u'Before saving the changes, you must confirm the email address.', 'alert alert-warning')
     else:
+        if category:
+            form.category.data = category.lower()
         return render_template('create_post.html', form=form, categories=Category.query.all())
 
 
@@ -295,16 +302,18 @@ def category_create():
 @posts.route('/category/<slug>/', methods=['GET'])
 def category_detail(slug):
 
-    headers = request.headers
-    api_header = headers.get('api_header')
+
+    isApi = request.headers.get('apiRequest')
 
     category = Category.query.filter(Category.name==slug).first()
     if not category:
         posts = Post.query.filter(Post.visible==True)
+        category_name = 'All categories'
     elif category:
         posts = Post.query.filter(Post.category_id==category.id).filter(Post.visible==True)
+        category_name = category.name
     else:
-        return jsonify({'json_list':0})
+        return jsonify({})
 
     page = request.args.get('page')
 
@@ -318,24 +327,17 @@ def category_detail(slug):
 
     pagination = {}
     pagination['pages'] = [i for i in pages.iter_pages()]
-    pagination['items'] = [i.__dict__ for i in pages.items]
+    pagination['posts'] = posts_schema.dump(pages.items)
     pagination['has_prev'] = pages.has_prev
     pagination['has_next'] = pages.has_next
     pagination['next_num'] = pages.next_num
     pagination['prev_num'] = pages.prev_num
 
-    for i in pagination['items']:
-        del i['_sa_instance_state']
-        i['created'] = i['created'].isoformat(timespec='seconds')
-
-    if api_header:
-        num_list = []
-        for i in pages.iter_pages():
-            num_list.append(i)
+    if isApi:
         return jsonify(pagination)
 
     return render_template('index_posts.html',
-        title=category.name,
+        title=category_name,
         pages=pages,
         c=category,
         categories=categories

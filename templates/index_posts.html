@@ -35,22 +35,18 @@
                     </div>
                 </div>   
             {% endfor %}
-
         {% endif %}
+    </div>
+    <div class='post_not_found'>
         {% if pages.total == 0 %}
-            <div class='post_not_found'>
-                {% if not username==session['username'] %}
-                    <img alt='Not found' src="/static/img/animation_500_khwngevr.gif" width="280">
-                {% endif %}
-                <button 
-                    id='btn-create'
-                    value="blog/create"
-                    type="submit"
-                    class="btn btn-success"
-                    onclick="document.location.href='{{ url_for('posts.create_post') }}'">
-                        Add post
-                </button>
-            </div>
+            <button 
+                id='btn-create'
+                value="blog/create"
+                type="submit"
+                class="btn btn-success"
+                onclick="document.location.href='{{ url_for('posts.create_post', category=None) }}'">
+                    Add post
+            </button>
         {% endif %}
     </div>
     {% if pages.items|length > 6 %}

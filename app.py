@@ -7,7 +7,7 @@ from flask_migrate import Migrate#, MigrateCommand
 from flask_jwt_extended import JWTManager
 from flask_talisman import Talisman
 from middlewares import CustomSessionInterface
-# from flask_marshmallow import Marshmallow
+from flask_marshmallow import Marshmallow
 # from flask_wtf.csrf import CSRFProtect
 
 
@@ -25,7 +25,7 @@ jwt = JWTManager(app)
 # DB
 fix_heroku_dialect_issue(app)
 db = SQLAlchemy(app)
-# ma = Marshmallow(app)
+ma = Marshmallow(app)
 
 with app.app_context():
   from models import *

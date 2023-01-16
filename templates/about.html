@@ -79,7 +79,7 @@
                         value="blog/create"
                         type="submit"
                         class="btn btn-success"
-                        onclick="document.location.href='{{ url_for('posts.create_post') }}';">
+                        onclick="document.location.href='{{ url_for('posts.create_post', category=None) }}';">
                             Add post
                     </button>
                 {% endif %}

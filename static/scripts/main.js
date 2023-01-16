@@ -1,26 +1,10 @@
 $(function() {
-	$('select#category-value-select').on('change', function() {
+	$('select#category-value-select').on('change', async function() {
 		var url = $(this).attr('data-url').replace('empty', this.value)
-		var category = toString($(this).attr('data-url').split('/')[3])
+		var category = this.value
 		var page = $('li.active > a.page-link').val()
-		$.ajax({
-			cache: false,
-			url,
-			type: 'GET',
-			dataType: 'json',
-			headers: {'api_header': 'true'},
-			async: false,
-			success: function (response) {	 
-            	if (response) {
-            		updatePosts(response, category, page)
-                } else {
-                	alert('Category not found')
-		        }
-            },
-            error: function(error) {
-                console.log(error);
-            }
-		})
+		let data = await request('GET', url)
+		updatePosts(data, category, page)
 	})
 	fixDropdownMenu()
 });
@@ -32,11 +16,24 @@ fixDropdownMenu = function () {
 }
 
 function updatePosts (response, category) {
-	var posts = response.items
+	var posts = response.posts
 	var pages = response.pages
-	var category = $()
 	var new_posts = ''
 	var paginate = ''
+	if (posts.length == 0) {
+		$('.post_not_found').empty().append(
+			`<button
+                id='btn-create'
+                value="blog/create"
+                type="submit"
+                class="btn btn-success"
+                onclick="document.location.href='/blog/create/${category}'">
+                    Add post
+            </button>`
+		)
+	} else {
+		$('.post_not_found').empty()
+	}
 	for (var i in posts) {
         new_posts += `<div class="post_container">
 				<div class="post_paragraph">
@@ -54,7 +51,7 @@ function updatePosts (response, category) {
 							</a>
 							<a style="color: grey;" href="/blog/${posts[i].slug}#comments">
 								<i class="fas fa-comments"></i>
-								${posts[i].comments|length}
+								${posts[i].comments.length}
 							</a>
 						</div>
 						<div style="margin-left: auto;">
