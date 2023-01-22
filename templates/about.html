@@ -15,8 +15,7 @@
 
 {% block content %}
     <div class="user_info">
-	{% if not username==session['username'] %}
-		<h1 style="display: inline-flex;">{{ first_name }} {{ second_name }}
+        <h1 style="display: inline-flex;">{{ first_name }} {{ second_name }}
             <form id="username_form" method="POST" action="{{ url_for('message.message_index') }}">
                 <input type="hidden" name="username" value="{{ username }}" />
                 <a onclick="event.preventDefault();
@@ -28,9 +27,6 @@
                 </a>
             </form>
         </h1>
-    {% else %}
-        <h1>{{ first_name }} {{ second_name }}</h1>
-    {% endif %}
 	</div>
 	<hr>
     <div class="user_container">
@@ -46,7 +42,7 @@
                             {% endif %}
                         >
                             <div class='post_paragraph'>
-                                <a class='post_title' href="{{ url_for('posts.post_content', slug=post.slug) }}"> {{ post.title }} </a>
+                                <a class='post_title' href="{{ url_for('posts.post_content', id=post.id) }}"> {{ post.title }} </a>
                                 <div class="posts-index">
                                     {{ post.preview|truncate(225, True) }}
                                 </div>
@@ -56,7 +52,7 @@
                                         <a style="color: grey;" href="{{ url_for('user_profile.get_user_data', slug=session['username'] or 'anonymous')}}">
                                         {{ post.author }}
                                         </a> -->
-                                        <a style="color: grey;" href="{{ url_for('posts.post_content', slug=post.slug, _anchor='comments') }}">
+                                        <a style="color: grey;" href="{{ url_for('posts.post_content', id=post.id, _anchor='comments') }}">
                                             <i class="fas fa-comments"></i>
                                             {{ post.comments|length }}
                                         </a>

@@ -32,14 +32,12 @@ class ChatApi(Resource):
 	@jwt_required()
 	@session_time
 	def get(self):
-		if current_user:
-			parser = args_to_parser(validator, 'get_msgs', 'args')
-			data = parser.parse_args()
-			chat_id, page = data['chat_id'], int(data['page'])
+		parser = args_to_parser(validator, 'get_msgs', 'args')
+		data = parser.parse_args()
+		chat_id, page = data['chat_id'], int(data['page'])
+		if current_user and chat_id in current_user.chat_ids:
 			messages = [serrialize(item.__dict__) for item in get_message(chat_id=chat_id) or []]
-			return {
-				'status': 'success',
-				'messages': messages}, 200
+			return {'status': 'success', 'messages': messages}, 200
 		return {'status': 'error', 'chat_id': None}, 403
 
 	@jwt_required()

@@ -55,13 +55,12 @@
         </form>
         
     </div>
-    <script type="text/javascript" charset="utf-8">
+    <script>
         var CKEDITOR_BASEPATH = '/static/scripts/libs/ckeditor/';
     </script>
-    <script src="/static/scripts/libs/ckeditor/ckeditor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/scripts/libs/ckeditor/ckeditor.js"></script>
     {{ ckeditor.load() }}
     {{ ckeditor.config(name='body', placeholder='text') }}
-    <script src="/static/scripts/jquery.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/static/scripts/validate_form_input_length.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/scripts/jquery.js"></script>
 
 {% endblock %}

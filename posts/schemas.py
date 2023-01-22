@@ -10,7 +10,6 @@ class CommentSchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field()
     text = ma.auto_field()
-    slug = ma.auto_field()
     created = ma.auto_field()
     edited = ma.auto_field()
 
@@ -25,9 +24,9 @@ class PostSchema(ma.SQLAlchemySchema):
     body = ma.auto_field()
     created = ma.auto_field()
     preview = ma.auto_field()
-    slug = ma.auto_field()
     title = ma.auto_field()
     visible = ma.auto_field()
+    author = ma.auto_field()
 
     comments = ma.Nested(comments_schema, many=True)
 

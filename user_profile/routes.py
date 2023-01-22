@@ -5,7 +5,7 @@ from flask import (
     redirect,
     url_for
 )
-
+from flask_jwt_extended import current_user
 from login.session_time import session_time
 from models import Knot, Post, Category
 
@@ -25,7 +25,11 @@ def get_user_data(slug):
 
     try:
         user = Knot.query.filter(Knot.username==slug).first()
-        posts = Post.query.filter(Post.author==slug).filter(Post.visible==True)
+
+        posts = Post.query.filter(Post.author==slug)
+
+        if current_user.username != slug:
+            posts = posts.filter(Post.visible==True)
 
         if page and page.isdigit():
             page = int(page)

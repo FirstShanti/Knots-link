@@ -15,9 +15,9 @@
         <span><h1 class="post_content_title_h1">{{ post.title }}</h1></span>
         {% if user.username == post.author %}
             <div>
-                <a class="far fa-edit" style="font-size: 20px; margin-top: 2px; margin-left: 5px; color: #d5d1ca; text-decoration: none;" href="{{ url_for('posts.edit_post', slug=post.slug) }}" title="Edit post"></a>
+                <a class="far fa-edit" style="font-size: 20px; margin-top: 2px; margin-left: 5px; color: #d5d1ca; text-decoration: none;" href="{{ url_for('posts.edit_post', id=post.id) }}" title="Edit post"></a>
                 {% if post.visible %}
-                    <a class="fas fa-trash-alt" style="font-size: 20px; margin-top: 2px; margin-left: 5px; color: #d5d1ca; text-decoration: none;" href="{{ url_for('posts.delete_post', slug=post.slug) }}" title="Delete post"></a>
+                    <a class="fas fa-trash-alt" style="font-size: 20px; margin-top: 2px; margin-left: 5px; color: #d5d1ca; text-decoration: none;" href="{{ url_for('posts.delete_post', id=post.id) }}" title="Delete post"></a>
                 {% endif %}
             </div>
         {% endif %}
@@ -50,7 +50,7 @@
     <div class="tag-buttons">
         <h4 style="margin-bottom: 0rem;padding: .0em .2em .0em .0em;">Tags:</h4>
         {% for tag in tags %}
-            <a class="tag-button" href="{{ url_for('posts.tag_detail', slug=tag.slug)}}"><span class="tag badge-pill badge-secondary">{{ tag.name }}</span></a>
+            <a class="tag-button" href="{{ url_for('posts.tag_detail', slug=tag.name)}}"><span class="tag badge-pill badge-secondary">{{ tag.name }}</span></a>
         {% endfor %}
     </div>
     <hr class='tag-buttons'>

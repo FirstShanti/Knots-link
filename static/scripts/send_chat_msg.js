@@ -116,7 +116,7 @@ $(document).ready(function() {
         } else {
             if ( data.type == 'msg' ) {
                 update_msgs(messages, false)
-                if (messages[0].author_username == to && !isMute) {
+                if (messages[0].author == to && !isMute) {
                     receivedAudio.play()
                 }
                 $(`.room_last_msg#${to}`).text(truncate(data.msg, 30))
@@ -166,7 +166,7 @@ $(document).ready(function() {
                 prevDay = day
             }
 
-            if ( messages[i].author_username == to ) {
+            if ( messages[i].author == to ) {
                 prev_content.append(get_msg_html('left', msg_content, msg_date));
             } else {
                 prev_content.append(get_msg_html('right', msg_content, msg_date));  

@@ -23,13 +23,12 @@ message = Blueprint('message',
 
 @message.route('/', methods=['GET', 'POST'])
 @session_time
-# @csrf.exempt
 def message_index():
     if request.method == 'POST':
         username = request.form.to_dict().get('username')
         another_user = get_user(username=username)
         chat = get_chat(current_user, another_user)
-        if not chat and (current_user and another_user):
+        if not chat and (current_user and another_user and current_user != another_user):
             chat = Chat()
             for user in [current_user, another_user]:
                 chat.users.append(user)

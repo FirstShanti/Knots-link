@@ -34,7 +34,7 @@ def authentication():
     now = datetime.now()
 
     try:
-        user = Knot.query.filter(Knot.slug==request.args.get('user')).first()
+        user = Knot.query.filter(Knot.username==request.args.get('user')).first()
         time_delta = now - user.auth_key_create
 
         if user.authenticated:
@@ -48,7 +48,7 @@ def authentication():
         else:
             user.get_auth_key()
             subject = "authentication"
-            url = f'{request.url_root}auth/?user={user.slug}&key={user.auth_key}'
+            url = f'{request.url_root}auth/?user={user.username}&key={user.auth_key}'
             content = lambda: render_template('emails/confirmed.html', url=url)
             send_email(user.email, subject, content)
             flash(u'Time has passed, we are sending a new link', 'alert alert-danger')
@@ -78,7 +78,7 @@ def sign_up(current_user):
             )
             if user.email != app.config.get('MAIL_USERNAME'):
                 subject = "authentication"
-                url = f'{request.url_root}auth/?user={user.slug}&key={user.auth_key}'
+                url = f'{request.url_root}auth/?user={user.username}&key={user.auth_key}'
                 content = lambda: render_template('emails/confirmed.html', url=url)
                 send_email(user.email, subject, content)
             else:

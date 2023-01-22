@@ -12,7 +12,7 @@
             {% for post in pages.items %}
                 <div class='post_container'>
                     <div class='post_paragraph'>
-                        <a class='post_title' href="{{ url_for('posts.post_content', slug=post.slug) }}"> {{ post.title }} </a>
+                        <a class='post_title' href="{{ url_for('posts.post_content', id=post.id) }}"> {{ post.title }} </a>
                         <div class="posts-index">
                             {{ post.preview|truncate(225, True) }}
                         </div>
@@ -22,7 +22,7 @@
                                     <i class="fas fa-user"></i>
                                     {{ post.author }}
                                 </a>
-                                <a style="color: grey;" href="{{ url_for('posts.post_content', slug=post.slug, _anchor='comments') }}">
+                                <a style="color: grey;" href="{{ url_for('posts.post_content', id=post.id, _anchor='comments') }}">
                                     <i class="fas fa-comments"></i>
                                     {{ post.comments|length }}
                                 </a>

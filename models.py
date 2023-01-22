@@ -1,32 +1,10 @@
-from flask import session
+from datetime import datetime
+from uuid import uuid4
 
 from app import db
-from datetime import datetime
-import re
+
 from utils import encrypt_string
-from uuid import uuid4
 from config import local, lang
-
-
-def slugify(s):
-    pattern = r'[^\w+]'
-    return re.sub(pattern, '-', s)
-
-
-def post_uuid():
-    try: ### if post exist ###
-        Post.query.order_by(db.desc(Post.id)).first().id
-    except AttributeError:
-        return '1'
-    return str(Post.query.order_by(db.desc(Post.id)).first().id + 1)
-
-
-def comment_uuid():
-    try:
-        Comment.query.order_by(db.desc(Comment.id)).first().id
-    except AttributeError:
-        return '1'
-    return str(Comment.query.order_by(db.desc(Comment.id)).first().id + 1)
 
 
 ### TAGS FOR POST ###
@@ -50,8 +28,6 @@ chat_msgs = db.Table(
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(140), unique=True)
-    slug = db.Column(db.String(140), unique=True)
     title = db.Column(db.String(78))
     preview = db.Column(db.String(250))
     body = db.Column(db.Text)
@@ -62,18 +38,9 @@ class Post(db.Model):
 
     def __init__(self, *args, **kwargs):
         super(Post, self).__init__(*args, **kwargs)
-        self.generate_uuid()
-        self.generate_slug()
         
     def invisible(self):
         self.visible = False
-
-    def generate_uuid(self):
-        self.uuid = post_uuid()
-
-    def generate_slug(self):
-        if self.title:
-            self.slug = f'post{self.uuid}_{slugify(self.title)}'
 
     def created_to_str(self, formatter=None):
         timedelta = abs(datetime.utcnow().day - self.created.day)
@@ -97,20 +64,17 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(46), unique=True)
     short_name = db.Column(db.String(46), unique=True)
-    slug = db.Column(db.String(100), unique=True)
     
     posts = db.relationship('Post', backref='category')
 
     def __init__(self, *args, **kwargs):
         super(Category, self).__init__(*args, **kwargs)
-        self.slug = slugify(self.name)
 
 
 # class Tag (class of tag for Post)
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(46), unique=True)
-    slug = db.Column(db.String(100), unique=True)
 
     posts = db.relationship(
         'Post',
@@ -120,10 +84,6 @@ class Tag(db.Model):
 
     def __init__(self, *args, **kwargs):
         super(Tag, self).__init__(*args, **kwargs)
-        self.slug = slugify(self.name)
-
-    # def __repr__(self):
-    #     return self.name
 
 
 # class Knot - (class of user)
@@ -135,8 +95,6 @@ class Knot(db.Model):
     email = db.Column(db.String(129), unique=True)
     phone_number = db.Column(db.String(15))  # phone number
     password = db.Column(db.String(256))
-
-    slug = db.Column(db.String(140), unique=True)
     
     created = db.Column(db.DateTime, default=datetime.utcnow())
     updated = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
@@ -154,7 +112,6 @@ class Knot(db.Model):
 
     def __init__(self, *args, **kwargs):
         super(Knot, self).__init__(*args, **kwargs)
-        self.slug = slugify(self.username)
         self.password = encrypt_string(self.password)
         self.get_auth_key()
     
@@ -171,13 +128,14 @@ class Knot(db.Model):
     def avatar(self, size):
         return f'https://www.gravatar.com/avatar/{self.auth_key}?d=identicon&s={size}'
 
+    @property
+    def chat_ids(self):
+        return [chat.uuid for chat in self.chats]
 
 # class Comment - (class of comments for Post)
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(140))
     text = db.Column(db.String(2000))
-    slug = db.Column(db.String(140), unique=True)
     created = db.Column(db.DateTime)
     edited = db.Column(db.DateTime, default=datetime.utcnow())
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
@@ -186,15 +144,6 @@ class Comment(db.Model):
     def __init__(self, *args, **kwargs):
         super(Comment, self).__init__(*args, **kwargs)
         self.created = datetime.utcnow()
-        self.generate_uuid()
-        self.generate_slug()
-
-    def generate_uuid(self):
-        self.uuid = comment_uuid()
-
-    def generate_slug(self):
-        if self.text:
-            self.slug = f'comment_{self.uuid}'
 
     def created_to_str(self):
         timedelta = abs(int(datetime.utcnow().strftime("%d")) - int(self.created.strftime("%d")))
@@ -215,7 +164,6 @@ class Chat(db.Model):
     def __init__(self, *args, **kwargs):
         super(Chat, self).__init__(*args, **kwargs)
         self.created = datetime.utcnow()
-        # self.uuid = str(uuid4())
 
 
     users = db.relationship('Knot', passive_deletes=True, secondary=chat_users)
@@ -224,7 +172,6 @@ class Chat(db.Model):
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(140), unique=True)
     text = db.Column(db.String(5000), nullable=False)
 
     created = db.Column(db.DateTime)
@@ -237,15 +184,19 @@ class Message(db.Model):
     def __init__(self, *args, **kwargs):
         super(Message, self).__init__(*args, **kwargs)
         self.created = datetime.utcnow()
-        self.uuid = str(uuid4())
 
     def data(self):
         return {
             'text': self.text,
             'created': self.created.timestamp(),
-            'author_username': self.author_username,
+            'author': self.author_username,
             'is_read': self.is_read
         }
+
+
+class TokenBlackList(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    access_token = db.Column(db.String(512), nullable=True)
 
 
 ### Utils
@@ -317,8 +268,3 @@ def serrialize(data, new_data={}):
             else:
                 new_data[key] = value
     return new_data
-
-
-class TokenBlackList(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    access_token = db.Column(db.String(512), nullable=True)

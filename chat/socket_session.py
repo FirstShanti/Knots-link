@@ -21,8 +21,9 @@ def join(message):
     except (ExpiredSignatureError, NoAuthorizationError):
         emit('status', {'status': False}, room=room)
     else:
-        join_room(room)
-        emit('status', {'status': True}, room=room)
+        if room in current_user.chat_ids:
+            join_room(room)
+            emit('status', {'status': True}, room=room)
 
 
 @socketio.on('text', namespace='/messanger/')
@@ -38,7 +39,7 @@ def text(message):
     except (ExpiredSignatureError, NoAuthorizationError):
         emit('status', {'status': False})
     else:
-        if room:
+        if room in current_user.chat_ids:
             msg = save_message(message, current_user)
             data = {'data': message, 'messages': [msg]}
             emit('message', data, room=room)

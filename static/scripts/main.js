@@ -37,7 +37,7 @@ function updatePosts (response, category) {
 	for (var i in posts) {
         new_posts += `<div class="post_container">
 				<div class="post_paragraph">
-					<a class="post_title" href="/blog/${posts[i].slug}"> 
+					<a class="post_title" href="/blog/${posts[i].id}"> 
 						${posts[i].title}
 					</a>
 					<div class="posts-index">
@@ -49,7 +49,7 @@ function updatePosts (response, category) {
 								<i class="fas fa-user"></i>
 								${posts[i].author}
 							</a>
-							<a style="color: grey;" href="/blog/${posts[i].slug}#comments">
+							<a style="color: grey;" href="/blog/${posts[i].id}#comments">
 								<i class="fas fa-comments"></i>
 								${posts[i].comments.length}
 							</a>

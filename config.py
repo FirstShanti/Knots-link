@@ -41,6 +41,7 @@ class Configuration(object):
 
 	FLASK_ADMIN_SWATCH = 'cerulean'
 
+
 class Development(Configuration):
 	DEBUG = True
 	PORT = 5001
@@ -50,6 +51,8 @@ class Development(Configuration):
 	SQLALCHEMY_DATABASE_URI = env.get('DATABASE_URL')
 	MAIL_USERNAME = env.get('MAIL_USERNAME')
 	MAIL_PASSWORD = env.get('MAIL_PASSWORD')
+	
+	SENTRY_URI = env.get('SENTRY_URI')
 
 
 class Production(Configuration):
@@ -58,6 +61,7 @@ class Production(Configuration):
 	PORT = os.environ.get('PORT')
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+	SENTRY_URI = os.environ.get('SENTRY_URI')
 
 
 environments = {
