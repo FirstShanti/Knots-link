@@ -117,8 +117,7 @@ class Knot(db.Model):
     
     def get_auth_key(self):
         self.auth_key = encrypt_string(self.username + str(datetime.utcnow()))
-        if self.auth_key_create is None:
-            self.auth_key_create = datetime.utcnow()
+        self.auth_key_create = datetime.utcnow()
         return (self.auth_key, self.auth_key_create)
 
     def check_auth_key(self):
