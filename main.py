@@ -10,7 +10,7 @@ from admin.routes import admin
 from posts.routes import posts#, quest
 from user_profile.routes import user_profile
 from chat.routes import message
-from chat.api import ChatApi
+from chat.api import ChatApi, MessageApi
 from chat.socket_session import socketio
 from exceptions import errors
 from models import *
@@ -24,6 +24,7 @@ CORS(app, resorces={r'/d/*': {"origins": '*'}})
 
 
 api.add_resource(ChatApi, '/chat')
+api.add_resource(MessageApi, '/messages')
 api.add_resource(AuthApi, '/authenticate')
 
 app.register_blueprint(login, url_prefix='/')

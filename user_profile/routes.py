@@ -31,6 +31,9 @@ def get_user_data(slug):
         if current_user.username != slug:
             posts = posts.filter(Post.visible==True)
 
+        if not user:
+            return redirect(url_for('posts.index'))
+
         if page and page.isdigit():
             page = int(page)
         else:

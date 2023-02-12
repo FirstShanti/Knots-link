@@ -217,7 +217,7 @@ def post_content(current_user, id):
         time = post.created_to_str()
         author = post.author
         comments = post.comments
-    except AttributeError as e:
+    except Exception as e:
         print(e)
         return redirect('/blog/')
 

@@ -71,11 +71,9 @@ function updatePosts (response, category) {
 	 else {
 		$('li#prev-page').empty()
 	}
-	paginate += `<li class="page-item active">
-                <a id='current-page' class="page-link" href="./?page=1&q=&c=${category}" value=1>1<span class="sr-only">1</span></a></li>`
+	paginate += `<li class="page-item active"><a id='current-page' class="page-link" href="./?page=1&q=&c=${category}" value=1>1<span class="sr-only">1</span></a></li>`
 	if (response.has_next) {
-		paginate += `<li>
-                    <a id='current-page' class="page-link" href="./?page=${response.next_num}&q=&c=${category}" value=${response.next_num}>${response.next_num}<span class="sr-only">(current)</span></a></li>`
+		paginate += `<li><a id='current-page' class="page-link" href="./?page=${response.next_num}&q=&c=${category}" value=${response.next_num}>${response.next_num}<span class="sr-only">(current)</span></a></li>`
 	} else {
 		$('li#next-page').empty()
 	}

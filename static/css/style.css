@@ -1079,7 +1079,7 @@ button:focus {
 	text-align: left;
 	margin-right: auto;
 	box-shadow: -1px 1px 2px 0px #bce5e3;
-	padding: 5px;
+	padding: 10px;
 	font-family: 'Nunito', sans-serif;
 	word-break: break-word;
 	display: flow-root;
@@ -1099,7 +1099,7 @@ button:focus {
 	/* white-space: ;
 	min-height: ; */
 	box-shadow: 1px 1px 2px 0px #bce5d6;
-	padding: 5px;
+	padding: 10px;
 	font-family: 'Nunito', sans-serif;
 	word-break: break-word;
 	display: flow-root;
@@ -1132,6 +1132,7 @@ button:focus {
 
 .msg_container {
 	width: 75%;
+	margin-top: 7px;
 }
 
 .right {
@@ -1611,4 +1612,19 @@ a.knots_logo_link {
 	opacity: 0.2;
 	pointer-events: none;
 	cursor: not-allowed;
+}
+
+.unread_msgs {
+	border-radius: 50%;
+	background-color: #4a906c;
+	color: white;
+	font-weight: bold;
+	min-width: 25px;
+    height: 25px;
+    text-align: center;
+    position: absolute;
+}
+
+.unread_msg {
+	background-color: #a6ffd1;
 }

@@ -30,7 +30,7 @@ const Login = {
             }
             const {username, ...rest} = data
             setInStorage('auth', rest, 'LOCAL')
-            updateCookies('access_token_cookie')
+            updateCookies('access_token_cookie', rest.expired_at - moment().unix())
             store.setState({
                 isAuth: true,
                 username: this.username

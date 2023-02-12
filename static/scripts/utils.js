@@ -123,12 +123,12 @@ const request = async (method, url, headers, params, with_auth) => {
         method: method,
         headers: headers,
     };
-    if (with_auth) {
-        requestOptions.headers = {
-            ...headers,
-            'Authorization': `Bearer ${_.get(getFromStorage('token'), access_token)}`
-        }
-    }
+    // if (with_auth) {
+    //     requestOptions.headers = {
+    //         ...headers,
+    //         'Authorization': `Bearer ${_.get(getFromStorage('token'), access_token)}`
+    //     }
+    // }
     if (method == 'POST' && !_.isEmpty(params)) {
         requestOptions.body = JSON.stringify(params)
         requestOptions.headers = {
@@ -147,6 +147,9 @@ const request = async (method, url, headers, params, with_auth) => {
                 data.message = (data && data.message) || response.statusText;
                 // return Promise.reject(error);
             }
+            if (response.status == 403) {
+                redirect_to_login()
+            }
             return Promise.resolve(data)
         })
         .catch(error => {
@@ -160,7 +163,7 @@ const updateCookies = (key, maxAge) => {
     if (!!auth) {
         Object.keys(auth).filter(k => key ? k == key : true).map(k => document.cookie = `${k}=${auth[k]}; max-age=${maxAge || 2592000}`)
     } else {
-        document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`
+        document.cookie = `${key}=; max-age=${maxAge || 2592000}; path=/`
     }
 }
 
@@ -181,3 +184,26 @@ function playNotification() {
     document.getElementById("sound").innerHTML =  
     '<audio autoplay="autoplay">' + mp3 + "</audio>"; 
 }
+
+function Utils() {
+
+}
+
+Utils.prototype = {
+    constructor: Utils,
+    isElementInView: function (element, fullyInView) {
+
+        var pageTop = element.parentElement.offsetTop;
+        var pageBottom = pageTop + $(window).height();
+        var elementTop = $(element).offset().top;
+        var elementBottom = elementTop + $(element).height();
+
+        if (fullyInView === true) {
+            return ((pageTop < elementTop) && (pageBottom > elementBottom));
+        } else {
+            return ((elementTop <= pageBottom) && (elementBottom >= pageTop));
+        }
+    }
+};
+
+var Utils = new Utils();

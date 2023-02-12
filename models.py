@@ -1,4 +1,9 @@
+import hashlib
+
 from datetime import datetime
+from flask_jwt_extended import current_user
+from sqlalchemy import desc
+from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 
 from app import db
@@ -17,7 +22,7 @@ post_tags = db.Table(
 chat_users = db.Table(
     'chat_users', 
     db.Column('chat_id', db.Integer, db.ForeignKey('chat.id'), primary_key=True),
-    db.Column('knot_id', db.Integer, db.ForeignKey('knot.id'), primary_key=True),
+    db.Column('knot_id', db.Integer, db.ForeignKey('knot.id'), primary_key=True)
 )
 
 chat_msgs = db.Table(
@@ -89,6 +94,7 @@ class Tag(db.Model):
 # class Knot - (class of user)
 class Knot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(UUID(as_uuid=True), default=uuid4, nullable=False, unique=True, primary_key=True)
     f_name = db.Column(db.String(32))
     s_name = db.Column(db.String(32))
     username = db.Column(db.String(32), unique=True)
@@ -124,12 +130,16 @@ class Knot(db.Model):
         delta = datetime.utcnow() - self.auth_key_create
         return True if delta.seconds < 3600 else False
 
-    def avatar(self, size):
-        return f'https://www.gravatar.com/avatar/{self.auth_key}?d=identicon&s={size}'
+    def avatar(self, size=50):
+        hash_key = hashlib.sha256(self.email.lower().encode()).hexdigest()
+        return f'https://www.gravatar.com/avatar/{hash_key}?d=identicon&s={size}'
 
     @property
     def chat_ids(self):
         return [chat.uuid for chat in self.chats]
+
+    def __repr__(self):
+        return str(self.uuid)
 
 # class Comment - (class of comments for Post)
 class Comment(db.Model):
@@ -157,20 +167,26 @@ class Comment(db.Model):
 class Chat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uuid = db.Column(db.String(140), unique=True, default=str(uuid4()))
-    created = db.Column(db.DateTime)
+    created = db.Column(db.DateTime, default=datetime.utcnow())
+    edited = db.Column(db.DateTime, default=datetime.utcnow())
 
 
     def __init__(self, *args, **kwargs):
         super(Chat, self).__init__(*args, **kwargs)
-        self.created = datetime.utcnow()
+        self.check_uuid_unique()
 
+    def check_uuid_unique(self):
+        dupliate = Chat.query.filter(Chat.uuid==self.uuid).first()
+        if dupliate:
+            while self.uuid == dupliate.uuid:
+                self.uuid = str(uuid4())
 
     users = db.relationship('Knot', passive_deletes=True, secondary=chat_users)
     messages = db.relationship('Message', passive_deletes=True, secondary=chat_msgs)
-
-
+        
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(UUID(as_uuid=True), default=uuid4, nullable=False)
     text = db.Column(db.String(5000), nullable=False)
 
     created = db.Column(db.DateTime)
@@ -184,14 +200,6 @@ class Message(db.Model):
         super(Message, self).__init__(*args, **kwargs)
         self.created = datetime.utcnow()
 
-    def data(self):
-        return {
-            'text': self.text,
-            'created': self.created.timestamp(),
-            'author': self.author_username,
-            'is_read': self.is_read
-        }
-
 
 class TokenBlackList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -199,20 +207,26 @@ class TokenBlackList(db.Model):
 
 
 ### Utils
-def get_user(username=None, user_id=None):
+def get_user(username=None, user_id=None, uuid=None):
     if username:
         return Knot.query.filter_by(username=username).first()
     elif user_id:
         return Knot.query.filter_by(id=user_id).first()
+    elif uuid:
+        return Knot.query.filter_by(uuid=uuid).first()
     else:
         return None
 
 
-def get_chat(curent_user=None, another_user=None, chat_id=None, all_chats=False):
+def get_chat(current_user=None, another_user=None, chat_id=None, all_chats=False):
     if chat_id:
         return Chat.query.filter(Chat.uuid==chat_id).first()
-    elif curent_user and another_user:
-        return Chat.query.filter(Chat.users.contains(curent_user)).filter(Chat.users.contains(another_user)).first()
+    elif current_user and another_user:
+        return Chat.query.filter(Chat.users.contains(current_user)).filter(Chat.users.contains(another_user)).first()
+    elif current_user:
+        return Chat.query.filter(Chat.users.contains(current_user)).first()
+    elif another_user:
+        return Chat.query.filter(Chat.users.contains(another_user)).first()
     else:
         return None
 
@@ -220,19 +234,12 @@ def get_all_chat(user):
     return Chat.query.filter(Chat.users.contains(user)).all()
 
 
-def get_message(chat_id, msg_ig=None, username=None):
-    query = Chat.query.filter(Chat.uuid==chat_id).first()
-    if msg_ig:
-        return Message.query.get(msg_ig).first()
-    if username and query:
-        return filter(lambda x : x.author_username == username, query.messages)
-    if query:
-        return query.messages
-    # if order=='desc':
-    #     return query.order_by(Message.created.desc())
-    # elif order=='asc':
-    #     return query.order_by(Message.created.asc())
-    # return query
+def get_message(chat=None, chat_id=None, msg_ig=None, username=None):
+    if not chat and chat_id:
+        chat = Chat.query.filter(Chat.uuid==chat_id).first()
+    query = Message.query.filter(Message.id.in_([msg.id for msg in chat.messages])).order_by(desc(Message.created))
+    return query
+
 
 def get_posts(username):
     posts = Post.query.all()

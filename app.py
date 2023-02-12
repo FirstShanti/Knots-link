@@ -20,18 +20,18 @@ if env:
     app.config.from_object(environments[env.get('ENVIRONMENT')])
 else:
     app.config.from_object(environments['Production'])
+    sentry_sdk.init(
+        dsn=app.config.get('SENTRY_URI'),
+        integrations=[
+            FlaskIntegration(),
+        ],
 
-sentry_sdk.init(
-    dsn=app.config.get('SENTRY_URI'),
-    integrations=[
-        FlaskIntegration(),
-    ],
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0
+    )
 
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    traces_sample_rate=1.0
-)
 
 # csrf = CSRFProtect(app)
 jwt = JWTManager(app)

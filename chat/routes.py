@@ -24,6 +24,8 @@ message = Blueprint('message',
 @message.route('/', methods=['GET', 'POST'])
 @session_time
 def message_index():
+    another_user = ''
+    username = ''
     if request.method == 'POST':
         username = request.form.to_dict().get('username')
         another_user = get_user(username=username)
@@ -36,17 +38,13 @@ def message_index():
             db.session.commit()
     chats = get_all_chat(current_user)
    
-    if chats:
-        users = [i.username for i in chats[0].users if i.id != current_user.id]
-        another_user = users[0]
-    else:
-        users = []
-        chats = []
-        another_user = ''
+    if username == current_user.username:
+        another_user = [i.uuid for i in chats[0].users if i.id != current_user.id]
+
 
     return render_template('chat.html',
-        users=users,
         current_user=current_user,
         another_user=another_user,
         chats=chats,
-        root_url=request.url)
+        root_url=request.url
+    )

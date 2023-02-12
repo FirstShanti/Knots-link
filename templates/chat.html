@@ -7,48 +7,76 @@
 
 {% block content %}
 
-    {% if current_user %}
     <div id='messanger' class='messanger_container'>
+        <span hidden anotherUser="{{another_user.uuid}}" ref="selectedChat"></span>
         <div class='chats_list'>
-            {% for chat in chats %}
-                <div class='chat_room'>
-                    {% for user in chat.users %}
-                        {% if user.username != current_user.username %}
-                            <div class='room_info' value="{{user.username}}">
-                                <img class='chat_room_icon' src="{{ user.avatar(size=75) }}"/>
-                                <div class='room_username_msg'>
-                                    <div class='room_username' >
-                                        <span>{{ user.username }}<span>
-                                    </div>
-                                    <div id="{{user.username}}" class='room_last_msg'>
-                                        {% if chat.messages %}
-                                            {{ chat.messages[-1].text|truncate(30, True) }}
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
+            <div class='chat_room' v-for="chat in chats">
+                <div
+                    :class='{room_info: true, current_chat_room: chat.uuid == activeChat}'
+                    :chat="chat.uuid"
+                    :ref="chat.uuid"
+                    v-on:click="activeChat = chat.uuid"
+                >
+                    <img class='chat_room_icon' :src="chat.left_user.avatar"/>
+                    <span v-if="chatsData[chat.uuid].unread_msgs > 0" class='unread_msgs' >{chatsData[chat.uuid].unread_msgs}</span>
+                    <div class='room_username_msg'>
+                        <div class='room_username' >
+                            <span>{ chat.left_user.username }</span>
+                        </div>
+                        <div class='room_last_msg'>
+                            { $filters.truncate(chat.last_msg.text) }
+                        </div>
+                    </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
         <div id="chat_devider" class="vl"></div>
         <div class='chat_container'>
-
+            {% include 'elements/loader.html' %}
             <div class="bookmob">
             </div>
-            <div class='book_pc'>
-                <div id="chat_loader" class="loader">
-                    <div></div>
+            <div class='book_pc' ref="msgs_list_container" v-on:scroll="handleMsgsListScroll">
+                <div 
+                    :id='msg.uuid'
+                    v-if="chatsData[activeChat]"
+                    v-for="(msg, idx) in chatsData[activeChat].chatMsgs"
+                >
+                    <div v-if="msg.monthDate" class='new-date'>
+                        { msg.monthDate }
+                        <!-- { $filters.monthDate(msg.monthDate)} -->
+                    </div>
+                    <div 
+                        v-bind:class="'msg_container ' + msg.side"
+                        @mouseover="() => readMsg(msg.uuid)"
+                        style="transition: opacity 1s ease;"
+                    >
+                        <div v-bind:class="['msg_' + msg.side, {unread_msg: msg.side == 'left' && !msg.is_read}]">
+                            <div>{msg.text}</div>
+                            <div v-bind:style="'font-size: 10px; color: grey; float: ' + msg.side">{$filters.msgTime(msg.created)}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class='message_container' username='{{ another_user }}'>
+
+            <div class='message_container'>
                 <form id="form_send_msg" root_url="{{root_url}}" autocomplete="off" novalidate>
-                    <textarea placeholder="Type your message..." type="text" id="message_textarea"></textarea>
+                    <textarea
+                        id="message_textarea"
+                        placeholder="Type your message..."
+                        type="text"
+                        ref="msgInput"
+                        v-model="msgDraft"
+                        v-on:focus="handleInputActive"
+                    >
+                    </textarea>
                 </form>
                 <div class='send_button_container'>
                     <!-- <img src="/static/img/paper-plane.svg"> -->
-                    <button chat-url="/api/v1/chat" class="btn badge-pill send_message_button">
+                    <button
+                        ref="msgConfirmButton"
+                        v-on:click="handleSendMsg"
+                        class="btn badge-pill send_message_button"
+                    >
                         <!-- <i class="far fa-paper-plane"></i> -->
                         Send
                     </button>
@@ -58,10 +86,11 @@
             <div id="page" hidden="true" page='0'></div>
         </div>
     </div>
-    {% endif %}
 
-    <script src="../static/scripts/socketio4.js" crossorigin="anonymous"></script>
-    <script src="../static/scripts/send_chat_msg.js" crossorigin="anonymous"></script>
+    <script src="../static/scripts/socketio4.js"></script>
+    <script src="../static/scripts/libs/vue-socket-io.js"></script>
+    <script src="../static/scripts/send_chat_msg.js"></script>
+    <script src="../static/scripts/containers/messanger.js"></script>
 
 {% endblock %}
 
