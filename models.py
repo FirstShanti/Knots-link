@@ -94,7 +94,7 @@ class Tag(db.Model):
 # class Knot - (class of user)
 class Knot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(UUID(as_uuid=True), default=uuid4, sunique=True)
+    uuid = db.Column(UUID(as_uuid=True), default=uuid4, unique=True)
     f_name = db.Column(db.String(32))
     s_name = db.Column(db.String(32))
     username = db.Column(db.String(32), unique=True)
