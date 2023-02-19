@@ -1,4 +1,4 @@
-from app import ma
+from app import db, ma
 from models import Chat, Message
 from marshmallow import fields
 from flask_jwt_extended import current_user
@@ -7,13 +7,15 @@ from user_profile.schemas import user_schema
 class MessageSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Message
+        load_instance = True
+        sqla_session = db.session
 
     text = ma.auto_field()
-    uuid = ma.auto_field()
-    created = ma.auto_field()
-    edited = ma.auto_field()
+    uuid = ma.auto_field(dump_only=True)
+    created = ma.auto_field(dump_only=True)
+    edited = ma.auto_field(dump_only=True)
     is_read = ma.auto_field()
-    author_username = ma.auto_field()
+    author_username = ma.auto_field(dump_only=True)
     side = fields.Function(lambda message, ctx: 'left' if message.author != ctx.get('user', current_user) else 'right')
 
 
@@ -25,8 +27,8 @@ class ChatSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Chat
 
-    created = ma.auto_field()
-    edited = ma.auto_field()
+    created = ma.auto_field(dump_only=True)
+    edited = ma.auto_field(dump_only=True)
 
     # messages = fields.Nested(MessageSchema)
 

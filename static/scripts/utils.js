@@ -147,13 +147,14 @@ const request = async (method, url, headers, params, with_auth) => {
                 data.message = (data && data.message) || response.statusText;
                 // return Promise.reject(error);
             }
-            if (response.status == 403) {
-                redirect_to_login()
+            if (response.status == 403 || response.status == 401) {
+                Base.methods.logOut()
             }
             return Promise.resolve(data)
         })
         .catch(error => {
-            return error;
+            console.error(error)
+            return Promise.reject(error)
         });
     return response
 }

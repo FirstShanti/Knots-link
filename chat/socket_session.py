@@ -1,8 +1,7 @@
-from pyexpat.errors import messages
+from flask import request
 from flask_socketio import SocketIO, join_room, emit
 from flask_jwt_extended import current_user, verify_jwt_in_request
-from itsdangerous import serializer
-from jwt.exceptions import ExpiredSignatureError
+from jwt.exceptions import ExpiredSignatureError, DecodeError
 from flask_jwt_extended.exceptions import NoAuthorizationError
 
 from app import app
@@ -13,17 +12,27 @@ from models import Knot
 socketio = SocketIO(app, cors_allowed_origins='*')
 
 
+@socketio.on('connect', namespace='/messanger/')
+def join():
+    """Sent by clients when connect to socket"""
+    try:
+        verify_jwt_in_request()
+        emit('status', {'status': True}, to=request.sid)
+    except (DecodeError, ExpiredSignatureError, NoAuthorizationError):
+        emit('status', {'status': False}, to=request.sid)
+
+
 @socketio.on('join', namespace='/messanger/')
 def join(message):
     """Sent by clients when they enter a room.
-    A status message is broadcast to all people in the room."""
+    A status message"""
     token = message.get('token')
     try:
         verify_jwt_in_request()
         if not token:
             raise NoAuthorizationError
-    except (ExpiredSignatureError, NoAuthorizationError):
-        emit('status', {'status': False}, room=str(current_user))
+    except (DecodeError, ExpiredSignatureError, NoAuthorizationError):
+        emit('status', {'status': False}, to=str(request.sid))
     else:
         join_room(str(current_user))
         emit('status', {'status': True}, room=str(current_user))
@@ -39,8 +48,8 @@ def text(message):
         verify_jwt_in_request()
         if not token:
             raise NoAuthorizationError
-    except (ExpiredSignatureError, NoAuthorizationError):
-        emit('status', {'status': False}, room=str(current_user))
+    except (DecodeError, ExpiredSignatureError, NoAuthorizationError):
+        emit('status', {'status': False}, to=request.sid)
     else:
         try:
             another_user = Knot.query.filter(Knot.uuid==receiver).first()
@@ -54,12 +63,4 @@ def text(message):
             left_data = {'data': message, 'message': serializer_for_left.dump(msg)}
             emit('message', left_data, room=str(receiver))
         except Exception as e:
-            emit('status', {'status': True, 'message': str(e)}, room=str(current_user))
-
-# @socketio.on('left', namespace='/messanger/')
-# def left(message):
-#     """Sent by clients when they leave a room.
-#     A status message is broadcast to all people in the room."""
-#     room = session['chat_id']
-#     leave_room(room)
-#     emit('status', {'msg': session.get('username') + ' has left the room.'}, room=room)
+            emit('status', {'status': True, 'message': str(e)}, to=str(request.sid))

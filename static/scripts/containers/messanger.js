@@ -10,25 +10,6 @@ $('.book_pc').css('height', `${book_pc_size}px`)
 $('.chats_list').css('height', `${book_pc_size}px`)
 $('.vl').css('height', `${book_pc_size}px`)
 
-joinRoom = (socket, receiver) => {
-    let type = 'service'
-    let token = getCookie('access_token_cookie') || ''
-    socket.emit('join', {receiver, 'socket_id': socket.id, type, token})
-}
-
-sendText = (socket, receiver, msg) => {
-    let type = 'msg'
-    let token = getCookie('access_token_cookie') || ''
-    socket.emit('text', {receiver, 'socket_id': socket.id, msg, type, token})
-}
-
-const SocketInstance = io.connect(window.location.href,
-    {
-        headers: {
-            "access_token_cookie": getCookie('access_token_cookie') || ''
-        }
-    }
-)
 
 const Messanger = {
     sockets: {
@@ -36,7 +17,7 @@ const Messanger = {
             // joinRoom(this.$socket, this.activeChat)
         },
         disconnect() {
-            console.log('disconected')
+            reconnect(this.$socket)
         },
         message(data) {
             const msg = data.message
@@ -58,6 +39,8 @@ const Messanger = {
         status(data) {
             if (!data.status) {
                 Base.methods.logOut()
+            } else if (!_.isEmpty(data.message)) {
+                console.error(data.message)
             }
         }
     },
@@ -67,7 +50,7 @@ const Messanger = {
             chats: [],
             activeChat: undefined,
             chatsData: {},
-            msgDraft: '',
+            msgDrafts: {},
             dayDate: '',
             loading: true
         }
@@ -84,7 +67,6 @@ const Messanger = {
                     'nextPage': 1,
                     'prevPage': null,
                     'chatMsgs': [],
-                    'draft': '',
                     'unread_msgs': chat.unread_msgs
                 }
             })
@@ -154,10 +136,10 @@ const Messanger = {
             }
         },
         handleSendMsg(event) {
-            if (!_.isEmpty(this.msgDraft)) {
-                sendText(this.$socket, this.activeChat, this.msgDraft)
+            if (!_.isEmpty(this.msgDrafts[this.activeChat])) {
+                sendText(this.$socket, this.activeChat, this.msgDrafts[this.activeChat])
                 sendAudio.play()
-                this.msgDraft = ''
+                this.msgDrafts[this.activeChat] = ''
             }
         },
         async readMsg(_msg) {
@@ -165,16 +147,21 @@ const Messanger = {
             if (typeof(_msg) == 'string') {
                 msg = _.find(this.chatsData[this.activeChat].chatMsgs, {'uuid': _msg})
             }
-            if (!!msg && msg.side == 'left' && !msg.is_read) {
+            if (!!msg && !msg.loading && msg.side == 'left' && !msg.is_read) {
                 let params = {
-                    'parameter': MSG_PARAMETERS['SET_READ'],
-                    'uuid': msg.uuid
+                    'uuid': msg.uuid,
+                    'parameter': MSG_PARAMETERS['UPDATE'],
+                    'data': JSON.stringify({
+                        'is_read': true
+                    })
                 }
+                msg.loading = true
                 let data = await request('POST', '/api/v1/messages', params)
-                if (data.message == 'readed') {
+                if (data.message == 'ok') {
                     msg.is_read = true
                     this.chatsData[this.activeChat].unread_msgs -= 1
                 }
+                msg.loading = false
             }
         },
         handleInputActive() {
@@ -184,8 +171,7 @@ const Messanger = {
                     this.readMsg(msg)
                 }, 500)
             });
-        }
-
+        },
     },
     async mounted() {
         await this.getChats()
@@ -206,13 +192,7 @@ const Messanger = {
             if (_.get(this.chatsData, `${newActiveChat}.chatMsgs.length`, []) > 0) {
                 this.scrollMsgsList()
             }
-            if (_.get(this.chatsData, `${newActiveChat}.draft`, '').length > 0) {
-                this.msgDraft = this.chatsData[this.activeChat].draft
-            }
         },
-        msgDraft(newDraft, oldDraft) {
-            this.chatsData[this.activeChat].draft = newDraft
-        }
     },
     delimiters: ['{', '}']
 }

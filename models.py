@@ -1,7 +1,6 @@
 import hashlib
 
 from datetime import datetime
-from flask_jwt_extended import current_user
 from sqlalchemy import desc
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
@@ -84,7 +83,8 @@ class Tag(db.Model):
     posts = db.relationship(
         'Post',
         passive_deletes=True,
-        secondary=post_tags
+        secondary=post_tags,
+        overlaps="tags"
     )
 
     def __init__(self, *args, **kwargs):
@@ -94,7 +94,7 @@ class Tag(db.Model):
 # class Knot - (class of user)
 class Knot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(UUID(as_uuid=True), default=uuid4, unique=True)
+    uuid = db.Column(UUID(as_uuid=True), default=uuid4, nullable=False, unique=True)
     f_name = db.Column(db.String(32))
     s_name = db.Column(db.String(32))
     username = db.Column(db.String(32), unique=True)
@@ -181,9 +181,10 @@ class Chat(db.Model):
             while self.uuid == dupliate.uuid:
                 self.uuid = str(uuid4())
 
-    users = db.relationship('Knot', passive_deletes=True, secondary=chat_users)
+    users = db.relationship('Knot', passive_deletes=True, secondary=chat_users, overlaps="chats")
     messages = db.relationship('Message', passive_deletes=True, secondary=chat_msgs)
-        
+
+
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uuid = db.Column(UUID(as_uuid=True), default=uuid4, nullable=False)
@@ -199,6 +200,11 @@ class Message(db.Model):
     def __init__(self, *args, **kwargs):
         super(Message, self).__init__(*args, **kwargs)
         self.created = datetime.utcnow()
+
+    @property
+    def chat(self):
+        if (chat:= Chat.query.filter(Chat.messages.contains(self)).first()):
+            return chat
 
 
 class TokenBlackList(db.Model):
@@ -239,38 +245,3 @@ def get_message(chat=None, chat_id=None, msg_ig=None, username=None):
         chat = Chat.query.filter(Chat.uuid==chat_id).first()
     query = Message.query.filter(Message.id.in_([msg.id for msg in chat.messages])).order_by(desc(Message.created))
     return query
-
-
-def get_posts(username):
-    posts = Post.query.all()
-    if username:
-        return posts.filter(Post.author==username).all()
-    return posts
-
-
-def serrialize(data, new_data={}):
-    if not new_data:
-        new_data = {}
-    if isinstance(data, dict):
-        if data.get('id'):
-            del data['id']
-        for key, value in data.items():
-            if isinstance(value, datetime):
-                new_data[key] = value.timestamp() #.strftime("%Y %B %d %A %H:%M")
-            elif isinstance(value, (list, dict)):
-                serrialize(value, new_data)
-            elif key == '_sa_instance_state':
-                continue
-            else:
-                new_data[key] = value
-    elif isinstance(data, list):
-        for key, value in enumerate(data, 0):
-            if isinstance(value, datetime):
-                new_data[key] = value.timestamp() #.strftime("%Y %B %d %A %H:%M")
-            elif isinstance(value, (list, dict)):
-                serrialize(value, new_data)
-            elif key == '_sa_instance_state':
-                continue
-            else:
-                new_data[key] = value
-    return new_data

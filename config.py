@@ -27,10 +27,10 @@ class Configuration(object):
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 
 	JWT_SECRET_KEY = 'sfsdfsdf' #randomString()
-	JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+	JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=12)
 	JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=7)
 	JWT_TOKEN_LOCATION = ['cookies']
-	JWT_EXPIRATION_DELTA = timedelta(hours=1)
+	JWT_EXPIRATION_DELTA = timedelta(hours=12)
 	JWT_VERIFY_CLAIMS = ['exp']
 	JWT_COOKIE_CSRF_PROTECT = False
 

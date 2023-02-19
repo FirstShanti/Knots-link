@@ -65,7 +65,7 @@
                         placeholder="Type your message..."
                         type="text"
                         ref="msgInput"
-                        v-model="msgDraft"
+                        v-model="msgDrafts[activeChat]"
                         v-on:focus="handleInputActive"
                     >
                     </textarea>
@@ -88,8 +88,8 @@
     </div>
 
     <script src="../static/scripts/socketio4.js"></script>
+    <script src='/static/scripts/socketUtils.js'></script>
     <script src="../static/scripts/libs/vue-socket-io.js"></script>
-    <script src="../static/scripts/send_chat_msg.js"></script>
     <script src="../static/scripts/containers/messanger.js"></script>
 
 {% endblock %}

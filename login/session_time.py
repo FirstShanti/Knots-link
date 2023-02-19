@@ -1,5 +1,4 @@
-from os import access
-from flask import jsonify, request, redirect, url_for
+from flask import request, redirect, url_for
 from functools import wraps
 from models import TokenBlackList
 from flask_jwt_extended import verify_jwt_in_request

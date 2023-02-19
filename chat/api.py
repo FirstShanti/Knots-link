@@ -1,9 +1,6 @@
-from email import message
 import json
-
 from app import db
-from flask import jsonify, request
-from itsdangerous import serializer
+from flask import jsonify
 from login.session_time import session_time
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import current_user, jwt_required
@@ -15,8 +12,8 @@ from models import (
 	get_chat,
 	get_message
 )
-from .schemas import msgs_schema, chats_schema
-from exceptions import UnauthorizedError
+from .schemas import msg_schema, msgs_schema, chats_schema
+from exceptions import UnauthorizedError, AuthenticationError
 
 parser = reqparse.RequestParser(bundle_errors=True)
 
@@ -27,41 +24,42 @@ def args_to_parser(validator, params, location):
 	return parser
 
 validator = {
-	'send_msg': {
-		'msg': dict(type=str, required=True, help='This field cannot be blank.'),
-	},
-	'get_msgs': {
+	'get_msg': {
 		'receiver': dict(type=str, required=True, help='This field cannot be blank.'),
 		'page': dict(type=int, required=False, help='This field cannot be blank.'),
 	},
-	'post_msgs': {
-		'parameter': dict(type=str, required=True),
-		'uuid': dict(type=str, required=True) 
+	'post_msg': {
+		'uuid': dict(type=str, required=True, help='This field cannot be blank.'),
+		'parameter': dict(type=str, required=True, help='This field cannot be blank.'),
+		'data': dict(type=str, required=False)
 	}
-	# 'get_chats': {
-	# 	'username': dict(type=str, required=True, help='This field cannot be blank.')
-	# }
 }
 
 
 class MsgProcessor:
 
 	PROCESSES = [
-		'set_read'
+		'update'
 	]
 
-	def __init__(self, msg_uuid):
-		self.msg_uuid = msg_uuid
-		self.msg = Message.query.filter(Message.uuid==msg_uuid).first()
+	def __init__(self, uuid, data={}, current_user=None):
+		self.uuid = uuid
+		self.current_user = current_user
+		self.msg = Message.query.filter(Message.uuid==uuid).first()
+		self.data = data
 
 	def process(self, process):
 		if process in self.PROCESSES:
 			self.__getattribute__(process)()
 			db.session.commit()
 
-	def set_read(self):
-		self.msg.is_read = True
-
+	def update(self):
+		if self.msg and self.msg.chat in self.current_user.chats and self.data:
+			msg_schema.load(
+				self.data,
+				session=db.session,
+				instance=self.msg,
+				partial=True)
 
 
 # RESOURCES
@@ -70,13 +68,6 @@ class ChatApi(Resource):
 	@jwt_required()
 	@session_time
 	def get(self):
-		# parser = args_to_parser(validator, 'get_msgs', 'args')
-		# data = parser.parse_args()
-		# chat_id, page = data['chat_id'], int(data['page'])
-		# if current_user and chat_id in current_user.chat_ids:
-			# messages = [serrialize(item.__dict__) for item in get_message(chat_id=chat_id) or []]
-			# return {'status': 'success', 'messages': messages}, 200
-		# return {'status': 'error', 'chat_id': None}, 403
 		chats = Chat.query.join(Knot.chats).filter(Knot.id==current_user.id).order_by(Chat.created)
 		return chats_schema.dump(chats)
 
@@ -96,14 +87,15 @@ class ChatApi(Resource):
 					return {'status': 'success', 'chat_id': '', 'chat_username': ''}, 200
 		except Exception as e:
 			raise e
-		return {'status': 'error', 'details': 'permission denied'}, 403
+		raise AuthenticationError
+
 
 class MessageApi(Resource):
 
-	# @jwt_required()
+	@jwt_required()
 	@session_time
 	def get(self):
-		parser = args_to_parser(validator, 'get_msgs', 'headers')
+		parser = args_to_parser(validator, 'get_msg', 'headers')
 		data = parser.parse_args()
 		receiver, page = data['receiver'], int(data['page'])
 		another_user = get_user(uuid=receiver)
@@ -116,19 +108,25 @@ class MessageApi(Resource):
 				'msgs': messages,
 				'nextPage': messages_paginated.next_num
 			})
-		raise UnauthorizedError
+		raise AuthenticationError
 
+
+	@jwt_required()
 	@session_time
 	def post(self):
-		parser = args_to_parser(validator, 'post_msgs', 'headers')
-		data = parser.parse_args()
-		parameter = data['parameter']
-		msg_uuid = data['uuid']
-		processor = MsgProcessor(msg_uuid)
+		parser = args_to_parser(validator, 'post_msg', 'headers')
+		result = parser.parse_args()
+
+		data = json.loads(result.get('data', {}))
+		parameter = result['parameter']
+		msg_uuid = result['uuid']
+
+		processor = MsgProcessor(msg_uuid, data, current_user)
+
 		try:
 			processor.process(parameter)
 		except Exception as e:
-			return {'status': 'success', 'message': str(e)}, 500
+			return {'status': 'error', 'message': str(e)}, 500
 		else:
-			return {'status': 'success', 'message': 'readed'}, 200
+			return {'status': 'success', 'message': 'ok'}, 200
 			
