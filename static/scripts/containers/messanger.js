@@ -12,6 +12,19 @@ $('.vl').css('height', `${book_pc_size}px`)
 
 
 const Messanger = {
+    data () {
+        return {
+            store,
+            chats: [],
+            activeChat: undefined,
+            chatsData: {},
+            msgDrafts: {},
+            dayDate: '',
+            loading: true,
+            sidebarChatsOpen: false,
+            isMobile: false
+        }
+    },
     sockets: {
         connect() {
             // joinRoom(this.$socket, this.activeChat)
@@ -42,17 +55,6 @@ const Messanger = {
             } else if (!_.isEmpty(data.message)) {
                 console.error(data.message)
             }
-        }
-    },
-    data () {
-        return {
-            store,
-            chats: [],
-            activeChat: undefined,
-            chatsData: {},
-            msgDrafts: {},
-            dayDate: '',
-            loading: true
         }
     },
     methods: {
@@ -174,6 +176,7 @@ const Messanger = {
         },
     },
     async mounted() {
+        this.isMobile = isMobile()
         await this.getChats()
         if (!!_.get(this.$refs.selectedChat, 'attributes.anotherUser.value', undefined)) {
             this.activeChat = this.$refs.selectedChat.attributes.anotherUser.value

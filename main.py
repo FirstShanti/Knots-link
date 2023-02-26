@@ -20,7 +20,7 @@ from flask_jwt_extended import verify_jwt_in_request, current_user
 import view
 
 api = Api(app, prefix='/api/v1', errors=errors)
-CORS(app, resorces={r'/d/*': {"origins": '*'}})
+CORS(app, resorces={r'/api/*': {"origins": '*'}})
 
 
 api.add_resource(ChatApi, '/chat')

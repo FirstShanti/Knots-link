@@ -9,7 +9,7 @@ from .chat_processor import save_message
 from .schemas import MessageSchema
 from models import Knot
 
-socketio = SocketIO(app, cors_allowed_origins='*')
+socketio = SocketIO(app, cors_allowed_origins='*', async_mode='gevent')
 
 
 @socketio.on('connect', namespace='/messanger/')
@@ -64,3 +64,16 @@ def text(message):
             emit('message', left_data, room=str(receiver))
         except Exception as e:
             emit('status', {'status': True, 'message': str(e)}, to=str(request.sid))
+
+# TODO to handle async task
+
+# import asyncio
+
+# async def background_task():
+#     while True:
+#         await asyncio.sleep(1)
+#         socketio.emit('message', {'data': 'This is a message from the server.'})
+
+# @socketio.on('start-task')
+# def handle_start_task():
+#     task = asyncio.create_task(background_task())

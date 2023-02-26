@@ -6,32 +6,55 @@
 
 
 {% block content %}
+    <style>
+      .chat_list_pc {
+        width: 300px;
+      }
+    </style>
 
     <div id='messanger' class='messanger_container'>
         <span hidden anotherUser="{{another_user.uuid}}" ref="selectedChat"></span>
-        <div class='chats_list'>
-            <div class='chat_room' v-for="chat in chats">
-                <div
-                    :class='{room_info: true, current_chat_room: chat.uuid == activeChat}'
-                    :chat="chat.uuid"
-                    :ref="chat.uuid"
-                    v-on:click="activeChat = chat.uuid"
-                >
-                    <img class='chat_room_icon' :src="chat.left_user.avatar"/>
-                    <span v-if="chatsData[chat.uuid].unread_msgs > 0" class='unread_msgs' >{chatsData[chat.uuid].unread_msgs}</span>
-                    <div class='room_username_msg'>
-                        <div class='room_username' >
-                            <span>{ chat.left_user.username }</span>
-                        </div>
-                        <div class='room_last_msg'>
-                            { $filters.truncate(chat.last_msg.text) }
-                        </div>
+
+        <button v-if="isMobile" id="msg-sidebar-chats-toggle">
+          <svg
+            class="open-msgs-svg"
+            v-bind:class="['open-msgs-svg', {'rotated': sidebarChatsOpen}]"
+            v-on:click="sidebarChatsOpen=!sidebarChatsOpen"
+            width="25"
+            height="25"
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--! Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/>
+          </svg>
+        </button>
+
+        <div 
+          v-bind:class="['chats_list container-fluid', {'msg-sidebar-closed': isMobile && !sidebarChatsOpen, 'chat_list_pc': !isMobile}]"
+          ref="chats_list"
+          v-bind:style="[]"
+        >
+          <div v-bind:class="['msg-sidebar', {'msg-sidebar-closed': isMobile && !sidebarChatsOpen}]">
+            <div class="chat_room" v-for="chat in chats">
+              <div
+                  :class='{room_info: true, current_chat_room: chat.uuid == activeChat}'
+                  :chat="chat.uuid"
+                  :ref="chat.uuid"
+                  v-on:click="activeChat = chat.uuid, sidebarChatsOpen = !sidebarChatsOpen"
+              >
+                <img class='chat_room_icon' :src="chat.left_user.avatar"/>
+                <span v-if="chatsData[chat.uuid].unread_msgs > 0" class='unread_msgs' >{chatsData[chat.uuid].unread_msgs}</span>
+                <div class='room_username_msg'>
+                    <div class='room_username' >
+                        <span>{ chat.left_user.username }</span>
+                    </div>
+                    <div class='room_last_msg'>
+                        { $filters.truncate(chat.last_msg.text) }
                     </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-        <div id="chat_devider" class="vl"></div>
-        <div class='chat_container'>
+        <div v-if="!isMobile" id="chat_devider" class="vl"></div>
+        <div v-bind:class="['chat_container', {'msg-sidebar-closed': isMobile && sidebarChatsOpen}]">
             {% include 'elements/loader.html' %}
             <div class="bookmob">
             </div>
@@ -72,14 +95,14 @@
                 </form>
                 <div class='send_button_container'>
                     <!-- <img src="/static/img/paper-plane.svg"> -->
-                    <button
+                    <!-- <button
                         ref="msgConfirmButton"
                         v-on:click="handleSendMsg"
-                        class="btn badge-pill send_message_button"
-                    >
-                        <!-- <i class="far fa-paper-plane"></i> -->
-                        Send
-                    </button>
+                        
+                    > -->
+                        <i v-on:click="handleSendMsg" class="far fa-paper-plane"></i>
+                        <!-- Send -->
+                    <!-- </button> -->
                 </div>
             </div>
             <!-- <i id="mute" class="fas fa-volume-mute" style="height: 60px; weight: 60px; font-size: 30px; margin: 10px; float: right;"> -->
@@ -93,4 +116,3 @@
     <script src="../static/scripts/containers/messanger.js"></script>
 
 {% endblock %}
-
