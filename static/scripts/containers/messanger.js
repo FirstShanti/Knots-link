@@ -86,17 +86,20 @@ const Messanger = {
                 let chatData = await request('GET', '/api/v1/messages', headers)
                 let oldMsgs = this.chatsData[this.activeChat].chatMsgs
                 let newMsgs = _.sortBy(chatData.msgs.filter(msg => !oldMsgs.map(m => m.uuid).includes(msg.uuid)), 'created')
-                let prevDay = null;
+                let prevDayDate = null;
                 newMsgs.forEach((msg, idx) => {
                     let date = new Date(msg.created);
-                    let day = date.getDay()
-                    let previousMonthDate = _.find(oldMsgs, {'monthDate': date.format("dd.mm.yy")})
-                    if (prevDay == null || prevDay != day || !!previousMonthDate) {
-                        _.get(previousMonthDate, 'monthDate') ? delete previousMonthDate.monthDate : null 
-                        msg.monthDate = date.format("dd.mm.yy")
-                        prevDay = day
+                    let previousMonthDate = _.find(oldMsgs, {'monthDate': date.format(MSG_DAYS_DATE_FORMAT)})
+                    let msgMonthDate = date.format(MSG_DAYS_DATE_FORMAT)
+                    if (prevDayDate == null || msgMonthDate != prevDayDate) {
+                        msg.monthDate = msgMonthDate
+                        if (!!previousMonthDate) {
+                            _.get(previousMonthDate, 'monthDate') ? delete previousMonthDate.monthDate : null
+                        }
                     }
-                })
+                    prevDayDate = msgMonthDate
+                    }
+                )
                 this.chatsData[this.activeChat].chatMsgs = [...newMsgs, ...oldMsgs]
                 this.chatsData[this.activeChat].prevPage = this.chatsData[this.activeChat].nextPage
                 this.chatsData[this.activeChat].nextPage = chatData.nextPage
@@ -204,7 +207,7 @@ const MessangerApp = createApp(Messanger).use(VueSocketio, SocketInstance)
 
 MessangerApp.config.globalProperties.$filters = {
     monthDate(value) {
-        return !!value && value.format("dd.m.yy")
+        return !!value && value.format(MSG_DAYS_DATE_FORMAT)
     },
     msgTime(value) {
         return moment(value).format('HH:MM')
