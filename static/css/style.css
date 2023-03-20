@@ -185,10 +185,6 @@ small {
 	position: relative;
 }
 
-.center {
-	/*display: grid;*/
-}
-
 .post-body {
 	margin-left: 10%;
 	margin-right: 10%; 
@@ -527,15 +523,7 @@ div.post-comment-author > * {
 	/*border-bottom: solid 1rem rgba(255, 255, 255, 0);*/
 	/*margin-right: auto;*/
 	/*margin-left: auto;*/
-	transition: 2s;
-}
-.chat_container:hover {
-	transition: 2s;
-	/*box-shadow: 0 0 10px rgba(102, 204, 153);*/
-}
-.chat_container:active {
-	transition: 2s;
-	/*box-shadow: 0 0 10px rgba(102, 204, 153);*/
+	transition: 0.5s;
 }
 
 .post_container:hover {
@@ -1079,7 +1067,7 @@ button:focus {
 	text-align: left;
 	margin-right: auto;
 	box-shadow: -1px 1px 2px 0px #bce5e3;
-	padding: 5px;
+	padding: 10px;
 	font-family: 'Nunito', sans-serif;
 	word-break: break-word;
 	display: flow-root;
@@ -1099,7 +1087,7 @@ button:focus {
 	/* white-space: ;
 	min-height: ; */
 	box-shadow: 1px 1px 2px 0px #bce5d6;
-	padding: 5px;
+	padding: 10px;
 	font-family: 'Nunito', sans-serif;
 	word-break: break-word;
 	display: flow-root;
@@ -1132,6 +1120,7 @@ button:focus {
 
 .msg_container {
 	width: 75%;
+	margin-top: 7px;
 }
 
 .right {
@@ -1139,19 +1128,23 @@ button:focus {
 }
 
 .vl {
-  border-left: 1px solid #bce5e3;
-  height: 500px;
-  text-align: right;
+	position: relative;
+	border-left: 1px solid #bce5e3;
+	height: 500px;
+	text-align: right;
 }
 
 .chats_list {
-	margin-right: auto;
+	/* margin-right: auto; */
 	margin-top: 10px;
     height: 490px;
     overflow: scroll;
     overflow-x: hidden;
     overflow-y: hidden;
-    width: 25%;
+	transition: all 1s ease-in-out;
+	/* max-width: fit-content; */
+	/* width: 100%; */
+	padding-right: 0px !important;
 }
 
 .chats_list:hover {
@@ -1224,7 +1217,7 @@ button:focus {
 	transition: 0.5s;
 	outline: none !important;
 	font-family: 'Nunito', sans-serif;
-	margin-top: 1%;
+	margin-top: 13px;
 }
 
 .message_container:hover {
@@ -1235,7 +1228,9 @@ button:focus {
 
 .send_button_container {
 	text-align: end;
-	margin: 5px;
+    margin: 5px;
+	font-size: 30px;
+	color: #4a906c
 }
 
 .send_message_button {
@@ -1611,4 +1606,69 @@ a.knots_logo_link {
 	opacity: 0.2;
 	pointer-events: none;
 	cursor: not-allowed;
+}
+
+.unread_msgs {
+	border-radius: 50%;
+	background-color: #4a906c;
+	color: white;
+	font-weight: bold;
+	min-width: 25px;
+    height: 25px;
+    text-align: center;
+    position: absolute;
+}
+
+.unread_msg {
+	background-color: #a6ffd1;
+}
+
+.hidden {
+	display: none;
+}
+
+.msg-sidebar {
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	top: 0;
+	left: 0;
+	/* width: 250px; */
+	transition: 1s;
+  }
+
+.msg-sidebar-closed {
+	width: 0 !important;
+	transition: all 0.5s ease-in-out;
+	padding: 0;
+	margin: 0;
+}
+
+.msg-sidebar ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#msg-sidebar-chats-toggle {
+	background-color: transparent;
+	outline: none !important;
+	border: none;
+	/* position: relative; */
+	padding: 0;
+}
+
+.open-msgs-svg {
+	position: absolute;
+	top: 50%;
+	left: 2px;
+	/* transform: translateY(-50%); */
+	transition: all 0.5s ease-in-out;
+	fill: rgba(102, 204, 153);
+}
+
+.rotated {
+	transform-origin: center;
+	transform: rotate(180deg);
+	transition: all 0.5s ease-in-out;
 }

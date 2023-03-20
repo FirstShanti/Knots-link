@@ -6,6 +6,7 @@
 
 {% block data %}
         <div id="login" class='container-fluid text-center body_'>
+			<span style='display: none;' ref="referer">{{referer}}</span>
 			<form class='form-signin' @submit="authenticate">
 				{% for field in form %}
 					{% if field.id == "password" %}

@@ -1,4 +1,3 @@
-from os import access
 from flask import request, redirect, url_for
 from functools import wraps
 from models import TokenBlackList
@@ -16,6 +15,8 @@ def session_time(f):
 			else:
 				raise UnauthorizedError
 		except Exception as e:
+			if 'api' in request.url:
+				return {}, 403
 			return redirect(url_for('login.log_in'))
 		return f(*args, **kwargs)
 	return decorated_function

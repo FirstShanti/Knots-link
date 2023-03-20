@@ -93,7 +93,8 @@ class AuthApi(Resource):
                 user_icon=user.avatar(size=50),
                 access_token_cookie=create_access_token(identity=data),
                 refresh_token_cookie=create_refresh_token(identity=data),
-                expired_at=int(expired_at))
+                expired_at=int(expired_at),
+                uuid=str(user.uuid))
             return data, 200
 
         raise UnauthorizedError

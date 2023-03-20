@@ -2,7 +2,7 @@ from flask import (
 	session,
 )
 from flask_restful import Resource, reqparse
-from models import get_user, get_chat, get_message, serrialize
+from models import get_user, get_chat, get_message
 
 parser = reqparse.RequestParser(bundle_errors=True)
 

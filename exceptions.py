@@ -1,3 +1,6 @@
+from email import message
+
+
 class ApiException(Exception):
     status_code = 400
 
@@ -21,6 +24,8 @@ class InternalServerError(Exception):
 class UnauthorizedError(Exception):
     pass
 
+class AuthenticationError(Exception):
+    pass
 
 class EmailValidationError(Exception):
     pass
@@ -50,6 +55,10 @@ errors = {
     "UnauthorizedError": {
         "message": "Invalid username or password",
         "status": 401
+    },
+    "AuthenticationError": {
+        "message": "Invalid access token",
+        "status": 403
     },
     "EmailValidationError": {
         "message": "Invalid email",

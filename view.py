@@ -41,7 +41,7 @@ def sitemap():
         posts = Post.query.all()
 
         for post in posts:
-            url = url_for('posts.post_content', slug=post.slug, _external=True)
+            url = url_for('posts.post_content', id=post.id, _external=True)
             modified_time = post.created.date().isoformat()
             pages.append([url, modified_time])
 

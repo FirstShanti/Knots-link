@@ -27,10 +27,10 @@ class Configuration(object):
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 
 	JWT_SECRET_KEY = 'sfsdfsdf' #randomString()
-	JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+	JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=12)
 	JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=7)
 	JWT_TOKEN_LOCATION = ['cookies']
-	JWT_EXPIRATION_DELTA = timedelta(hours=1)
+	JWT_EXPIRATION_DELTA = timedelta(hours=12)
 	JWT_VERIFY_CLAIMS = ['exp']
 	JWT_COOKIE_CSRF_PROTECT = False
 
@@ -41,6 +41,7 @@ class Configuration(object):
 
 	FLASK_ADMIN_SWATCH = 'cerulean'
 
+
 class Development(Configuration):
 	DEBUG = True
 	PORT = 5001
@@ -50,6 +51,8 @@ class Development(Configuration):
 	SQLALCHEMY_DATABASE_URI = env.get('DATABASE_URL')
 	MAIL_USERNAME = env.get('MAIL_USERNAME')
 	MAIL_PASSWORD = env.get('MAIL_PASSWORD')
+	
+	SENTRY_URI = env.get('SENTRY_URI')
 
 
 class Production(Configuration):
@@ -58,6 +61,7 @@ class Production(Configuration):
 	PORT = os.environ.get('PORT')
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+	SENTRY_URI = os.environ.get('SENTRY_URI')
 
 
 environments = {

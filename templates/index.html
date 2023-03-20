@@ -35,27 +35,12 @@
         var txt = 'Knots'; /* The text */
         var speed = 200; /* The speed/duration of the effect in milliseconds */
         var textContainer = document.getElementById("demo")
-        // function animateCursor() {
-        //     if (textContainer.innerHTML.endsWith('|')) {
-        //         console.log(textContainer)
-        //         textContainer.innerHTML = textContainer.innerHTML = txt
-        //     } else {
-        //         console.log(textContainer)
-        //         textContainer.innerHTML = txt + '|'
-        //     }
-        // }
         function typeWriter() {
         if (i < txt.length) {
             textContainer.innerHTML += txt.charAt(i);
             i++;
             setTimeout(typeWriter, speed);
-        }
-        // if (textContainer.innerHTML == txt) {
-        //     setInterval(() => {
-        //         animateCursor()
-        //     }, 700)
-        // }
-        }
+        }}
         typeWriter()
     </script>
 {% endblock %}

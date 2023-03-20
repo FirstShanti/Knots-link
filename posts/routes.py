@@ -1,3 +1,5 @@
+from nis import cat
+from pprint import pprint
 import re
 from flask_jwt_extended import current_user
 from flask import (
@@ -25,6 +27,8 @@ from models import (
     Category,
 )
 
+from .schemas import posts_schema
+
 
 SUCCESSFUL = 'alert alert-success'
 ERROR = 'alert alert-danger'
@@ -39,10 +43,11 @@ posts = Blueprint('posts',
 '''Page with form for write Title Body and Tag. 
    Than its information put in class Post and add in db.''' 
 
-@posts.route('/create', methods=['POST', 'GET'])
+@posts.route('/create', defaults={'category': None}, methods=['POST', 'GET'])
+@posts.route('/create/<category>', methods=['POST', 'GET'])
 @session_time
 @is_email_authenticated
-def create_post():
+def create_post(category):
     form = PostForm(request.form)
     form.category.choices = get_category()
 
@@ -83,15 +88,17 @@ def create_post():
     elif request.method == 'POST' and not current_user.authenticated:
         flash(u'Before saving the changes, you must confirm the email address.', 'alert alert-warning')
     else:
+        if category:
+            form.category.data = category.lower()
         return render_template('create_post.html', form=form, categories=Category.query.all())
 
 
-@posts.route('/<slug>/edit/', methods=['POST', 'GET'])
+@posts.route('/<id>/edit/', methods=['POST', 'GET'])
 @session_time
 @is_email_authenticated
-def edit_post(slug):
+def edit_post(id):
 
-    post = Post.query.filter(Post.slug==slug, Post.author==current_user.username).first()
+    post = Post.query.filter(Post.id==id, Post.author==current_user.username).first()
     fields = dict(
         title = post.title,
         body = post.body,
@@ -140,7 +147,7 @@ def edit_post(slug):
             flash(u'Changes saved successfully', SUCCESSFUL)
         except Exception as e:
             flash(u'ERROR: {e}', ERROR)
-        return redirect(url_for('posts.post_content', slug=post.slug))
+        return redirect(url_for('posts.post_content', id=post.id))
     elif request.method == 'POST' and not current_user.authenticated:
         flash(u'Before saving the changes, you must confirm the email address.', 'alert alert-warning')
         return render_template('edit_post.html',
@@ -155,10 +162,10 @@ def edit_post(slug):
             categories=Category.query.all()
         )
 
-@posts.route('/<slug>/delete/', methods=['POST', 'GET'])
+@posts.route('/<id>/delete/', methods=['POST', 'GET'])
 @session_time
-def delete_post(slug):
-    post = Post.query.filter(Post.slug==slug).filter(Post.visible==True).first()
+def delete_post(id):
+    post = Post.query.filter(Post.id==id).filter(Post.visible==True).first()
 
     if current_user.username == post.author:
         try:
@@ -186,6 +193,7 @@ def index(current_user):
         post.body = re.sub(r'\\r|\\n|\\t|<ul>|<li>|</ul>|</li>|<table|<tr|<td|</table|</td|</tr', '', ''.join(i for i in post.body.split("\n")[:3]))
 
     pages = posts.paginate(page=page, per_page=6, max_per_page=6)
+    posts = posts_schema.dump(pages.items)
 
     return render_template('index_posts.html',
         posts=posts,
@@ -198,18 +206,18 @@ def index(current_user):
     )
 
 
-@posts.route('/<slug>', methods=['POST', 'GET'])
+@posts.route('/<id>', methods=['POST', 'GET'])
 @user_or_anon
-def post_content(current_user, slug):
+def post_content(current_user, id):
     try:
-        post = Post.query.filter(Post.slug==slug).first()
+        post = Post.query.filter(Post.id==id).first()
         if (not current_user or current_user.username != post.author) and not post.visible:
             post = None
         tags = post.tags
         time = post.created_to_str()
         author = post.author
         comments = post.comments
-    except AttributeError as e:
+    except Exception as e:
         print(e)
         return redirect('/blog/')
 
@@ -229,7 +237,7 @@ def post_content(current_user, slug):
             except Exception as e:
                 print(f'Something wrong\n{e.__class__}')
                 raise e
-            return redirect(url_for('posts.post_content', slug=slug))
+            return redirect(url_for('posts.post_content', id=id))
         else:
             return redirect(url_for('login.log_in'))
 
@@ -241,14 +249,13 @@ def post_content(current_user, slug):
         user=current_user,
         comments=comments,
         form=form,
-        slug=slug,
         categories=Category.query.all()
     )
 
 
 @posts.route('/tag/<slug>/')
 def tag_detail(slug):
-    tag = Tag.query.filter(Tag.slug == slug).first()
+    tag = Tag.query.filter(Tag.name == slug).first()
     posts = Post.query.filter(Post.tags.contains(tag)).filter(Post.visible==True)
     page = request.args.get('page')
 
@@ -295,16 +302,18 @@ def category_create():
 @posts.route('/category/<slug>/', methods=['GET'])
 def category_detail(slug):
 
-    headers = request.headers
-    api_header = headers.get('api_header')
+
+    isApi = request.headers.get('apiRequest')
 
     category = Category.query.filter(Category.name==slug).first()
     if not category:
         posts = Post.query.filter(Post.visible==True)
+        category_name = 'All categories'
     elif category:
         posts = Post.query.filter(Post.category_id==category.id).filter(Post.visible==True)
+        category_name = category.name
     else:
-        return jsonify({'json_list':0})
+        return jsonify({})
 
     page = request.args.get('page')
 
@@ -318,24 +327,17 @@ def category_detail(slug):
 
     pagination = {}
     pagination['pages'] = [i for i in pages.iter_pages()]
-    pagination['items'] = [i.__dict__ for i in pages.items]
+    pagination['posts'] = posts_schema.dump(pages.items)
     pagination['has_prev'] = pages.has_prev
     pagination['has_next'] = pages.has_next
     pagination['next_num'] = pages.next_num
     pagination['prev_num'] = pages.prev_num
 
-    for i in pagination['items']:
-        del i['_sa_instance_state']
-        i['created'] = i['created'].isoformat(timespec='seconds')
-
-    if api_header:
-        num_list = []
-        for i in pages.iter_pages():
-            num_list.append(i)
+    if isApi:
         return jsonify(pagination)
 
     return render_template('index_posts.html',
-        title=category.name,
+        title=category_name,
         pages=pages,
         c=category,
         categories=categories
@@ -361,8 +363,10 @@ def search():
         posts = Post.query.filter(Post.owner_id.contains(category.id)).filter(
             Post.title.contains(q) |
             Post.title.contains(q.lower()) |
+            Post.title.contains(q.upper()) |
             Post.title.contains(q.capitalize()) |
             Post.title.contains(' '.join(i.capitalize() for i in q.split(' '))) |
+            Post.title.contains(' '.join(i.upper() for i in q.split(' '))) |
             Post.body.contains(q) |
             Post.tags.any(name=q.lower()) |
             Post.author.contains(q)

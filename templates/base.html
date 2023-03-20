@@ -3,17 +3,13 @@
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width initial-scale=1.0 no-cache" http-equiv="cache-control">
+    <meta name="viewport" content="width=device-width initial-scale=1.0" http-equiv="cache-control">
     <title>
-
         {% block title %}
-
         {% endblock %}
-
     </title>
 
     {% block seo %}
-
     {% endblock %}
     
     <link rel="shortcut icon" href="/static/img/brain.svg">
@@ -38,8 +34,11 @@
 
     <script src="/static/scripts/libs/jQuery.min.js"></script>
     <script src="/static/scripts/libs/fontAwesome.js"></script>
-    <script src="/static/scripts/button_to_top.js"></script>
-    <script src="/static/scripts/libs/vue.js"></script>
+    {% if dev_anv %}
+        <script src="/static/scripts/libs/vue.js"></script>
+    {% else %}
+        <script src='/static/scripts/libs/vue.prod.js'></script>
+    {% endif %}
     <script src="/static/scripts/libs/vueUtils.js"></script>
     <script src="/static/scripts/libs/lodash.js"></script>
     <script src='/static/scripts/storage.js'></script>
@@ -83,7 +82,7 @@
                                         style="display: flex; align-items: center; margin: auto;">
                                         <a class="nav-link disable-scale" href=" {{ url_for('posts.index') }}">Blog</a>
                                         <a class="nav-link" style="font-size: 30px; margin-left: auto;"
-                                            href="{{ url_for('posts.create_post') }}">&#x270d;</a>
+                                            href="{{ url_for('posts.create_post', category=None) }}">&#x270d;</a>
                                     </li>
                                     <li v-else class="dropdown-item">
                                         <a class="nav-link" href=" {{ url_for('posts.index') }}">Blog</a>
@@ -115,25 +114,25 @@
                             </div>
                         </div>
                         {% if categories %}
-                        <div class="category-show">
-                            <select id="category-value-select"
-                                data-url="{{ url_for('posts.category_detail', slug='empty')}}" name="c">
-                                {% if c %}
-                                <option style='color: #4ea08a;;' value='none'>All category</option>
-                                <option selected="selected">{{ c.name }}</option>
-                                {% for category in categories %}
-                                {% if category.name != c.name %}
-                                <option value="{{ category.name }}">{{ category.name }}</option>
-                                {% endif %}
-                                {% endfor %}
-                                {% else %}
-                                <option style='color: #4ea08a;;' value='none'>All category</option>
-                                {% for category in categories %}
-                                <option value="{{ category.name }}">{{ category.name }}</option>
-                                {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
+                            <div class="category-show">
+                                <select id="category-value-select"
+                                    data-url="{{ url_for('posts.category_detail', slug='empty')}}" name="c">
+                                    {% if c %}
+                                        <option style='color: #4ea08a;;' value='none'>All category</option>
+                                        <option selected="selected">{{ c.name }}</option>
+                                        {% for category in categories %}
+                                            {% if category.name != c.name %}
+                                                <option value="{{ category.name }}">{{ category.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <option style='color: #4ea08a;;' value='none'>All category</option>
+                                        {% for category in categories %}
+                                            <option value="{{ category.name }}">{{ category.name }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
                         {% endif %}
                     </form>
                 </div>
@@ -165,9 +164,9 @@
         <div id="toTop"><i class="fas fa-chevron-up"></i></div>
         <br>
     </div>
+    <script src="/static/scripts/constants.js"></script>
     <script src="/static/scripts/main.js"></script>
     <script src="/static/scripts/libs/dateFormatter.js"></script>
-    <script src="/static/scripts/category_move.js"></script>
     <script src="/static/scripts/containers/base.js"></script>
     <script>
         $("div#alert-msg").fadeOut(4000);
